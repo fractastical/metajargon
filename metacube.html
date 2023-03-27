@@ -22,24 +22,37 @@
         const cubeSize = 10;
         const cubeDistance = 60;
 
-        function createCube(x, y, z, opacity) {
+        function createSphere(x, y, z, radius, color) {
+            const geometry = new THREE.SphereGeometry(radius, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ color: color });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.set(x, y, z);
+            scene.add(sphere);
+            return sphere;
+        }
+
+        function createCubeWithSphere(x, y, z, opacity) {
             const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             const cube = new THREE.Mesh(geometry, material);
             cube.position.set(x, y, z);
             scene.add(cube);
-            return cube;
+
+            const sphereRadius = cubeSize / 2;
+            const sphere = createSphere(x, y, z, sphereRadius, 0xff0000);
+
+            return { cube, sphere };
         }
 
-        const transparentCube = createCube(0, 0, 0, 0.5);
+        const transparentCubeWithSphere = createCubeWithSphere(0, 0, 0, 0.5);
 
-        const surroundingCubes = [
-            createCube(cubeDistance, 0, 0, 1),
-            createCube(-cubeDistance, 0, 0, 1),
-            createCube(0, cubeDistance, 0, 1),
-            createCube(0, -cubeDistance, 0, 1),
-            createCube(0, 0, cubeDistance, 1),
-            createCube(0, 0, -cubeDistance, 1)
+        const surroundingCubesWithSpheres = [
+            createCubeWithSphere(cubeDistance, 0, 0, 1),
+            createCubeWithSphere(-cubeDistance, 0, 0, 1),
+            createCubeWithSphere(0, cubeDistance, 0, 1),
+            createCubeWithSphere(0, -cubeDistance, 0, 1),
+            createCubeWithSphere(0, 0, cubeDistance, 1),
+            createCubeWithSphere(0, 0, -cubeDistance, 1)
         ];
 
         camera.position.z = 150;
@@ -47,12 +60,12 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            transparentCube.rotation.x += 0.01;
-            transparentCube.rotation.y += 0.01;
+            transparentCubeWithSphere.cube.rotation.x += 0.01;
+            transparentCubeWithSphere.cube.rotation.y += 0.01;
 
-            surroundingCubes.forEach(cube => {
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
+            surroundingCubesWithSpheres.forEach(obj => {
+                obj.cube.rotation.x += 0.01;
+                obj.cube.rotation.y += 0.01;
             });
 
             renderer.render(scene, camera);

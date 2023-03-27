@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparent Cube Scene</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const cubeSize = 10;
+        const cubeDistance = 60;
+
+        function createCube(x, y, z, opacity) {
+            const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(x, y, z);
+            scene.add(cube);
+            return cube;
+        }
+
+        const transparentCube = createCube(0, 0, 0, 0.5);
+
+        const surroundingCubes = [
+            createCube(cubeDistance, 0, 0, 1),
+            createCube(-cubeDistance, 0, 0, 1),
+            createCube(0, cubeDistance, 0, 1),
+            createCube(0, -cubeDistance, 0, 1),
+            createCube(0, 0, cubeDistance, 1),
+            createCube(0, 0, -cubeDistance, 1)
+        ];
+
+        camera.position.z = 150;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            transparentCube.rotation.x += 0.01;
+            transparentCube.rotation.y += 0.01;
+
+            surroundingCubes.forEach(cube => {
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

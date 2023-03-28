@@ -39,7 +39,7 @@
             return sphere;
         }
 
-        function createCubeWithSphere(x, y, z, opacity) {
+        function createCubeWithSphere(x, y, z, opacity, geometryType) {
             // const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             // const cube = new THREE.Mesh(geometry, material);
@@ -54,7 +54,7 @@
             // Store a random frequency for each cube
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
-    const uniqueObject = createUniqueObject(x, y, z, ['sphere', 'torus', 'tetrahedron', 'cone', 'cylinder', 'icosahedron', 'octahedron', 'torusKnot', 'dodecahedron'][Math.floor(Math.random() * 9)]);
+            const uniqueObject = createUniqueObject(x, y, z, geometryType);
 
                 // Create an invisible mesh for click detection
             const invisibleMeshGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
@@ -113,6 +113,39 @@ function createUniqueObject(x, y, z, type) {
 }
 
 
+function createGridOfCubes() {
+    const geometryTypes = [
+        'sphere',
+        'torus',
+        'cone',
+        'tetrahedron',
+        'cylinder',
+        'icosahedron',
+        'octahedron',
+        'torusKnot',
+        'dodecahedron'
+    ];
+
+    const gridSize = 9;
+    const cubeDistance = cubeSize + 60;
+
+    for (let x = 0; x < gridSize; x++) {
+        for (let y = 0; y < gridSize; y++) {
+            for (let z = 0; z < gridSize; z++) {
+                const xPos = x * cubeDistance - (gridSize * cubeDistance) / 2 + cubeSize / 2;
+                const yPos = y * cubeDistance - (gridSize * cubeDistance) / 2 + cubeSize / 2;
+                const zPos = z * cubeDistance - (gridSize * cubeDistance) / 2 + cubeSize / 2;
+
+                // Use the geometry type from the geometryTypes array corresponding to the z index
+                const geometryType = geometryTypes[z];
+
+                createCubeWithSphere(xPos, yPos, zPos, 0.5, geometryType);
+            }
+        }
+    }
+}
+
+
         function createGridOfCubesWithSpheres(size) {
             const grid = [];
             const offset = Math.floor(size / 2) * cubeDistance;
@@ -128,7 +161,7 @@ function createUniqueObject(x, y, z, type) {
             return grid;
         }
 
-        const gridOfCubesWithSpheres = createGridOfCubesWithSpheres(9);
+        const gridOfCubesWithSpheres = createGridOfCubes(9);
 
         camera.position.z = 300;
 

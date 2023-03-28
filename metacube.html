@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transparent Cube Scene</title>
+    <title>5x5x5 Grid of Cubes with Spheres</title>
     <style>
         body { margin: 0; }
         canvas { display: block; }
@@ -44,11 +44,12 @@
             return { cube, sphere };
         }
 
-        function createGridOfCubesWithSpheres() {
+        function createGridOfCubesWithSpheres(size) {
             const grid = [];
-            for (let x = -cubeDistance; x <= cubeDistance; x += cubeDistance) {
-                for (let y = -cubeDistance; y <= cubeDistance; y += cubeDistance) {
-                    for (let z = -cubeDistance; z <= cubeDistance; z += cubeDistance) {
+            const offset = Math.floor(size / 2) * cubeDistance;
+            for (let x = -offset; x <= offset; x += cubeDistance) {
+                for (let y = -offset; y <= offset; y += cubeDistance) {
+                    for (let z = -offset; z <= offset; z += cubeDistance) {
                         const opacity = (x === 0 && y === 0 && z === 0) ? 0.5 : 1;
                         const cubeWithSphere = createCubeWithSphere(x, y, z, opacity);
                         grid.push(cubeWithSphere);
@@ -58,9 +59,9 @@
             return grid;
         }
 
-        const gridOfCubesWithSpheres = createGridOfCubesWithSpheres();
+        const gridOfCubesWithSpheres = createGridOfCubesWithSpheres(5);
 
-        camera.position.z = 200;
+        camera.position.z = 300;
 
         function animate() {
             requestAnimationFrame(animate);

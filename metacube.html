@@ -72,8 +72,20 @@
 function createUniqueObject(x, y, z, type) {
     let geometry;
 
-    // Generate a random shade of purple
-    const purpleColor = new THREE.Color(`hsl(270, 100%, ${Math.floor(Math.random() * 100)}%)`);
+    // Calculate the distance between the geometry and the center of the grid
+    const center = new THREE.Vector3(0, 0, 0);
+    const currentPosition = new THREE.Vector3(x, y, z);
+    const distanceToCenter = currentPosition.distanceTo(center);
+
+    // Calculate the maximum possible distance
+    const gridSize = 9;
+    const cubeDistance = cubeSize + 60;
+    const maxDistance = Math.sqrt(Math.pow((gridSize * cubeDistance) / 2, 2) * 3);
+
+    // Generate a shade of purple based on the distance to the center
+    const lightness = Math.floor((distanceToCenter / maxDistance) * 100);
+    const purpleColor = new THREE.Color(`hsl(270, 100%, ${lightness}%)`);
+
     const material = new THREE.MeshBasicMaterial({ color: purpleColor });
 
     switch (type) {

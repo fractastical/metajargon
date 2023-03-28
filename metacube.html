@@ -8,16 +8,22 @@
         body { margin: 0; }
         canvas { display: block; }
     </style>
+<script src="https://cdn.jsdelivr.net/npm/three@0.110.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.110.0/examples/js/controls/OrbitControls.js"></script>
+
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <script>
+
         const scene = new THREE.Scene();
+
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
         const cubeSize = 10;
         const cubeDistance = 60;
@@ -63,6 +69,10 @@
 
         camera.position.z = 300;
 
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let clickedObject = null;
+
         function animate() {
             requestAnimationFrame(animate);
 
@@ -74,7 +84,33 @@
             renderer.render(scene, camera);
         }
 
+        function onDocumentMouseDown(event) {
+                    event.preventDefault();
+
+                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+                    raycaster.setFromCamera(mouse, camera);
+
+                    const intersects = raycaster.intersectObjects(scene.children, true);
+
+                    if (intersects.length > 0) {
+                        clickedObject = intersects[0].object;
+
+                        if (clickedObject.geometry.type === "BoxGeometry") {
+                            const position = clickedObject.position.clone();
+                            position.add(new THREE.Vector3(0, 0, cubeSize * 2.5));
+                            camera.position.copy(position);
+                            controls.target.copy(clickedObject.position);
+                            controls.update();
+                        }
+                    }
+            }
+
+
         animate();
+        window.addEventListener('mousedown', onDocumentMouseDown, false);
+
     </script>
 </body>
 </html>

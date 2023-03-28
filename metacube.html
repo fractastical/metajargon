@@ -125,6 +125,9 @@ function createUniqueObject(x, y, z, type) {
 }
 
 
+const cubeObjects = [];
+
+
 function createGridOfCubes() {
     const geometryTypes = [
         'sphere',
@@ -230,16 +233,43 @@ async function onDocumentMouseDown(event) {
     }
 }
 
-        function animate() {
-            requestAnimationFrame(animate);
+        let edgeFadeDirection = 1;
+        let edgeOpacity = 0;
 
-            // ...
+
+        function animate() {
+                requestAnimationFrame(animate);
+
+                // Fade the edges in and out
+                edgeOpacity += edgeFadeDirection * 0.01;
+                if (edgeOpacity >= 1) {
+                    edgeFadeDirection = -1;
+                } else if (edgeOpacity <= 0) {
+                    edgeFadeDirection = 1;
+                }
+
+            scene.traverse(child => {
+                if (child.isMesh && child.material instanceof THREE.LineBasicMaterial) {
+                    child.material.opacity = edgeOpacity;
+                    child.material.transparent = true;
+                    child.material.needsUpdate = true;
+                } else if (child.isMesh) {
+                    child.rotation.x += 0.002;
+                    child.rotation.y += 0.002;
+                }
+            });
 
             TWEEN.update();
 
             renderer.render(scene, camera);
+            controls.update();
+
         }
 
+
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.set(0, 0, 100);
+scene.add(pointLight);
 
         animate();
         window.addEventListener('mousedown', onDocumentMouseDown, false);

@@ -10,6 +10,8 @@
     </style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.110.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.110.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.30/Tone.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.min.js"></script>
 
 </head>
 <body>
@@ -44,11 +46,37 @@
             cube.position.set(x, y, z);
             scene.add(cube);
 
-            const sphereRadius = cubeSize / 2;
-            const sphere = createSphere(x, y, z, sphereRadius, 0xff0000);
+            // Store a random frequency for each cube
+            cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
-            return { cube, sphere };
+             const uniqueObject = createUniqueObject(x, y, z, ['sphere', 'torus', 'tetrahedron'][Math.floor(Math.random() * 3)]);
+
+            return { cube, uniqueObject };
         }
+
+
+        function createUniqueObject(x, y, z, type) {
+                    let geometry;
+                    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+                    switch (type) {
+                        case 'sphere':
+                            geometry = new THREE.SphereGeometry(cubeSize / 2, 32, 32);
+                            break;
+                        case 'torus':
+                            geometry = new THREE.TorusGeometry(cubeSize / 4, cubeSize / 8, 16, 100);
+                            break;
+                        case 'tetrahedron':
+                            geometry = new THREE.TetrahedronGeometry(cubeSize / 2);
+                            break;
+                    }
+
+                    const object = new THREE.Mesh(geometry, material);
+                    object.position.set(x, y, z);
+                    scene.add(object);
+                    return object;
+        }
+
 
         function createGridOfCubesWithSpheres(size) {
             const grid = [];
@@ -65,7 +93,7 @@
             return grid;
         }
 
-        const gridOfCubesWithSpheres = createGridOfCubesWithSpheres(5);
+        const gridOfCubesWithSpheres = createGridOfCubesWithSpheres(7);
 
         camera.position.z = 300;
 
@@ -84,28 +112,49 @@
             renderer.render(scene, camera);
         }
 
-        function onDocumentMouseDown(event) {
-                    event.preventDefault();
+            async function onDocumentMouseDown(event) {
+                event.preventDefault();
 
-                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-                    raycaster.setFromCamera(mouse, camera);
+                raycaster.setFromCamera(mouse, camera);
 
-                    const intersects = raycaster.intersectObjects(scene.children, true);
+                const intersects = raycaster.intersectObjects(scene.children, true);
 
-                    if (intersects.length > 0) {
-                        clickedObject = intersects[0].object;
+                if (intersects.length > 0) {
+                    clickedObject = intersects[0].object;
 
-                        if (clickedObject.geometry.type === "BoxGeometry") {
-                            const position = clickedObject.position.clone();
-                            position.add(new THREE.Vector3(0, 0, cubeSize * 2.5));
-                            camera.position.copy(position);
-                            controls.target.copy(clickedObject.position);
-                            controls.update();
-                        }
+                    if (clickedObject.geometry.type === "BoxGeometry") {
+                                const targetPosition = clickedObject.position.clone().add(new THREE.Vector3(0, 0, cubeSize * 2.5));
+
+                                // Animate camera position using Tween.js
+                                const tween = new TWEEN.Tween(camera.position)
+                                    .to(targetPosition, 1000)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .onUpdate(() => {
+                                        controls.update();
+                                    })
+                                    .start();
+
+                                controls.target.copy(clickedObject.position);
+
+                                // Play sound with the frequency stored in the clicked cube
+                                const synth = new Tone.Synth().toDestination();
+                                await Tone.start();
+                                synth.triggerAttackRelease(clickedObject.userData.frequency, "8n");
                     }
+                }
             }
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // ...
+
+            TWEEN.update();
+
+            renderer.render(scene, camera);
+        }
 
 
         animate();

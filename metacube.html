@@ -47,6 +47,13 @@
             const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             const cube = new THREE.LineSegments(edgesGeometry, lineMaterial);
 
+            const smallCubeSize = cubeSize / 100;
+            const smallCubeGeometry = new THREE.BoxGeometry(smallCubeSize, smallCubeSize, smallCubeSize);
+            const smallCubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const smallCube = new THREE.Mesh(smallCubeGeometry, smallCubeMaterial);
+            smallCube.position.set(x, y, z);
+            scene.add(smallCube);
+
             cube.position.set(x, y, z);
             scene.add(cube);
 
@@ -65,7 +72,7 @@
 
             invisibleMesh.userData.parentCube = cube;
 
-            return { cube, uniqueObject, invisibleMesh };
+            return { cube, uniqueObject, invisibleMesh, smallCube };
         }
 
 

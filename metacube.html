@@ -333,10 +333,14 @@ scene.add(pointLight);
 
 <!-- JSONparser section --> 
 
-function JSONparser(jsonString) 
-    // Parse the JSON data
-// Parse the JSON data
-const jsonData = JSON.parse(jsonString);
+// Sample JSON from Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e
+// URL https://jmkre9md1i.execute-api.eu-central-1.amazonaws.com/stage/land/Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e/assets
+
+var jsonString='{"message":"Success","data":{"items":[{"verticesCount":1949,"rotation":"P=0.000000 Y=90.000000 R=-0.000000","objectId":"SM_Eris_01","_id":"Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e","SK":"L-Asset-1a86ac5d-b6d6-4b21-a1c5-06fee764d868-896ac586-85f0-44f4-82b8-5d969ef810fe","thumbnail":{"url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/3041b2cf-9fe3-4df6-8474-8493ea7711cc/SM_Eris_01.jpg","id":"File-3041b2cf-9fe3-4df6-8474-8493ea7711cc"},"description":"","url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/1a86ac5d-b6d6-4b21-a1c5-06fee764d868/SM_Eris_01.glb","position":"X=155339.335 Y=-253611.600 Z=107672.749","scale":"X=100.000 Y=100.000 Z=100.000","title":"SM_Eris_01.glb"},{"verticesCount":1949,"rotation":"P=0.000000 Y=90.000000 R=-0.000000","objectId":"SM_Sun_01","_id":"Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e","SK":"L-Asset-2c30b72d-f741-4cda-83fa-9d29a2fc69be-063d65ae-1a24-4366-91a5-6b37347f5e0a","thumbnail":{"url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/2d53de48-a259-479e-b2c6-a12f2f102862/SM_Sun_01.jpg","id":"File-2d53de48-a259-479e-b2c6-a12f2f102862"},"description":"","url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/2c30b72d-f741-4cda-83fa-9d29a2fc69be/SM_Sun_01.glb","position":"X=215512.640 Y=-202823.598 Z=156554.052","scale":"X=100.000 Y=100.000 Z=100.000","title":"SM_Sun_01.glb"},{"verticesCount":1949,"rotation":"P=0.000000 Y=90.000000 R=-0.000000","objectId":"SM_Moon_01","_id":"Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e","SK":"L-Asset-333c34d5-eb27-4175-be8f-cae87aa0d855-4fda87fd-d256-49b0-9f73-044c4ce38103","thumbnail":{"url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/ccc78f73-3235-40dc-85c1-1aba2dbf8b57/SM_Moon_01.jpg","id":"File-ccc78f73-3235-40dc-85c1-1aba2dbf8b57"},"description":"","url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/333c34d5-eb27-4175-be8f-cae87aa0d855/SM_Moon_01.glb","position":"X=136794.360 Y=-253178.753 Z=128042.662","scale":"X=100.000 Y=100.000 Z=100.000","title":"SM_Moon_01.glb"},{"verticesCount":0,"rotation":"P=0.000000 Y=180.000000 R=0.000000","_id":"Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e","SK":"L-Asset-8c9e0cda-03eb-43c0-85d3-2d10fd88a36d-85522845-c0ac-499d-978c-10b97ae92de8","description":"","url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/8c9e0cda-03eb-43c0-85d3-2d10fd88a36d/VR_blob3g.fbx","position":"X=7949.289 Y=-173781.646 Z=-422593.657","scale":"X=0.000 Y=0.000 Z=0.000","title":"VR_blob3g.fbx"},{"verticesCount":11859,"rotation":"P=0.000000 Y=90.000000 R=-0.000000","objectId":"Snow","_id":"Land-22521d7e-e5e8-4f90-86a2-a772a42f4e0e","SK":"L-Asset-b739c4eb-2f74-442e-93cd-e295e66fbc7a-717a9f44-8726-4884-92eb-1bfd156907c7","thumbnail":{"url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/fce0662c-7c5e-4f71-a863-3450f32dd773/Snow.jpg","id":"File-fce0662c-7c5e-4f71-a863-3450f32dd773"},"description":"","url":"https://metameta-assets-stage.s3.eu-central-1.amazonaws.com/b739c4eb-2f74-442e-93cd-e295e66fbc7a/Snow.glb","position":"X=0.000 Y=0.000 Z=-16940.967","scale":"X=100.000 Y=100.000 Z=100.000","title":"Snow.glb"}]}}';
+
+function JSONparser(jsonString)  {
+        // Parse the JSON data
+        const jsonData = JSON.parse(jsonString);
 
         // Choose an item from the "items" array in the JSON data
         const item = jsonData.data.items[0]; // Select the first item in the array
@@ -369,6 +373,7 @@ const jsonData = JSON.parse(jsonString);
 
 
 <!-- steam section --> 
+<!--  Does not work out of box from GPT-4 seems to require a generic openID oauth libary --> 
 
 // Replace 'YOUR_API_KEY' with your actual Steam Web API key
 const API_KEY = '633FAC6F87C73A7A24676D7C4D4D6AC0';

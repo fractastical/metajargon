@@ -54,7 +54,7 @@
             // Store a random frequency for each cube
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
-             const uniqueObject = createUniqueObject(x, y, z, ['sphere', 'torus', 'tetrahedron'][Math.floor(Math.random() * 3)]);
+    const uniqueObject = createUniqueObject(x, y, z, ['sphere', 'torus', 'tetrahedron', 'cone', 'cylinder', 'icosahedron', 'octahedron', 'torusKnot', 'dodecahedron'][Math.floor(Math.random() * 9)]);
 
                 // Create an invisible mesh for click detection
             const invisibleMeshGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
@@ -69,30 +69,48 @@
         }
 
 
-        function createUniqueObject(x, y, z, type) {
-            let geometry;
+function createUniqueObject(x, y, z, type) {
+    let geometry;
 
-            // Generate a random shade of purple
-            const purpleColor = new THREE.Color(`hsl(270, 100%, ${Math.floor(Math.random() * 100)}%)`);
-            const material = new THREE.MeshBasicMaterial({ color: purpleColor });
+    // Generate a random shade of purple
+    const purpleColor = new THREE.Color(`hsl(270, 100%, ${Math.floor(Math.random() * 100)}%)`);
+    const material = new THREE.MeshBasicMaterial({ color: purpleColor });
 
-            switch (type) {
-                case 'sphere':
-                    geometry = new THREE.SphereGeometry(cubeSize / 2, 32, 32);
-                    break;
-                case 'torus':
-                    geometry = new THREE.TorusGeometry(cubeSize / 4, cubeSize / 8, 16, 100);
-                    break;
-                case 'tetrahedron':
-                    geometry = new THREE.TetrahedronGeometry(cubeSize / 2);
-                    break;
-            }
+    switch (type) {
+        case 'sphere':
+            geometry = new THREE.SphereGeometry(cubeSize / 2, 32, 32);
+            break;
+        case 'torus':
+            geometry = new THREE.TorusGeometry(cubeSize / 4, cubeSize / 8, 16, 100);
+            break;
+        case 'tetrahedron':
+            geometry = new THREE.TetrahedronGeometry(cubeSize / 2);
+            break;
+        case 'cone':
+            geometry = new THREE.ConeGeometry(cubeSize / 2, cubeSize, 32);
+            break;
+        case 'cylinder':
+            geometry = new THREE.CylinderGeometry(cubeSize / 2, cubeSize / 2, cubeSize, 32);
+            break;
+        case 'icosahedron':
+            geometry = new THREE.IcosahedronGeometry(cubeSize / 2);
+            break;
+        case 'octahedron':
+            geometry = new THREE.OctahedronGeometry(cubeSize / 2);
+            break;
+        case 'torusKnot':
+            geometry = new THREE.TorusKnotGeometry(cubeSize / 4, cubeSize / 8, 100, 16);
+            break;
+        case 'dodecahedron':
+            geometry = new THREE.DodecahedronGeometry(cubeSize / 2);
+            break;
+    }
 
-            const object = new THREE.Mesh(geometry, material);
-            object.position.set(x, y, z);
-            scene.add(object);
-            return object;
-        }
+    const object = new THREE.Mesh(geometry, material);
+    object.position.set(x, y, z);
+    scene.add(object);
+    return object;
+}
 
 
         function createGridOfCubesWithSpheres(size) {

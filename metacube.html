@@ -44,26 +44,28 @@
             return { cube, sphere };
         }
 
-        const transparentCubeWithSphere = createCubeWithSphere(0, 0, 0, 0.5);
+        function createGridOfCubesWithSpheres() {
+            const grid = [];
+            for (let x = -cubeDistance; x <= cubeDistance; x += cubeDistance) {
+                for (let y = -cubeDistance; y <= cubeDistance; y += cubeDistance) {
+                    for (let z = -cubeDistance; z <= cubeDistance; z += cubeDistance) {
+                        const opacity = (x === 0 && y === 0 && z === 0) ? 0.5 : 1;
+                        const cubeWithSphere = createCubeWithSphere(x, y, z, opacity);
+                        grid.push(cubeWithSphere);
+                    }
+                }
+            }
+            return grid;
+        }
 
-        const surroundingCubesWithSpheres = [
-            createCubeWithSphere(cubeDistance, 0, 0, 1),
-            createCubeWithSphere(-cubeDistance, 0, 0, 1),
-            createCubeWithSphere(0, cubeDistance, 0, 1),
-            createCubeWithSphere(0, -cubeDistance, 0, 1),
-            createCubeWithSphere(0, 0, cubeDistance, 1),
-            createCubeWithSphere(0, 0, -cubeDistance, 1)
-        ];
+        const gridOfCubesWithSpheres = createGridOfCubesWithSpheres();
 
-        camera.position.z = 150;
+        camera.position.z = 200;
 
         function animate() {
             requestAnimationFrame(animate);
 
-            transparentCubeWithSphere.cube.rotation.x += 0.01;
-            transparentCubeWithSphere.cube.rotation.y += 0.01;
-
-            surroundingCubesWithSpheres.forEach(obj => {
+            gridOfCubesWithSpheres.forEach(obj => {
                 obj.cube.rotation.x += 0.01;
                 obj.cube.rotation.y += 0.01;
             });

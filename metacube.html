@@ -50,35 +50,48 @@
             cube.position.set(x, y, z);
             scene.add(cube);
 
+
             // Store a random frequency for each cube
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
              const uniqueObject = createUniqueObject(x, y, z, ['sphere', 'torus', 'tetrahedron'][Math.floor(Math.random() * 3)]);
 
-            return { cube, uniqueObject };
+                // Create an invisible mesh for click detection
+            const invisibleMeshGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+            const invisibleMeshMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+            const invisibleMesh = new THREE.Mesh(invisibleMeshGeometry, invisibleMeshMaterial);
+            invisibleMesh.position.set(x, y, z);
+            scene.add(invisibleMesh);
+
+            invisibleMesh.userData.parentCube = cube;
+
+            return { cube, uniqueObject, invisibleMesh };
         }
 
 
         function createUniqueObject(x, y, z, type) {
-                    let geometry;
-                    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            let geometry;
 
-                    switch (type) {
-                        case 'sphere':
-                            geometry = new THREE.SphereGeometry(cubeSize / 2, 32, 32);
-                            break;
-                        case 'torus':
-                            geometry = new THREE.TorusGeometry(cubeSize / 4, cubeSize / 8, 16, 100);
-                            break;
-                        case 'tetrahedron':
-                            geometry = new THREE.TetrahedronGeometry(cubeSize / 2);
-                            break;
-                    }
+            // Generate a random shade of purple
+            const purpleColor = new THREE.Color(`hsl(270, 100%, ${Math.floor(Math.random() * 100)}%)`);
+            const material = new THREE.MeshBasicMaterial({ color: purpleColor });
 
-                    const object = new THREE.Mesh(geometry, material);
-                    object.position.set(x, y, z);
-                    scene.add(object);
-                    return object;
+            switch (type) {
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(cubeSize / 2, 32, 32);
+                    break;
+                case 'torus':
+                    geometry = new THREE.TorusGeometry(cubeSize / 4, cubeSize / 8, 16, 100);
+                    break;
+                case 'tetrahedron':
+                    geometry = new THREE.TetrahedronGeometry(cubeSize / 2);
+                    break;
+            }
+
+            const object = new THREE.Mesh(geometry, material);
+            object.position.set(x, y, z);
+            scene.add(object);
+            return object;
         }
 
 
@@ -116,40 +129,44 @@
             renderer.render(scene, camera);
         }
 
-            async function onDocumentMouseDown(event) {
-                event.preventDefault();
+async function onDocumentMouseDown(event) {
+    event.preventDefault();
+    const mouse = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
 
-                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-                raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouse, camera);
 
-                const intersects = raycaster.intersectObjects(scene.children, true);
+    const intersects = raycaster.intersectObjects(scene.children, true);
 
-                if (intersects.length > 0) {
-                    clickedObject = intersects[0].object;
+    if (intersects.length > 0) {
+        clickedObject = intersects[0].object;
 
-                    if (clickedObject.geometry.type === "BoxGeometry") {
-                                const targetPosition = clickedObject.position.clone().add(new THREE.Vector3(0, 0, cubeSize * 2.5));
+        if (clickedObject.geometry.type === "BoxGeometry") {
+            const parentCube = clickedObject.userData.parentCube;
+            const targetPosition = parentCube.position.clone().add(new THREE.Vector3(0, 0, cubeSize * 2.5));
 
-                                // Animate camera position using Tween.js
-                                const tween = new TWEEN.Tween(camera.position)
-                                    .to(targetPosition, 1000)
-                                    .easing(TWEEN.Easing.Quadratic.InOut)
-                                    .onUpdate(() => {
-                                        controls.update();
-                                    })
-                                    .start();
+            // Animate camera position using Tween.js with a slower zoom (3 seconds)
+            const tween = new TWEEN.Tween(camera.position)
+                .to(targetPosition, 3000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(() => {
+                    controls.update();
+                })
+                .start();
 
-                                controls.target.copy(clickedObject.position);
+            controls.target.copy(parentCube.position);
 
-                                // Play sound with the frequency stored in the clicked cube
-                                const synth = new Tone.Synth().toDestination();
-                                await Tone.start();
-                                synth.triggerAttackRelease(clickedObject.userData.frequency, "8n");
-                    }
-                }
-            }
+            // Play sound with the frequency stored in the clicked cube
+            const synth = new Tone.Synth().toDestination();
+            await Tone.start();
+            synth.triggerAttackRelease(parentCube.userData.frequency, "8n");
+        }
+    }
+}
+
         function animate() {
             requestAnimationFrame(animate);
 

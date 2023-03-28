@@ -39,7 +39,8 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.110.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.30/Tone.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.min.js"></script>
-<!-- <script src="https://steamcommunity.com/public/javascript/webui/webui.js"></script> -->
+<!-- DUD from GPT-4 <script src="https://steamcommunity.com/public/javascript/webui/webui.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
 
 </head>
@@ -69,7 +70,12 @@
             return sphere;
         }
 
-        function createCubeWithSphere(x, y, z, opacity, geometryType) {
+        function createCubeWithSphere(x, y, z, opacity, geometryType, modelUrl) {
+
+                if (modelUrl) {
+                        loadModel(modelUrl, smallCube);
+                }
+
             // const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             // const cube = new THREE.Mesh(geometry, material);
@@ -165,6 +171,18 @@ function createUniqueObject(x, y, z, type) {
 
 
 const cubeObjects = [];
+
+
+function loadModel(url, parentObject) {
+    const loader = new THREE.GLTFLoader();
+
+    loader.load(url, (gltf) => {
+        const model = gltf.scene;
+        model.scale.set(0.01, 0.01, 0.01); // Scale down the model
+        model.position.set(0, 0, 0); // Center the model inside the cube
+        parentObject.add(model);
+    });
+}
 
 
 function createGridOfCubes() {
@@ -313,10 +331,44 @@ scene.add(pointLight);
         animate();
         window.addEventListener('mousedown', onDocumentMouseDown, false);
 
-    </script>
+<!-- JSONparser section --> 
 
-    <script>
+function JSONparser(jsonString) 
+    // Parse the JSON data
+// Parse the JSON data
+const jsonData = JSON.parse(jsonString);
 
+        // Choose an item from the "items" array in the JSON data
+        const item = jsonData.data.items[0]; // Select the first item in the array
+
+        // Extract the model URL, position, and scale from the item
+        const modelUrl = item.url;
+
+        // Parse the position string and extract the X, Y, and Z values
+        const positionMatch = item.position.match(/X=(-?\d+(\.\d+)?) Y=(-?\d+(\.\d+)?) Z=(-?\d+(\.\d+)?)/);
+        const posX = parseFloat(positionMatch[1]);
+        const posY = parseFloat(positionMatch[3]);
+        const posZ = parseFloat(positionMatch[5]);
+
+        // Parse the scale string and extract the X, Y, and Z values
+        const scaleMatch = item.scale.match(/X=(-?\d+(\.\d+)?) Y=(-?\d+(\.\d+)?) Z=(-?\d+(\.\d+)?)/);
+        const scaleX = parseFloat(scaleMatch[1]);
+        const scaleY = parseFloat(scaleMatch[3]);
+        const scaleZ = parseFloat(scaleMatch[5]);
+
+        // Replace these variables with the actual values you want to use
+        const targetOpacity = 0.5;
+        const targetGeometryType = 'BoxGeometry';
+
+
+
+    // Call the createCubeWithSphere function with the model URL as an argument
+    const cube = createCubeWithSphere(scene, targetX, targetY, targetZ, targetOpacity, targetGeometryType, modelUrl);
+
+}
+
+
+<!-- steam section --> 
 
 // Replace 'YOUR_API_KEY' with your actual Steam Web API key
 const API_KEY = '633FAC6F87C73A7A24676D7C4D4D6AC0';

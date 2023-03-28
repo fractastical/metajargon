@@ -156,6 +156,8 @@ function createUniqueObject(x, y, z, type) {
     }
 
     const object = new THREE.Mesh(geometry, material);
+    object.scale.set(.5, .5, .5);
+
     object.position.set(x, y, z);
     scene.add(object);
     return object;

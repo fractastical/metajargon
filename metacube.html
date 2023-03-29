@@ -89,7 +89,7 @@
             return sphere;
         }
 
-        function createCubeWithSphere(x, y, z, opacity, geometryType, modelUrl) {
+        function createCubeWithUniqueObject(x, y, z, opacity, geometryType, modelUrl) {
 
                 if (modelUrl) {
                         loadModel(modelUrl, smallCube);
@@ -262,7 +262,7 @@ function createGridOfCubes() {
                 // Use the geometry type from the geometryTypes array corresponding to the z index
                 const geometryType = geometryTypes[z];
 
-                createCubeWithSphere(xPos, yPos, zPos, 0.5, geometryType);
+                createCubeWithUniqueObject(xPos, yPos, zPos, 0.5, geometryType);
             }
         }
     }
@@ -276,7 +276,7 @@ function createGridOfCubes() {
                 for (let y = -offset; y <= offset; y += cubeDistance) {
                     for (let z = -offset; z <= offset; z += cubeDistance) {
                         const opacity = (x === 0 && y === 0 && z === 0) ? 0.5 : 1;
-                        const cubeWithSphere = createCubeWithSphere(x, y, z, opacity);
+                        const cubeWithSphere = createCubeWithUniqueObject(x, y, z, opacity);
                         grid.push(cubeWithSphere);
                     }
                 }
@@ -417,8 +417,8 @@ function JSONparser(jsonString)  {
 
 
 
-    // Call the createCubeWithSphere function with the model URL as an argument
-    const cube = createCubeWithSphere(scene, targetX, targetY, targetZ, targetOpacity, targetGeometryType, modelUrl);
+    // Call the createCubeWithUniqueObject function with the model URL as an argument
+    const cube = createCubeWithUniqueObject(scene, targetX, targetY, targetZ, targetOpacity, targetGeometryType, modelUrl);
 
 }
 

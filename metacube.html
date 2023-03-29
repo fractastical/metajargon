@@ -43,6 +43,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <!--<script src="https://cdn.skypack.dev/pin/three@v0.136.0-4Px7Kx1INqCFBN0tXUQc/mode=imports,min/unoptimized/examples/jsm/renderers/CSS3DRenderer.js"></script>-->
 <!-- <script src="https://threejs.org/examples/jsm/renderers/CSS3DRenderer.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 
 </head>
@@ -330,10 +331,13 @@ async function onDocumentMouseDown(event) {
                 .easing(TWEEN.Easing.Quadratic.InOut)
                 .onUpdate(() => {
                     controls.update();
+
                 })
                 .start();
 
             controls.target.copy(parentCube.position);
+            takeSnapshot(parentCube);
+
 
             // Play sound with the frequency stored in the clicked cube
             const synth = new Tone.Synth().toDestination();
@@ -651,12 +655,61 @@ function render() {
 }
 
 
+<!-- image processing -->
+
+function deepClone(object) {
+  const clonedObject = object.clone();
+
+  // Copy the material to avoid sharing it between the original and the cloned object
+  if (object.material) {
+    clonedObject.material = object.material.clone();
+  }
+
+  // Recursively deep clone the children
+  if (object.children) {
+    object.children.forEach(child => {
+      clonedObject.add(deepClone(child));
+    });
+  }
+
+  return clonedObject;
+}
+
+//NOTE/TODO: This works but also doesn't work in that it doesn't reconstruct the child objects.
+async function takeSnapshot(cube) {
+  // Create a new scene for the snapshot
+  const snapshotScene = new THREE.Scene();
+
+  // Clone the cube to avoid affecting the original cube
+  const clonedCube = deepClone(cube);
+  snapshotScene.add(clonedCube);
+
+  // Set up a new camera for the snapshot
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  const snapshotCamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+  snapshotCamera.position.set(3, 3, 3);
+  snapshotCamera.lookAt(clonedCube.position);
+
+  // Render the snapshot scene
+  renderer.render(snapshotScene, snapshotCamera);
+
+  // Get the snapshot as a data URL
+  const imageDataUrl = renderer.domElement.toDataURL('image/png');
+
+  // Fetch the image data as a Blob
+  const response = await fetch(imageDataUrl);
+  const blob = await response.blob();
+
+  // Save the snapshot as an image file using FileSaver
+  saveAs(blob, 'snapshot.png');
+}
+
 
 
     </script>
 
 <div class="login-section">
-  <img  onclick="steamLogin()" src="img/steam-login.png"/>
+  <img  onclick="takeSnapshot()" src="img/steam-login.png"/>
 </div>
 
 </body>

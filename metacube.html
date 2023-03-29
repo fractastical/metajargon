@@ -336,7 +336,7 @@ async function onDocumentMouseDown(event) {
                 .start();
 
             controls.target.copy(parentCube.position);
-            takeSnapshot(parentCube);
+            // takeSnapshot(parentCube);
 
 
             // Play sound with the frequency stored in the clicked cube
@@ -659,19 +659,17 @@ function render() {
 
 function deepClone(object) {
   const clonedObject = object.clone();
-
-  // Copy the material to avoid sharing it between the original and the cloned object
+  if (object.children) {
+    for (const child of object.children) {
+      clonedObject.add(deepClone(child));
+    }
+  }
   if (object.material) {
     clonedObject.material = object.material.clone();
   }
-
-  // Recursively deep clone the children
-  if (object.children) {
-    object.children.forEach(child => {
-      clonedObject.add(deepClone(child));
-    });
+  if (object.geometry) {
+    clonedObject.geometry = object.geometry.clone();
   }
-
   return clonedObject;
 }
 

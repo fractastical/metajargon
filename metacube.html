@@ -66,8 +66,10 @@
 
         const textureLoader = new THREE.TextureLoader();
         // const imageTexture = textureLoader.load('img/jd.jpeg');
+        const imageTexture = textureLoader.load('https://f8n-production.imgix.net/creators/profile/47zx5exuz-cryptoapollo-jpg-hgsplk.jpg?auto=format%2Ccompress&q=50&w=128&h=128&fit=crop&dpr=2');
 
-        const imageTexture = textureLoader.load('https://i.seadn.io/gae/9PTBw2m23Lrcol5YURG7iIIgKgYTPUO77FekvX1JyMIEzBK5mayjLWH00WFPHOP0OqJF7f3Xr9E2kxuXIiHJXViw7qHB6_mqBZYnx5c?auto=format&w=2048');
+
+        // const imageTexture = textureLoader.load('https://i.seadn.io/gae/9PTBw2m23Lrcol5YURG7iIIgKgYTPUO77FekvX1JyMIEzBK5mayjLWH00WFPHOP0OqJF7f3Xr9E2kxuXIiHJXViw7qHB6_mqBZYnx5c?auto=format&w=2048');
 
 
         // var labelRenderer = new CSS3DRenderer();
@@ -467,7 +469,7 @@ function getUserInfo(oauthToken) {
 
 
 function createImageDisplay(imageTexture) {
-  const geometry = new THREE.PlaneGeometry(5, 5);
+  const geometry = new THREE.PlaneGeometry(3, 3);
   const material = new THREE.MeshBasicMaterial({ map: imageTexture, transparent: true });
   const imageDisplay = new THREE.Mesh(geometry, material);
   

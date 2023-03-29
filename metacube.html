@@ -111,7 +111,7 @@
             const imageDisplay = createImageDisplay(imageTexture);
 
             // Position the image display inside the cube
-            imageDisplay.position.set(x+9, y+9, z+9);
+            imageDisplay.position.set(x-4, y-4, z-4);
             imageDisplay.rotation.y = Math.PI / 4;
 
             // Add the image display to the cube
@@ -132,10 +132,18 @@
             // cube.add( label );
 
 
+
             // Store a random    for each cube
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
             const uniqueObject = createUniqueObject(x, y, z, geometryType);
+
+
+          // const textLabel = createTextLabel(`Cube ${cubeNumber}: ${uniqueObject.name}`);
+          const textLabel = createTextLabel(`Cube 22: ${uniqueObject.name}`);
+
+          textLabel.position.set(5.5, 0, 0); // Position the text label on the side of the cube
+          cube.add(textLabel);
 
                 // Create an invisible mesh for click detection
             const invisibleMeshGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
@@ -458,12 +466,48 @@ function getUserInfo(oauthToken) {
 
 
 function createImageDisplay(imageTexture) {
-  const geometry = new THREE.PlaneGeometry(1, 1);
+  const geometry = new THREE.PlaneGeometry(5, 5);
   const material = new THREE.MeshBasicMaterial({ map: imageTexture, transparent: true });
   const imageDisplay = new THREE.Mesh(geometry, material);
   
   return imageDisplay;
 }
+
+
+function createTextTexture(text) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  canvas.width = 256;
+  canvas.height = 256;
+
+  // Draw a background (optional)
+  context.fillStyle = 'black';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the text
+  context.font = '48px sans-serif';
+  context.fillStyle = 'white';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
+
+function createTextLabel(text) {
+  const textTexture = createTextTexture(text);
+  const geometry = new THREE.PlaneGeometry(1, 1);
+  const material = new THREE.MeshBasicMaterial({ map: textTexture, transparent: true });
+  const textLabel = new THREE.Mesh(geometry, material);
+
+  return textLabel;
+
+}
+
+
 
 
 

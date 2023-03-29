@@ -60,9 +60,14 @@
         socket.on("sceneUpdate", (data) => {
           // Apply the received updates to your scene
           // e.g., update objects' positions, rotations, etc.
+                        console.log("sceneupdate:");
+
         });
 
         socket.on("cubeVisited", (cubeId) => {
+
+            console.log("visit:" + cubeId);
+
           const cube = scene.getObjectByProperty("uuid", cubeId);
           if (cube) {
             const outline = cube.getObjectByProperty("type", "LineSegments");

@@ -677,6 +677,10 @@ function deepClone(object) {
 
 //NOTE/TODO: This works but also doesn't work in that it doesn't reconstruct the child objects.
 async function takeSnapshot(cube) {
+
+
+
+
   // Create a new scene for the snapshot
   const snapshotScene = new THREE.Scene();
 
@@ -684,14 +688,26 @@ async function takeSnapshot(cube) {
   const clonedCube = deepClone(cube);
   snapshotScene.add(clonedCube);
 
-  // Set up a new camera for the snapshot
-  const aspectRatio = window.innerWidth / window.innerHeight;
-  const snapshotCamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-  snapshotCamera.position.set(3, 3, 3);
-  snapshotCamera.lookAt(clonedCube.position);
 
-  // Render the snapshot scene
+  // Set the position of the cloned cube
+  clonedCube.position.set(0, 0, 0);
+
+  // Create a new camera for the snapshot
+  const snapshotCamera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  snapshotCamera.position.z = 5;
+
+  // Set the renderer size to the desired image size
+  renderer.setSize(256, 256);
+
+  // Render the snapshot scene with the snapshot camera
   renderer.render(snapshotScene, snapshotCamera);
+
+
 
   // Get the snapshot as a data URL
   const imageDataUrl = renderer.domElement.toDataURL('image/png');
@@ -702,6 +718,9 @@ async function takeSnapshot(cube) {
 
   // Save the snapshot as an image file using FileSaver
   saveAs(blob, 'snapshot.png');
+
+   renderer.setSize(window.innerWidth, window.innerHeight);
+
 }
 
 

@@ -62,6 +62,16 @@
           // e.g., update objects' positions, rotations, etc.
         });
 
+        socket.on("cubeVisited", (cubeId) => {
+          const cube = scene.getObjectByProperty("uuid", cubeId);
+          if (cube) {
+            const outline = cube.getObjectByProperty("type", "LineSegments");
+            if (outline) {
+              outline.material.color.set("blue");
+            }
+          }
+        });
+
 
         const scene = new THREE.Scene();
 
@@ -113,6 +123,7 @@
             const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             const cube = new THREE.LineSegments(edgesGeometry, lineMaterial);
 
+            cube.uuid = cubeNumber;
 
             const smallEdgesGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(.2, .2, .2));
 
@@ -306,6 +317,13 @@ function createGridOfCubes() {
         let clickedObject = null;
 
         function animate() {
+            if(!hyperCubeRendered)
+            {
+                init();
+                render();
+                hyperCubeRendered = true;
+            }
+
             requestAnimationFrame(animate);
 
             gridOfCubesWithSpheres.forEach(obj => {
@@ -346,7 +364,9 @@ async function onDocumentMouseDown(event) {
                 .start();
 
             // When an object in the scene is manipulated, send an update to the server
-            socket.emit("sceneUpdate", "visiting cube");
+            // socket.emit("sceneUpdate", "visiting ");
+                console.log(parentCube.uuid);
+            socket.emit("cubeVisited", parentCube.uuid);
 
             controls.target.copy(parentCube.position);
             // takeSnapshot(parentCube);
@@ -362,6 +382,20 @@ async function onDocumentMouseDown(event) {
 
         let edgeFadeDirection = 1;
         let edgeOpacity = 0;
+
+        // In your Three.js script
+        function checkForVisitedCubes() {
+          const thresholdDistance = 50; // Adjust this value as needed
+
+          for (const cube of cubeObjects) {
+            const distance = cursor.position.distanceTo(cube.position);
+            if (distance < thresholdDistance) {
+              socket.emit("cubeVisited", cube.uuid);
+              break;
+            }
+          }
+        }
+
 
 
         function animate() {
@@ -385,6 +419,8 @@ async function onDocumentMouseDown(event) {
                     child.rotation.y += 0.002;
                 }
             });
+
+            checkForVisitedCubes();
 
             TWEEN.update();
 
@@ -544,8 +580,7 @@ let vertexCoords = [];
 let vertexCoords2 = [];
 let vertexJoins = [];
 
-init();
-render();
+var hyperCubeRendered=false; 
 
 function path(p1, p2, p3, p4, i) {
 

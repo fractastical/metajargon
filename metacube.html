@@ -89,7 +89,7 @@
             return sphere;
         }
 
-        function createCubeWithUniqueObject(x, y, z, opacity, geometryType, modelUrl) {
+        function createCubeWithUniqueObject(x, y, z, opacity, geometryType, cubeNumber, modelUrl) {
 
                 if (modelUrl) {
                         loadModel(modelUrl, smallCube);
@@ -142,8 +142,8 @@
             const uniqueObject = createUniqueObject(x, y, z, geometryType);
 
 
-          // const textLabel = createTextLabel(`Cube ${cubeNumber}: ${uniqueObject.name}`);
-          const textLabel = createTextLabel(`Cube 22: ${uniqueObject.name}`);
+          const textLabel = createTextLabel(`Cube ${cubeNumber} ${uniqueObject.name}`);
+          // const textLabel = createTextLabel(`Cube 22: ${uniqueObject.name}`);
 
           textLabel.position.set(5.5, 0, 0); // Position the text label on the side of the cube
           cube.add(textLabel);
@@ -251,6 +251,7 @@ function createGridOfCubes() {
 
     const gridSize = 9;
     const cubeDistance = cubeSize + 60;
+    var cubeNumber = 1;
 
     for (let x = 0; x < gridSize; x++) {
         for (let y = 0; y < gridSize; y++) {
@@ -262,7 +263,8 @@ function createGridOfCubes() {
                 // Use the geometry type from the geometryTypes array corresponding to the z index
                 const geometryType = geometryTypes[z];
 
-                createCubeWithUniqueObject(xPos, yPos, zPos, 0.5, geometryType);
+                createCubeWithUniqueObject(xPos, yPos, zPos, 0.5, geometryType, cubeNumber);
+                cubeNumber++; 
             }
         }
     }
@@ -418,7 +420,7 @@ function JSONparser(jsonString)  {
 
 
     // Call the createCubeWithUniqueObject function with the model URL as an argument
-    const cube = createCubeWithUniqueObject(scene, targetX, targetY, targetZ, targetOpacity, targetGeometryType, modelUrl);
+    const cube = createCubeWithUniqueObject(scene, targetX, targetY, targetZ, targetOpacity, targetGeometryType, 1, modelUrl);
 
 }
 

@@ -316,23 +316,16 @@ function createGridOfCubes() {
         const mouse = new THREE.Vector2();
         let clickedObject = null;
 
-        function animate() {
-            if(!hyperCubeRendered)
-            {
-                init();
-                render();
-                hyperCubeRendered = true;
-            }
+        // function animate() {
+        //     requestAnimationFrame(animate);
 
-            requestAnimationFrame(animate);
+        //     gridOfCubesWithSpheres.forEach(obj => {
+        //         obj.cube.rotation.x += 0.01;
+        //         obj.cube.rotation.y += 0.01;
+        //     });
 
-            gridOfCubesWithSpheres.forEach(obj => {
-                obj.cube.rotation.x += 0.01;
-                obj.cube.rotation.y += 0.01;
-            });
-
-            renderer.render(scene, camera);
-        }
+        //     renderer.render(scene, camera);
+        // }
 
 async function onDocumentMouseDown(event) {
     event.preventDefault();
@@ -399,6 +392,8 @@ async function onDocumentMouseDown(event) {
 
 
         function animate() {
+
+
                 requestAnimationFrame(animate);
 
                 // Fade the edges in and out
@@ -568,6 +563,12 @@ function createTextLabel(text) {
 
 <!-- hyper cube -->
 
+            // if(!hyperCubeRendered)
+            // {
+            //     hyperCubeRendered = true;
+
+            // }
+
 
 
  let t = 0.0;
@@ -581,6 +582,10 @@ let vertexCoords2 = [];
 let vertexJoins = [];
 
 var hyperCubeRendered=false; 
+
+                init();
+                render();
+
 
 function path(p1, p2, p3, p4, i) {
 

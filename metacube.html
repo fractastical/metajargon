@@ -61,6 +61,12 @@
         const cubeSize = 10;
         const cubeDistance = 60;
 
+        const textureLoader = new THREE.TextureLoader();
+        // const imageTexture = textureLoader.load('img/jd.jpeg');
+
+        const imageTexture = textureLoader.load('https://i.seadn.io/gae/9PTBw2m23Lrcol5YURG7iIIgKgYTPUO77FekvX1JyMIEzBK5mayjLWH00WFPHOP0OqJF7f3Xr9E2kxuXIiHJXViw7qHB6_mqBZYnx5c?auto=format&w=2048');
+
+
         function createSphere(x, y, z, radius, color) {
             const geometry = new THREE.SphereGeometry(radius, 32, 32);
             const material = new THREE.MeshBasicMaterial({ color: color });
@@ -83,18 +89,31 @@
             const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             const cube = new THREE.LineSegments(edgesGeometry, lineMaterial);
 
-            const smallCubeSize = cubeSize / 100;
-            const smallCubeGeometry = new THREE.BoxGeometry(smallCubeSize, smallCubeSize, smallCubeSize);
-            const smallCubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-            const smallCube = new THREE.Mesh(smallCubeGeometry, smallCubeMaterial);
-            smallCube.position.set(x, y, z);
+
+            const smallEdgesGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(.2, .2, .2));
+
+            const smallCube = new THREE.LineSegments(smallEdgesGeometry, lineMaterial);
+
+            smallCube.position.set(x+3, y+3, z+3);
             scene.add(smallCube);
+
+
+            const imageDisplay = createImageDisplay(imageTexture);
+
+            // Position the image display inside the cube
+            imageDisplay.position.set(x+9, y+9, z+9);
+            imageDisplay.rotation.y = Math.PI / 4;
+
+            // Add the image display to the cube
+            cube.add(imageDisplay);
+
 
             cube.position.set(x, y, z);
             scene.add(cube);
 
 
-            // Store a random frequency for each cube
+
+            // Store a random    for each cube
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
             const uniqueObject = createUniqueObject(x, y, z, geometryType);
@@ -126,7 +145,7 @@ function createUniqueObject(x, y, z, type) {
     const maxDistance = Math.sqrt(Math.pow((gridSize * cubeDistance) / 2, 2) * 3);
 
     // Generate a shade of purple based on the distance to the center
-    const lightness = Math.floor((distanceToCenter / maxDistance) * 100);
+    const lightness = Math.floor((distanceToCenter / maxDistance) * 110);
     const purpleColor = new THREE.Color(`hsl(270, 100%, ${lightness}%)`);
 
     const material = new THREE.MeshBasicMaterial({ color: purpleColor });
@@ -187,15 +206,17 @@ function loadModel(url, parentObject) {
 
 function createGridOfCubes() {
     const geometryTypes = [
-        'sphere',
+        'icosahedron',
+        'dodecahedron ',
+        'octahedron',
+        'tetrahedron',
         'torus',
         'cone',
-        'tetrahedron',
-        'cylinder',
-        'icosahedron',
-        'octahedron',
         'torusKnot',
-        'dodecahedron'
+        'sphere',
+        'sphere'
+
+
     ];
 
     const gridSize = 9;
@@ -298,12 +319,12 @@ async function onDocumentMouseDown(event) {
                 requestAnimationFrame(animate);
 
                 // Fade the edges in and out
-                edgeOpacity += edgeFadeDirection * 0.01;
-                if (edgeOpacity >= 1) {
-                    edgeFadeDirection = -1;
-                } else if (edgeOpacity <= 0) {
-                    edgeFadeDirection = 1;
-                }
+                // edgeOpacity += edgeFadeDirection * 0.01;
+                // if (edgeOpacity >= 1) {
+                //     edgeFadeDirection = -1;
+                // } else if (edgeOpacity <= 0) {
+                //     edgeFadeDirection = 1;
+                // }
 
             scene.traverse(child => {
                 if (child.isMesh && child.material instanceof THREE.LineBasicMaterial) {
@@ -410,6 +431,22 @@ function getUserInfo(oauthToken) {
       console.error(error);
     });
 }
+
+
+<!-- image manipulation libaray  --> 
+
+
+
+
+function createImageDisplay(imageTexture) {
+  const geometry = new THREE.PlaneGeometry(1, 1);
+  const material = new THREE.MeshBasicMaterial({ map: imageTexture, transparent: true });
+  const imageDisplay = new THREE.Mesh(geometry, material);
+  
+  return imageDisplay;
+}
+
+
 
     </script>
 

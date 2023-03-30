@@ -59,23 +59,17 @@
 
         const socket = io();
 
-        socket.on("sceneUpdate", (data) => {
-          // Apply the received updates to your scene
-          // e.g., update objects' positions, rotations, etc.
-                        console.log("sceneupdate:");
-
-        });
 
 
         // I think this doesn't work becauese scene hasn't rendered :(
 
         socket.on('visitedCubes', visitedCubes => {
 
-              console.log("cubesinbound:" + visitedCubes.length);
-              console.log(visitedCubes);
+              // console.log("cubesinbound:" + visitedCubes.length);
+              // console.log(visitedCubes);
               allVisitedCubes = visitedCubes;
 
-              Object.keys(visitedCubes).forEach(cubeId => {
+              Object.keys(allVisitedCubes).forEach(cubeId => {
                 console.log("updating " + cubeId);
 
 
@@ -184,7 +178,7 @@
             // const cube = new THREE.Mesh(geometry, material);
             const edgesGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize));
             var lineMaterial;
-            console.log(allVisitedCubes);
+            // console.log(allVisitedCubes);
             if(allVisitedCubes[cubeNumber])
                 lineMaterial = new THREE.LineBasicMaterial({ color: blue, transparent: true, opacity: opacity });
             else
@@ -429,7 +423,7 @@ async function onDocumentMouseDown(event) {
 
             // When an object in the scene is manipulated, send an update to the server
             // socket.emit("sceneUpdate", "visiting ");
-                console.log(parentCube.uuid);
+                // console.log(parentCube.uuid);
             socket.emit("cubeVisited", parentCube.uuid);
 
             controls.target.copy(parentCube.position);

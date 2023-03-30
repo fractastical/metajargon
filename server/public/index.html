@@ -64,15 +64,44 @@
 
         });
 
+
+        // I think this doesn't work becauese scene hasn't rendered :(
+        
+        socket.on('visitedCubes', visitedCubes => {
+
+              console.log("cubesinbound:" + visitedCubes.length);
+              console.log(visitedCubes);
+
+              Object.keys(visitedCubes).forEach(cubeId => {
+                console.log("updating " + cubeId);
+
+              const thiscube = scene.getObjectByProperty("uuid", cubeId);
+              if (thiscube) {
+                  console.log("segmenting " + cubeId);
+
+                const outline = thiscube.getObjectByProperty("type", "LineSegments");
+                if (outline) {
+                    console.log("bluying " + cubeId);
+
+                  outline.material.color.set("blue");
+                }
+          }
+        });
+     });
+
+
+
         socket.on("cubeVisited", (cubeId) => {
 
-            console.log("visit:" + cubeId);
+        console.log("visit:" + cubeId);
 
           const cube = scene.getObjectByProperty("uuid", cubeId);
           if (cube) {
             const outline = cube.getObjectByProperty("type", "LineSegments");
             if (outline) {
-              outline.material.color.set("white");
+                                    console.log("bluying visited " + cubeId);
+
+              outline.material.color.set("blue");
             }
           }
         });

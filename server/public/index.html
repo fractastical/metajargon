@@ -56,7 +56,7 @@
     <script>
 
         var allVisitedCubes = {};
-
+        var allCubes = [];
         const socket = io();
 
 
@@ -234,7 +234,6 @@
 
           textLabel.position.set(5.5, 0, 0); // Position the text label on the side of the cube
           cube.add(textLabel);
-
                 // Create an invisible mesh for click detection
             const invisibleMeshGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
             const invisibleMeshMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
@@ -243,7 +242,7 @@
             scene.add(invisibleMesh);
 
             invisibleMesh.userData.parentCube = cube;
-
+            allCubes.push(cube);  
             return { cube, uniqueObject, invisibleMesh, smallCube };
         }
 
@@ -351,6 +350,7 @@ function createGridOfCubes() {
                 const geometryType = geometryTypes[z];
 
                 createCubeWithUniqueObject(xPos, yPos, zPos, 0.5, geometryType, cubeNumber);
+                   
                 cubeNumber++; 
             }
         }
@@ -638,16 +638,17 @@ function createTextLabel(text) {
     const playJourney = () => {
         const timeBetweenNotes = '4n';
         let currentCubeIndex = 0;
-
+        Tone.start();
+        
         const sequence = new Tone.Sequence((time, index) => {
             currentCubeIndex = journey[index];
-            const cube = cubes[currentCubeIndex];
+            const cube = allCubes[currentCubeIndex];
             const note = cube.note;
             synth.triggerAttackRelease(note, timeBetweenNotes, time);
         }, journey, timeBetweenNotes);
 
         const moveCamera = () => {
-            const targetCube = cubes[currentCubeIndex];
+            const targetCube = allCubes[currentCubeIndex];
             camera.position.x += (targetCube.position.x - camera.position.x) * 0.05;
             camera.position.y += (targetCube.position.y - camera.position.y) * 0.05;
             camera.lookAt(targetCube.position);

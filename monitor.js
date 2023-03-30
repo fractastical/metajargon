@@ -10,7 +10,7 @@ async function monitor() {
   page.on('pageerror', ({ message }) => console.log('Page error:', message));
 
   // Navigate to your web app
-  await page.goto('http://your-web-app-url-here');
+  await page.goto('http://localhost:3000');
 
   // Interact with the cubes and perform checks
   // Example: click a button to start the journey, check if audio is playing, etc.

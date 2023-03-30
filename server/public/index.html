@@ -34,6 +34,13 @@
               background-color: #1d1f27;
         }
 
+        #terminal {
+            width: 100%;
+            height: 300px;
+            background-color: black;
+          }
+
+
     </style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.110.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.110.0/examples/js/controls/OrbitControls.js"></script>
@@ -46,15 +53,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
 
+<script type="module" src="/node_modules/xterm/lib/xterm.js"></script>
+<script type="module" src="/node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+<script type="module" src="/node_modules/xterm-addon-webgl/lib/xterm-addon-webgl.js"></script>
 
 
 </head>
 <body>
 
     <div class="login-section">
+      <div id="terminal"></div>
+
       <!-- <input type="text" value="cheese" /> -->
 
-   <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="40"/>
+   <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>
       <button id="loginWithMetamask">Login with MetaMask</button>
     
       <img  onclick="playJourney()" src="img/steam-login.png"/>
@@ -976,6 +988,43 @@ async function takeSnapshot(cube) {
 }
 
 
+<!---  SECTION: terminal -->
+
+
+// import { Terminal } from 'xterm';
+// import { FitAddon } from 'xterm-addon-fit';
+// import { WebglAddon } from 'xterm-addon-webgl';
+
+// Create a new terminal instance
+const terminal = new Terminal();
+
+// Create and load the addons
+const fitAddon = new FitAddon();
+terminal.loadAddon(fitAddon);
+const webglAddon = new WebglAddon();
+terminal.loadAddon(webglAddon);
+
+// Attach the terminal to the DOM element
+terminal.open(document.getElementById('terminal'));
+
+// Fit the terminal to its container
+fitAddon.fit();
+
+// Set up a simple prompt
+terminal.write('Welcome to the terminal!\r\n');
+terminal.write('$ ');
+
+// Handle user input
+terminal.onData((data) => {
+  const command = data.trim();
+
+  // Process the command
+  console.log("User typed command:", command);
+
+  // Clear the line and print a new prompt
+  terminal.write('\x1B[2K\x1B[G');
+  terminal.write('$ ');
+});
 
     </script>
 

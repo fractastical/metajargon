@@ -52,7 +52,15 @@
 <body>
 
     <div id="hypercube"></div>
+    <div class="login-section">
+      <input id="journeyData" value="your journey data here" type="text" size="50"/>
+      <button id="loginWithMetamask">Login with MetaMask</button>
+    
+      <img  onclick="playJourney()" src="img/steam-login.png"/>
 
+
+    </div>
+    
     <script>
 
         var allVisitedCubes = {};
@@ -538,8 +546,35 @@ function JSONparser(jsonString)  {
 }
 
 
-<!-- steam section --> 
+<!-- login section --> 
 <!--  Does not work out of box from GPT-4 seems to require a generic openID oauth libary --> 
+
+async function loginWithMetaMask() {
+  // Check if MetaMask is installed
+  if (typeof window.ethereum === "undefined") {
+    alert("Please install MetaMask to use this feature.");
+    return;
+  }
+
+  try {
+    // Request the user's Ethereum address
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    const userAddress = accounts[0];
+
+    // Use the Ethereum address as a unique identifier for the user
+    console.log("User's Ethereum address:", userAddress);
+    socket.emit("ethAddress", userAddress);
+
+    // Authenticate the user and proceed with your app's login flow
+    // Example: store the user's Ethereum address in a cookie or session, fetch user data from your server, etc.
+  } catch (error) {
+    console.error("Error logging in with MetaMask:", error);
+    alert("Login with MetaMask failed.");
+  }
+}
+
+// Add a click event listener to the MetaMask login button
+document.getElementById("loginWithMetamask").addEventListener("click", loginWithMetaMask);
 
 // Replace 'YOUR_API_KEY' with your actual Steam Web API key
 const API_KEY = '633FAC6F87C73A7A24676D7C4D4D6AC0';
@@ -634,6 +669,7 @@ function createTextLabel(text) {
     // Create a journey through the cubes
     const journeyOrder = [0, 2, 1, 3, 6, 55, 4];
     var journeyIndex = 0;
+    var journeyData = "";
 
     // Play the notes associated with the cubes in the journey
     async function playJourney(movementsPerSecond = 1) {
@@ -661,7 +697,8 @@ function createTextLabel(text) {
         //     camera.position.y += (targetCube.position.y - camera.position.y) * 0.05;
         //     camera.lookAt(targetCube.position);
         // };
-
+        journeyData = journeyOrder.toString(); 
+        document.getElementById('hypercube') 
         const animate = function () {
           const deltaTime = clock.getDelta();
           movementProgress += deltaTime;
@@ -691,7 +728,7 @@ function createTextLabel(text) {
             requestAnimationFrame(animate);
               const visitDuration = 3000; // Duration of each visit in milliseconds
 
-            moveCamera();
+            // moveCamera();
             // if (journeyIndex<journeyOrder.length-1)
             //   journeyIndex++;
             // else 
@@ -926,9 +963,8 @@ async function takeSnapshot(cube) {
 
     </script>
 
-<div class="login-section">
-  <img  onclick="playJourney()" src="img/steam-login.png"/>
-</div>
+
+
 
 </body>
 </html>

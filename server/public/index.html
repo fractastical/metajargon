@@ -578,7 +578,7 @@ function getUserInfo(oauthToken) {
 }
 
 
-<!-- image manipulation libaray  --> 
+<!-- SECTION: image manipulation libaray  --> 
 
 
 
@@ -625,8 +625,24 @@ function createTextLabel(text) {
 
 }
 
+<!-- SECTION: sound -->
 
-<!-- hyper cube -->
+
+  const playJourney = () => {
+        const timeBetweenNotes = '4n';
+        const sequence = new Tone.Sequence((time, index) => {
+            const cubeIndex = journey[index];
+            const cube = cubes[cubeIndex];
+            const note = cube.note;
+            synth.triggerAttackRelease(note, timeBetweenNotes, time);
+        }, journey, timeBetweenNotes);
+
+        Tone.Transport.start();
+        sequence.start();
+    };
+
+
+<!-- SECTION: hypercube -->
 
             // if(!hyperCubeRendered)
             // {

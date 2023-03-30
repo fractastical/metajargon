@@ -14,10 +14,10 @@ io.on("connection", (socket) => {
   console.log('A user connected');
   socket.emit('visitedCubes', visitedCubes);
 
-app.get('/', function(req, res){
-    res.redirect('/public/index.html')
-;
-});
+  app.get('/', function(req, res){
+      res.redirect('/public/index.html')
+  ;
+  });
 
 
   socket.on("sceneUpdate", (data) => {

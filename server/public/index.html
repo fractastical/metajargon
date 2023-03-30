@@ -546,8 +546,9 @@ const API_KEY = '633FAC6F87C73A7A24676D7C4D4D6AC0';
 
 // Initiate Steam login and handle the response
 function steamLogin() {
-  var login = new SteamLogin();
-  login.openidPopup('https://steamcommunity.com/openid/', 'https://yourwebsite.com/auth', handleLoginResponse);
+  playJourney();
+  // var login = new SteamLogin();
+  // login.openidPopup('https://steamcommunity.com/openid/', 'https://yourwebsite.com/auth', handleLoginResponse);
 }
 
 // Handle the login response
@@ -885,7 +886,7 @@ async function takeSnapshot(cube) {
     </script>
 
 <div class="login-section">
-  <img  onclick="takeSnapshot()" src="img/steam-login.png"/>
+  <img  onclick="playJourney()" src="img/steam-login.png"/>
 </div>
 
 </body>

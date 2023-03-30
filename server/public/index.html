@@ -632,37 +632,77 @@ function createTextLabel(text) {
     const synth = new Tone.Synth().toDestination();
 
     // Create a journey through the cubes
-    const journey = [0, 2, 1, 3, 6, 5, 4];
+    const journeyOrder = [0, 2, 1, 3, 6, 55, 4];
+    var journeyIndex = 0;
 
     // Play the notes associated with the cubes in the journey
-    const playJourney = () => {
-        const timeBetweenNotes = '4n';
-        let currentCubeIndex = 0;
-        Tone.start();
-        
-        const sequence = new Tone.Sequence((time, index) => {
-            currentCubeIndex = journey[index];
-            const cube = allCubes[currentCubeIndex];
-            const note = cube.note;
-            synth.triggerAttackRelease(note, timeBetweenNotes, time);
-        }, journey, timeBetweenNotes);
+    async function playJourney(movementsPerSecond = 1) {
 
-        const moveCamera = () => {
-            const targetCube = allCubes[currentCubeIndex];
-            camera.position.x += (targetCube.position.x - camera.position.x) * 0.05;
-            camera.position.y += (targetCube.position.y - camera.position.y) * 0.05;
-            camera.lookAt(targetCube.position);
-        };
+      const movementDuration = 1 / movementsPerSecond;
+      const clock = new THREE.Clock();
+
+      const timeBetweenNotes = '8n';
+        
+          Tone.start();
+          let movementProgress = 0;
+
+        // const sequence = new Tone.Sequence((time, index) => {
+        //     currentCubeIndex = journey[index];
+        //     const cube = allCubes[currentCubeIndex];
+        //     const note = cube.note;
+        //     synth.triggerAttackRelease(note, timeBetweenNotes, time);
+        // }, journey, timeBetweenNotes);
+
+        // const moveCamera = () => {
+        //     const targetCube = allCubes[journeyOrder[journeyIndex]];
+        //     // synth.triggerAttackRelease(targetCube.userData.frequency, "8n");
+
+        //     camera.position.x += (targetCube.position.x - camera.position.x) * 0.05;
+        //     camera.position.y += (targetCube.position.y - camera.position.y) * 0.05;
+        //     camera.lookAt(targetCube.position);
+        // };
 
         const animate = function () {
+          const deltaTime = clock.getDelta();
+          movementProgress += deltaTime;
+
+          if (movementProgress >= movementDuration) {
+              // Move to the next cube in the journeyOrder array
+              journeyIndex = (journeyIndex + 1) % journeyOrder.length;
+
+              // Reset movement progress
+              movementProgress = 0;
+
+              // Play the note associated with the current cube
+              // const frequency = cubeFrequencies[journeyOrder[journeyIndex]];
+              synth.triggerAttackRelease(allCubes[journeyOrder[journeyIndex]].userData.frequency, "8n");
+
+              // playNote(frequency);
+            }
+
+
+              // Calculate interpolation factor
+              const lerpFactor = movementProgress / movementDuration;
+
+              // Move the camera to the current cube's position with an offset
+              const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
+              camera.position.lerp(targetPosition, lerpFactor);
+
             requestAnimationFrame(animate);
+              const visitDuration = 3000; // Duration of each visit in milliseconds
+
             moveCamera();
+            // if (journeyIndex<journeyOrder.length-1)
+            //   journeyIndex++;
+            // else 
+            //   journeyIndex= 0;
             renderer.render(scene, camera);
         };
 
         animate();
-        Tone.Transport.start();
-        sequence.start();
+        
+        // Tone.Transport.start();
+        // sequence.start();
     };
 
 

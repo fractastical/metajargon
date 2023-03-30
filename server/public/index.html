@@ -78,7 +78,9 @@
               Object.keys(visitedCubes).forEach(cubeId => {
                 console.log("updating " + cubeId);
 
+
               const thiscube = scene.getObjectByProperty("uuid", cubeId);
+              console.log(thiscube);
               if (thiscube) {
                   console.log("segmenting " + cubeId);
 
@@ -102,12 +104,17 @@
           if (cube) {
             const outline = cube.getObjectByProperty("type", "LineSegments");
             if (outline) {
-                                    console.log("bluying visited " + cubeId);
+                     console.log("bluying visited " + cubeId);
 
-              outline.material.color.set("blue");
+                    outline.material.color.set("blue");
+                    const synth = new Tone.Synth().toDestination();
+                    Tone.start();
+                    synth.triggerAttackRelease(cube.userData.frequency, "8n");
+
             }
           }
         });
+
 
 
         const scene = new THREE.Scene();
@@ -124,7 +131,22 @@
 
         const textureLoader = new THREE.TextureLoader();
         // const imageTexture = textureLoader.load('img/jd.jpeg');
-        const imageTexture = textureLoader.load('https://f8n-production.imgix.net/creators/profile/47zx5exuz-cryptoapollo-jpg-hgsplk.jpg?auto=format%2Ccompress&q=50&w=128&h=128&fit=crop&dpr=2');
+        const imageTexture1 = textureLoader.load('https://f8n-production.imgix.net/creators/profile/47zx5exuz-cryptoapollo-jpg-hgsplk.jpg?auto=format%2Ccompress&q=50&w=128&h=128&fit=crop&dpr=2');
+
+        const imageTexture2 = textureLoader.load('https://f8n-production-collection-assets.imgix.net/0xB7A1E2282974a42BC30D36eBdc7E7BcdcB8E4d28/28/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max');
+
+        const imageTexture3 = textureLoader.load('https://f8n-production-collection-assets.imgix.net/0x70fB56F898E44D70C1f7C1E2a9ca14c33cFDC6c5/5/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max');
+
+        const imageTexture4 = textureLoader.load('https://f8n-production-collection-assets.imgix.net/0x866b27fc857D16Aaaf7e2f7846EFe95747385fE0/3/nft.png?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max');
+
+        const imageTexture5 = textureLoader.load('https://f8n-production-collection-assets.imgix.net/0x93A430DfFDC5f79D2d8Ca574C137a124aD1a21C4/4/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max');
+
+        const imageTexture6 = textureLoader.load('https://f8n-production-collection-assets.imgix.net/0x79aB1115533B86d032BEA40ce63eB74E323f9eA4/1/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max');
+    
+
+        const imageTexture7 = textureLoader.load('https://f8n-production-collection-assets.imgix.net/0xbc342b06b912C50eAc9C094b10cd2B8d30152d2b/3/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max');
+
+
 
 
         // const imageTexture = textureLoader.load('https://i.seadn.io/gae/9PTBw2m23Lrcol5YURG7iIIgKgYTPUO77FekvX1JyMIEzBK5mayjLWH00WFPHOP0OqJF7f3Xr9E2kxuXIiHJXViw7qHB6_mqBZYnx5c?auto=format&w=2048');
@@ -409,9 +431,9 @@ async function onDocumentMouseDown(event) {
 
 
             // Play sound with the frequency stored in the clicked cube
-            const synth = new Tone.Synth().toDestination();
-            await Tone.start();
-            synth.triggerAttackRelease(parentCube.userData.frequency, "8n");
+            // const synth = new Tone.Synth().toDestination();
+            // await Tone.start();
+            // synth.triggerAttackRelease(parentCube.userData.frequency, "8n");
         }
     }
 }

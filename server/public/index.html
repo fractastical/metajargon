@@ -55,6 +55,8 @@
 
     <script>
 
+        var allVisitedCubes = {};
+
         const socket = io();
 
         socket.on("sceneUpdate", (data) => {
@@ -66,11 +68,12 @@
 
 
         // I think this doesn't work becauese scene hasn't rendered :(
-        
+
         socket.on('visitedCubes', visitedCubes => {
 
               console.log("cubesinbound:" + visitedCubes.length);
               console.log(visitedCubes);
+              allVisitedCubes = visitedCubes;
 
               Object.keys(visitedCubes).forEach(cubeId => {
                 console.log("updating " + cubeId);
@@ -154,10 +157,16 @@
             // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
             // const cube = new THREE.Mesh(geometry, material);
             const edgesGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize));
-            const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
-            const cube = new THREE.LineSegments(edgesGeometry, lineMaterial);
+            var lineMaterial;
+            console.log(allVisitedCubes);
+            if(allVisitedCubes[cubeNumber])
+                lineMaterial = new THREE.LineBasicMaterial({ color: blue, transparent: true, opacity: opacity });
+            else
+                lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: opacity });
 
+            const cube = new THREE.LineSegments(edgesGeometry, lineMaterial);
             cube.uuid = cubeNumber;
+
 
             const smallEdgesGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(.2, .2, .2));
 

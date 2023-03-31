@@ -91,7 +91,7 @@
 
 
 
-        // I think this doesn't work becauese scene hasn't rendered :(
+        // TODO: I think this doesn't work becauese scene hasn't rendered :(
 
         socket.on('visitedCubes', visitedCubes => {
 
@@ -100,7 +100,7 @@
               allVisitedCubes = visitedCubes;
 
               Object.keys(allVisitedCubes).forEach(cubeId => {
-                console.log("updating " + cubeId);
+                // console.log("updating " + cubeId);
 
 
               const thiscube = scene.getObjectByProperty("uuid", cubeId);

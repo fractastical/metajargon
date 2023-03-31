@@ -129,7 +129,7 @@
           if (cube) {
             const outline = cube.getObjectByProperty("type", "LineSegments");
             if (outline) {
-                     console.log("bluying visited " + cubeId);
+                     console.log("blue-ing visited " + cubeId);
 
                     outline.material.color.set("blue");
                     const synth = new Tone.Synth().toDestination();
@@ -279,6 +279,7 @@
 
 
             // Store a random    for each cube
+            // TODO: update this 
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
             const uniqueObject = createUniqueObject(x, y, z, geometryType);
@@ -710,6 +711,13 @@ function createTextLabel(text) {
 
 <!-- SECTION: sound -->
 
+    // locking cubes 0-127 to MIDI note numbers
+    // The range of MIDI note numbers spans from 0 to 127, providing a total of 128 unique note numbers. This range covers a little over 10 octaves, with each octave containing 12 notes (including sharps and flats).
+    // The lowest MIDI note number, 0, corresponds to C-1 (C minus one), while the highest, 127, corresponds to G9. Middle C (C4) has a MIDI note number of 60. The MIDI note numbers are used to represent pitches and trigger sounds on MIDI-compatible devices and software synthesizers.
+
+
+
+
 
     const synth = new Tone.Synth().toDestination();
 
@@ -719,6 +727,7 @@ function createTextLabel(text) {
     var bpm = 60;
     var journeyData = document.getElementById('terminal').value;
     // const frequencies = generateFrequencies(261.63, 100);
+    const allFrequencies = generateFrequencies(allCubes.length)
 
     function generateFrequencies(startFrequency, numNotes) {
         const ratio = Math.pow(2, 1 / 12); // 12th root of 2
@@ -1067,8 +1076,9 @@ terminal.onData((data) => {
     console.log("User typed command:", command);
 
     if(command == 'play Chopin') {
-          playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
-          player.start();
+          // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+          playChopin();
+          // player.start();
         }
      if(command == 'stop') {
           player.stop();
@@ -1104,6 +1114,63 @@ terminal.onData((data) => {
     terminal.write(data);
   }
 });
+
+
+function noteToMidi(note) {
+  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const octave = parseInt(note.slice(-1));
+  const noteName = note.slice(0, -1);
+  const noteIndex = noteNames.indexOf(noteName);
+
+  return noteIndex + 12 * (octave + 1);
+}
+
+
+
+function playChopin() {
+
+
+    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+
+    // Define the notes and durations for the first few measures of Chopin's Prelude in E minor
+    const melody = [
+      { note: 'E4', duration: '4n' },
+      { note: 'B4', duration: '4n' },
+      { note: 'D5', duration: '4n' },
+      { note: 'C5', duration: '4n' },
+      { note: 'B4', duration: '4n' },
+      { note: 'A4', duration: '4n' },
+      { note: 'G4', duration: '4n' },
+      { note: 'F#4', duration: '4n' },
+    ];
+
+    const bass = [
+      { note: 'E2', duration: '1m' },
+      { note: 'G2', duration: '1m' },
+    ];
+
+    journeyOrder = [];
+
+    // Schedule the notes to be played
+    let time = 0;
+    melody.forEach(({ note, duration }) => {
+      journeyOrder.push(noteToMidi(note));
+      synth.triggerAttackRelease(note, duration, time);
+      time += Tone.Time(duration).toSeconds();
+    });
+
+   console.log(journeyOrder);    
+
+    bass.forEach(({ note, duration }, index) => {
+      synth.triggerAttackRelease(note, duration, Tone.Time(duration).toSeconds() * index);
+    });
+
+    // Start playing the music
+    Tone.Transport.start();
+    playJourney(journeyOrder);
+
+
+}
 
     </script>
 

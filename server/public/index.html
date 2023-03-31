@@ -103,7 +103,8 @@
                 // console.log("updating " + cubeId);
 
 
-              const thiscube = scene.getObjectByProperty("uuid", cubeId);
+              var thiscube = scene.getObjectByProperty("uuid", cubeId);
+              //  always undefined
               console.log(thiscube);
               if (thiscube) {
                   console.log("segmenting " + cubeId);
@@ -122,7 +123,7 @@
 
         socket.on("cubeVisited", (cubeId) => {
 
-        console.log("visit:" + cubeId);
+        // console.log("visit:" + cubeId);
 
           const cube = scene.getObjectByProperty("uuid", cubeId);
           if (cube) {
@@ -166,11 +167,35 @@
       textureLoader.load('https://f8n-production-collection-assets.imgix.net/0x79aB1115533B86d032BEA40ce63eB74E323f9eA4/1/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max'),
       textureLoader.load('https://f8n-production-collection-assets.imgix.net/0xbc342b06b912C50eAc9C094b10cd2B8d30152d2b/3/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max'),
       textureLoader.load('https://f8n-production-collection-assets.imgix.net/0xABB3738f04Dc2Ec20f4AE4462c3d069d02AE045B/11542018/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max'),
-      textureLoader.load('https://f8n-production-collection-assets.imgix.net/0xBda03C0C791b80061B90F176E6F45E685A94C36c/4/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max')
+      textureLoader.load('https://f8n-production-collection-assets.imgix.net/0xBda03C0C791b80061B90F176E6F45E685A94C36c/4/nft.jpg?q=80&auto=format%2Ccompress&cs=srgb&w=3000&h=3000&fit=max'),
+      textureLoader.load('server/public/img/ai/1.jpeg'),
+      textureLoader.load('server/public/img/ai/2.jpeg'),
+      textureLoader.load('server/public/img/ai/3.jpeg'),
+      textureLoader.load('server/public/img/ai/4.jpeg'),
+      textureLoader.load('server/public/img/ai/5.jpeg'),
+      textureLoader.load('server/public/img/ai/6.jpeg'),
+      textureLoader.load('server/public/img/ai/7.jpeg'),
+      textureLoader.load('server/public/img/ai/8.png'),
+      textureLoader.load('server/public/img/ai/9.jpeg'),
+      textureLoader.load('server/public/img/ai/10.jpeg'),
+      textureLoader.load('server/public/img/ai/11.png'),
+      textureLoader.load('server/public/img/ai/12.png'),
+      textureLoader.load('server/public/img/ai/13.jpeg'),
+      textureLoader.load('server/public/img/ai/14.png'),
+      textureLoader.load('server/public/img/ai/15.png'),
+      textureLoader.load('server/public/img/ai/16.png'),
+      textureLoader.load('server/public/img/ai/17.png'),
+      textureLoader.load('server/public/img/ai/18.png'),
+      textureLoader.load('server/public/img/ai/19.jpeg'),
+      textureLoader.load('server/public/img/ai/20.jpeg'),
+      textureLoader.load('server/public/img/ai/21.jpeg'),
+      textureLoader.load('server/public/img/ai/22.jpeg'),
+      textureLoader.load('server/public/img/ai/23.png')
+
 
     ];
 
-
+    
 
         // const imageTexture = textureLoader.load('https://i.seadn.io/gae/9PTBw2m23Lrcol5YURG7iIIgKgYTPUO77FekvX1JyMIEzBK5mayjLWH00WFPHOP0OqJF7f3Xr9E2kxuXIiHJXViw7qHB6_mqBZYnx5c?auto=format&w=2048');
 
@@ -689,7 +714,7 @@ function createTextLabel(text) {
     const synth = new Tone.Synth().toDestination();
 
     // Create a journey through the cubes
-    const journeyOrder = [0, 2, 1, 3, 6, 55, 4];
+    const journeyOrder = [0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70];
     var journeyIndex = 0;
     var journeyData = document.getElementById('terminal').value;
     // const frequencies = generateFrequencies(261.63, 100);
@@ -748,7 +773,7 @@ function createTextLabel(text) {
 
               // Play the note associated with the current cube
               // const frequency = cubeFrequencies[journeyOrder[journeyIndex]];
-              synth.triggerAttackRelease(allCubes[journeyOrder[journeyIndex]].userData.frequency, "8n");
+              // synth.triggerAttackRelease(allCubes[journeyOrder[journeyIndex]].userData.frequency, "8n");
 
               // playNote(frequency);
             }
@@ -1029,8 +1054,10 @@ terminal.onData((data) => {
 
     // Process the command
     console.log("User typed command:", command);
-    if(command == 'play Chopin')
+    if(command == 'play Chopin') {
+          playJourney();
           new Audio('chopin_nocturne_20.mp3').play()
+        }
 
 
     // Clear the line and print a new prompt

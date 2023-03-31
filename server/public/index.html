@@ -714,8 +714,9 @@ function createTextLabel(text) {
     const synth = new Tone.Synth().toDestination();
 
     // Create a journey through the cubes
-    const journeyOrder = [0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70];
+    var journeyOrder = [0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70];
     var journeyIndex = 0;
+    var bpm = 60;
     var journeyData = document.getElementById('terminal').value;
     // const frequencies = generateFrequencies(261.63, 100);
 
@@ -731,16 +732,17 @@ function createTextLabel(text) {
         return frequencies;
 }
 
+    
     // Play the notes associated with the cubes in the journey
-    async function playJourney(movementsPerSecond = 1) {
+    async function playJourney(path) {
 
-      const movementDuration = 1 / movementsPerSecond;
       const clock = new THREE.Clock();
 
       const timeBetweenNotes = '8n';
         
           Tone.start();
           let movementProgress = 0;
+          var movementDuration = 1 / (bpm/60);
 
         // const sequence = new Tone.Sequence((time, index) => {
         //     currentCubeIndex = journey[index];
@@ -757,35 +759,43 @@ function createTextLabel(text) {
         //     camera.position.y += (targetCube.position.y - camera.position.y) * 0.05;
         //     camera.lookAt(targetCube.position);
         // };
-        journeyData = journeyOrder.toString(); 
-        document.getElementById('terminal').value = journeyData;
+        // journeyData = path;
+
+       
+        journeyOrder = path;
+
+        // journeyData = journeyOrder.toString(); 
+        // document.getElementById('terminal').value = journeyData;
 
         const animate = function () {
-          const deltaTime = clock.getDelta();
-          movementProgress += deltaTime;
+              const deltaTime = clock.getDelta();
+              movementDuration = 1 / (bpm/60);
+              movementProgress += deltaTime;
+              if(journeyOrder && journeyOrder.length > 1 )
+              {
+              if (movementProgress >= movementDuration) {
+                  // Move to the next cube in the journeyOrder array
+                  journeyIndex = (journeyIndex + 1) % journeyOrder.length;
 
-          if (movementProgress >= movementDuration) {
-              // Move to the next cube in the journeyOrder array
-              journeyIndex = (journeyIndex + 1) % journeyOrder.length;
+                  // Reset movement progress
+                  movementProgress = 0;
 
-              // Reset movement progress
-              movementProgress = 0;
+                  // Play the note associated with the current cube
+                  // const frequency = cubeFrequencies[journeyOrder[journeyIndex]];
+                  // synth.triggerAttackRelease(allCubes[journeyOrder[journeyIndex]].userData.frequency, "8n");
 
-              // Play the note associated with the current cube
-              // const frequency = cubeFrequencies[journeyOrder[journeyIndex]];
-              // synth.triggerAttackRelease(allCubes[journeyOrder[journeyIndex]].userData.frequency, "8n");
+                  // playNote(frequency);
+                }
 
-              // playNote(frequency);
+
+
+                  // Calculate interpolation factor
+                  const lerpFactor = movementProgress / movementDuration;
+
+                  // Move the camera to the current cube's position with an offset
+                  const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
+                  camera.position.lerp(targetPosition, lerpFactor);
             }
-
-
-              // Calculate interpolation factor
-              const lerpFactor = movementProgress / movementDuration;
-
-              // Move the camera to the current cube's position with an offset
-              const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
-              camera.position.lerp(targetPosition, lerpFactor);
-
             requestAnimationFrame(animate);
               const visitDuration = 3000; // Duration of each visit in milliseconds
 
@@ -1041,8 +1051,10 @@ fitAddon.fit();
 
 // Set up a simple prompt
 terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
-terminal.write('Type "play Chopin" to begin. \r\n');
+terminal.write('Type "play Chopin." Other commands: "stop" "faster" "slower"  \r\n');
 terminal.write('$ ');
+const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
+// await Tone.start();
 
 // Handle user input
 let inputBuffer = '';
@@ -1051,14 +1063,31 @@ terminal.onData((data) => {
   if (data === '\r') {
     const command = inputBuffer.trim();
     inputBuffer = '';
-
     // Process the command
     console.log("User typed command:", command);
-    if(command == 'play Chopin') {
-          playJourney();
-          new Audio('chopin_nocturne_20.mp3').play()
-        }
 
+    if(command == 'play Chopin') {
+          playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+          player.start();
+        }
+     if(command == 'stop') {
+          player.stop();
+          playJourney([]);
+
+         }
+         if(command == 'faster') {
+          bpm += 10;
+          console.log(bpm);
+
+          // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+
+         }
+         if(command == 'slower') {
+          bpm -= faster;
+          console.log(bpm);
+          // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+
+         }
 
     // Clear the line and print a new prompt
     terminal.write('\x1B[2K\x1B[G');

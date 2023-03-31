@@ -36,8 +36,13 @@
 
         #terminal {
             width: 100%;
-            height: 100px;
             background-color: black;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+
           }
 
 
@@ -64,17 +69,18 @@
 <body>
 
     <div class="login-section">
-      <div id="terminal"></div>
 
       <!-- <input type="text" value="cheese" /> -->
 
-   <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>
+  <!--  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>-->
       <button id="loginWithMetamask">Login with MetaMask</button>
     
       <img  onclick="playJourney()" src="img/steam-login.png"/>
 
 
     </div>
+    <div id="terminal"></div>
+
     <div id="hypercube"></div>
 
     <script>
@@ -685,7 +691,7 @@ function createTextLabel(text) {
     // Create a journey through the cubes
     const journeyOrder = [0, 2, 1, 3, 6, 55, 4];
     var journeyIndex = 0;
-    var journeyData = document.getElementById('journeyData').value;
+    var journeyData = document.getElementById('terminal').value;
     // const frequencies = generateFrequencies(261.63, 100);
 
     function generateFrequencies(startFrequency, numNotes) {
@@ -727,7 +733,7 @@ function createTextLabel(text) {
         //     camera.lookAt(targetCube.position);
         // };
         journeyData = journeyOrder.toString(); 
-        document.getElementById('journeyData').value = journeyData;
+        document.getElementById('terminal').value = journeyData;
 
         const animate = function () {
           const deltaTime = clock.getDelta();
@@ -1009,19 +1015,38 @@ terminal.open(document.getElementById('terminal'));
 fitAddon.fit();
 
 // Set up a simple prompt
-terminal.write('Welcome to the terminal!\r\n');
+terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
+terminal.write('Type "play Chopin" to begin. \r\n');
 terminal.write('$ ');
 
 // Handle user input
+let inputBuffer = '';
 terminal.onData((data) => {
-  const command = data.trim();
+  // If the user pressed Enter, process the command
+  if (data === '\r') {
+    const command = inputBuffer.trim();
+    inputBuffer = '';
 
-  // Process the command
-  console.log("User typed command:", command);
+    // Process the command
+    console.log("User typed command:", command);
+    if(command == 'play Chopin')
+          new Audio('chopin_nocturne_20.mp3').play()
 
-  // Clear the line and print a new prompt
-  terminal.write('\x1B[2K\x1B[G');
-  terminal.write('$ ');
+
+    // Clear the line and print a new prompt
+    terminal.write('\x1B[2K\x1B[G');
+    terminal.write('$ ');
+
+  // If the user pressed Backspace, remove the last character from the input buffer
+  } else if (data === '\x7F') {
+    inputBuffer = inputBuffer.slice(0, -1);
+    terminal.write('\b \b');
+
+  // Otherwise, add the character to the input buffer and display it in the terminal
+  } else {
+    inputBuffer += data;
+    terminal.write(data);
+  }
 });
 
     </script>

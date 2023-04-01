@@ -391,7 +391,7 @@ function createGridOfCubes() {
 
     ];
 
-    const gridSize = 5;
+    const gridSize = 3;
     const cubeDistance = cubeSize + 60;
     var cubeNumber = 1;
 
@@ -405,7 +405,7 @@ function createGridOfCubes() {
                 // Use the geometry type from the geometryTypes array corresponding to the z index
                 const geometryType = geometryTypes[z];
 
-                createCubeWithUniqueObject(xPos, yPos, zPos, 0.5, geometryType, cubeNumber);
+                createCubeWithUniqueObject(xPos + 30, yPos + 30, zPos + 30, 0.5, geometryType, cubeNumber);
                    
                 cubeNumber++; 
             }
@@ -804,7 +804,6 @@ function createTextLabel(text) {
                   // Move the camera to the current cube's position with an offset
                   const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
                   // TODO: come back and replays on your local machine
-                  
                   // socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
 
                   camera.position.lerp(targetPosition, lerpFactor);

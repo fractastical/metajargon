@@ -71,7 +71,7 @@
     <div class="login-section">
 
       <!-- <input type="text" value="cheese" /> -->
-
+      <p style="color:white; text-align:left">Your credits: 0</p>
   <!--  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>-->
       <button id="loginWithMetamask">Login with MetaMask</button>
     
@@ -88,7 +88,7 @@
         var allVisitedCubes = {};
         var allCubes = [];
         const socket = io();
-
+        var credits = 10;
 
 
         // TODO: I think this doesn't work becauese scene hasn't rendered :(
@@ -1174,7 +1174,7 @@ fitAddon.fit();
 // Set up a simple prompt
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
 
-terminal.write('Commands: "play" "stop" "faster" "slower" "claim" \r\n');
+terminal.write('Commands: "play" "stop" "faster" "slower" "claim" "mine" \r\n');
 terminal.write('$ ');
 
 const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();

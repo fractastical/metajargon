@@ -287,9 +287,15 @@
             cube.userData.frequency = 440 * Math.pow(2, (Math.floor(Math.random() * 12) - 9) / 12);
 
             const uniqueObject = createUniqueObject(x, y, z, geometryType);
+            var textLabel;
+            if (cube.name && cube.name.length > 2)
+            {
+              textLabel = cube.name;
+            }
+            else {
+                textLabel=  createTextLabel(`Cube ${cubeNumber} ${uniqueObject.name}`);
+           }
 
-
-          const textLabel = createTextLabel(`Cube ${cubeNumber} ${uniqueObject.name}`);
           // const textLabel = createTextLabel(`Cube 22: ${uniqueObject.name}`);
 
           textLabel.position.set(5.5, 0, 0); // Position the text label on the side of the cube
@@ -1152,7 +1158,7 @@ async function takeSnapshot(cube) {
 
 // Create a new terminal instance
 const terminal = new Terminal();
-
+var lastAction = "";
 // Create and load the addons
 const fitAddon = new FitAddon.FitAddon();
 terminal.loadAddon(fitAddon);
@@ -1185,13 +1191,22 @@ terminal.onData((data) => {
     console.log("User typed command:", command);
     //C4 D4 E4 F4 G4 A4 B4 C5
 
+    if (lastAction == "claimed"){
+      
+      socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube, "name":command});
+      allCubes[selectedCube].name = "command";
+    }
     if(command == 'claim') {
 
       if(activeUser == "")
         terminal.write('   You are not logged in. You cannot claim.\r\n');
       else  
-         socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube});
+      {
+        socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube});
+        terminal.write('Cube ' + selectedCube + ' belongs to you. Please give it a name.\r\n');
+        lastAction = "claimed";
 
+      }
 
 
     }

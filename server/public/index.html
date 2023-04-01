@@ -130,7 +130,7 @@
             const outline = cube.getObjectByProperty("type", "LineSegments");
             if (outline) {
                      console.log("blue-ing visited " + cubeId);
-
+                    selectedCube = cubeId;
                     outline.material.color.set("blue");
                     const synth = new Tone.Synth().toDestination();
                     Tone.start();
@@ -391,9 +391,10 @@ function createGridOfCubes() {
 
     ];
 
-    const gridSize = 3;
+    const gridSize = 5;
     const cubeDistance = cubeSize + 60;
     var cubeNumber = 1;
+    var selectedCube = "";
 
     for (let x = 0; x < gridSize; x++) {
         for (let y = 0; y < gridSize; y++) {
@@ -595,7 +596,7 @@ function JSONparser(jsonString)  {
 
 
 <!-- login section --> 
-<!--  Does not work out of box from GPT-4 seems to require a generic openID oauth libary --> 
+var activeUser = "";
 
 async function loginWithMetaMask() {
   // Check if MetaMask is installed
@@ -608,7 +609,7 @@ async function loginWithMetaMask() {
     // Request the user's Ethereum address
     const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
     const userAddress = accounts[0];
-
+    activeUser = userAddress;
     // Use the Ethereum address as a unique identifier for the user
     console.log("User's Ethereum address:", userAddress);
     socket.emit("ethAddress", userAddress);
@@ -620,6 +621,9 @@ async function loginWithMetaMask() {
     alert("Login with MetaMask failed.");
   }
 }
+
+
+<!--  Does not work out of box from GPT-4 seems to require a generic openID oauth libary --> 
 
 // Add a click event listener to the MetaMask login button
 document.getElementById("loginWithMetamask").addEventListener("click", loginWithMetaMask);
@@ -1062,9 +1066,11 @@ terminal.open(document.getElementById('terminal'));
 fitAddon.fit();
 
 // Set up a simple prompt
-terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
-terminal.write('Type "play Chopin." Other commands: "stop" "faster" "slower"  \r\n');
+// terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
+
+terminal.write('Commands: "play" "stop" "faster" "slower" "claim" \r\n');
 terminal.write('$ ');
+
 const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
 // await Tone.start();
 
@@ -1078,7 +1084,17 @@ terminal.onData((data) => {
     // Process the command
     console.log("User typed command:", command);
     //C4 D4 E4 F4 G4 A4 B4 C5
-         
+
+    if(command == 'claim') {
+
+      if(activeUser == "")
+        terminal.write('   You are not logged in. You cannot claim.\r\n');
+      else  
+         socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube});
+
+
+
+    }
     if(command == 'play Chopin') {
           playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
           // playMelody();

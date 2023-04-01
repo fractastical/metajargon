@@ -391,7 +391,7 @@ function createGridOfCubes() {
 
     ];
 
-    const gridSize = 9;
+    const gridSize = 3;
     const cubeDistance = cubeSize + 60;
     var cubeNumber = 1;
 
@@ -803,6 +803,8 @@ function createTextLabel(text) {
 
                   // Move the camera to the current cube's position with an offset
                   const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
+                  socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
+
                   camera.position.lerp(targetPosition, lerpFactor);
             }
             requestAnimationFrame(animate);
@@ -1074,12 +1076,26 @@ terminal.onData((data) => {
     inputBuffer = '';
     // Process the command
     console.log("User typed command:", command);
-
+    //C4 D4 E4 F4 G4 A4 B4 C5
+         
     if(command == 'play Chopin') {
-          // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
-          playChopin();
-          // player.start();
-        }
+          playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+          // playMelody();
+          player.start();
+    } else if (command == 'play melody') {
+      playMelody(); 
+
+    } if(command.startsWith('play') && command.length > 5)
+    {
+      const melody = command.substring(5,command.length);
+      var playableMelody = [];
+      melody.split(' ').forEach({
+          //TODO: BUG in this line
+          // playableMelody.add({note: self, duration: '4n'});
+        
+      }
+    }
+
      if(command == 'stop') {
           player.stop();
           playJourney([]);
@@ -1117,6 +1133,7 @@ terminal.onData((data) => {
 
 
 function noteToMidi(note) {
+  console.log(note);
   const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
   const octave = parseInt(note.slice(-1));
   const noteName = note.slice(0, -1);
@@ -1127,22 +1144,25 @@ function noteToMidi(note) {
 
 
 
-function playChopin() {
+function playMelody(melody) {
 
+    console.log(melody);
+
+    if(melody==null || melody.length < 2)
+          melody = [
+            { note: 'E4', duration: '4n' },
+            { note: 'B4', duration: '4n' },
+            { note: 'D5', duration: '4n' },
+            { note: 'C5', duration: '4n' },
+            { note: 'B4', duration: '4n' },
+            { note: 'A4', duration: '4n' },
+            { note: 'G4', duration: '4n' },
+            { note: 'F#4', duration: '4n' },
+          ];
 
     const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
     // Define the notes and durations for the first few measures of Chopin's Prelude in E minor
-    const melody = [
-      { note: 'E4', duration: '4n' },
-      { note: 'B4', duration: '4n' },
-      { note: 'D5', duration: '4n' },
-      { note: 'C5', duration: '4n' },
-      { note: 'B4', duration: '4n' },
-      { note: 'A4', duration: '4n' },
-      { note: 'G4', duration: '4n' },
-      { note: 'F#4', duration: '4n' },
-    ];
 
     const bass = [
       { note: 'E2', duration: '1m' },
@@ -1154,6 +1174,10 @@ function playChopin() {
     // Schedule the notes to be played
     let time = 0;
     melody.forEach(({ note, duration }) => {
+
+      if (!duration || duration.length < 2)
+        duration = '4n';
+
       journeyOrder.push(noteToMidi(note));
       synth.triggerAttackRelease(note, duration, time);
       time += Tone.Time(duration).toSeconds();

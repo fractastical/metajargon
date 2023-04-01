@@ -134,7 +134,11 @@
                     outline.material.color.set("blue");
                     const synth = new Tone.Synth().toDestination();
                     Tone.start();
-                    synth.triggerAttackRelease(cube.userData.frequency, "8n");
+                    if (cubeId = 63)
+                       enterMinkowskiSound();
+                    else 
+                      synth.triggerAttackRelease(cube.userData.frequency, "8n");
+
 
             }
           }
@@ -719,7 +723,104 @@ function createTextLabel(text) {
     // The range of MIDI note numbers spans from 0 to 127, providing a total of 128 unique note numbers. This range covers a little over 10 octaves, with each octave containing 12 notes (including sharps and flats).
     // The lowest MIDI note number, 0, corresponds to C-1 (C minus one), while the highest, 127, corresponds to G9. Middle C (C4) has a MIDI note number of 60. The MIDI note numbers are used to represent pitches and trigger sounds on MIDI-compatible devices and software synthesizers.
 
+// Cube 63 currently assigned to MinkowskiSound
 
+/*
+
+For the sake of the thought experiment, let's consider a single wave propagating through a hypothetical medium in Minkowski spacetime. In a typical 3D space, the wave equation for sound is given by:
+
+∇²p - (1/c²)∂²p/∂t² = 0
+
+where ∇² is the Laplacian operator, p is the pressure disturbance in the medium, c is the speed of sound in the medium, and t is time.
+
+To adapt this to Minkowski spacetime, we will treat the wave as a scalar field ψ in a four-dimensional spacetime with coordinates (t, x, y, z). The Minkowski metric is given by:
+
+η = diag(-1, 1, 1, 1)
+
+The wave equation in Minkowski spacetime for a scalar field becomes:
+
+□ψ = 0
+
+where □ is the d'Alembertian operator, defined as:
+
+□ = η^(μν) ∂_μ ∂_ν
+
+Here, η^(μν) are the components of the inverse Minkowski metric, and ∂_μ and ∂_ν are partial derivatives with respect to the spacetime coordinates. In the Cartesian coordinates, the d'Alembertian operator can be expressed as:
+
+□ = -∂²/∂t² + ∂²/∂x² + ∂²/∂y² + ∂²/∂z²
+
+Now, let's assume that the speed of sound in our hypothetical medium is 'c', and the wave equation for a single wave in Minkowski spacetime is:
+
+□ψ = (1/c²)∂²ψ/∂t² - ∂²ψ/∂x² - ∂²ψ/∂y² - ∂²ψ/∂z² = 0
+
+Keep in mind that this is a highly speculative scenario, and the behavior of sound waves in Minkowski spacetime is not well-defined in physics. Nonetheless, this adapted wave equation represents a starting point for exploring how a single wave might propagate in a Minkowski-like spacetime. The perception and interpretation of this wave by an observer in this four-dimensional spacetime would be influenced by time dilation and length contraction effects.
+
+The JavaScript implementation provided earlier does not directly translate into sound, as it simulates the time evolution of a scalar field in a hypothetical 1D Minkowski spacetime. The behavior of sound waves in Minkowski spacetime is not well-defined in physics, and the program serves merely as an example of how one might attempt to simulate a scalar field in a Minkowski-like spacetime.
+
+
+*/
+
+    function enterMinkowskiSound() {
+
+// Parameters
+const c = 1; // Speed of sound in the hypothetical medium
+const N = 100; // Number of spatial points
+const dx = 1; // Spatial step
+const dt = 0.5; // Time step
+const tMax = Math.floor(2 * 44100 / N); // Time steps for 7 seconds of audio
+
+// Initialize scalar field
+const psi = new Array(N).fill(0);
+
+// Initial condition (single wave at the center)
+psi[Math.floor(N / 2)] = 1;
+
+// Initialize audio context
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+// Create audio buffer
+const audioBuffer = audioCtx.createBuffer(1, tMax * N, audioCtx.sampleRate);
+
+// Time evolution
+for (let t = 0; t < tMax; t++) {
+  const psiNext = new Array(N).fill(0);
+
+  for (let i = 1; i < N - 1; i++) {
+    psiNext[i] = 2 * psi[i] - psi[i - 1] + (c * c * dt * dt / (dx * dx)) * (psi[i + 1] - 2 * psi[i] + psi[i - 1]);
+  }
+
+  // Update the scalar field
+  for (let i = 0; i < N; i++) {
+    psi[i] = psiNext[i];
+  }
+
+  // Write scalar field values to audio buffer
+  const buffer = audioBuffer.getChannelData(0);
+  for (let i = 0; i < N; i++) {
+    buffer[t * N + i] = psi[i];
+  }
+}
+
+// Play the audio buffer with volume control
+const playAudioBuffer = () => {
+  const source = audioCtx.createBufferSource();
+  const gainNode = audioCtx.createGain();
+
+  source.buffer = audioBuffer;
+  source.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  // Set the initial gain value for a softer sound
+  gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
+
+  // Apply an exponential ramp to the gain value for smoother volume control
+  gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 2);
+
+  source.start();
+};
+
+playAudioBuffer();
+}
 
 
 
@@ -774,7 +875,6 @@ function createTextLabel(text) {
         // };
         // journeyData = path;
 
-       
         journeyOrder = path;
 
         // journeyData = journeyOrder.toString(); 

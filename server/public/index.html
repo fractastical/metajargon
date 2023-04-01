@@ -391,7 +391,7 @@ function createGridOfCubes() {
 
     ];
 
-    const gridSize = 3;
+    const gridSize = 5;
     const cubeDistance = cubeSize + 60;
     var cubeNumber = 1;
 
@@ -803,7 +803,9 @@ function createTextLabel(text) {
 
                   // Move the camera to the current cube's position with an offset
                   const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
-                  socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
+                  // TODO: come back and replays on your local machine
+                  
+                  // socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
 
                   camera.position.lerp(targetPosition, lerpFactor);
             }
@@ -1087,13 +1089,23 @@ terminal.onData((data) => {
 
     } if(command.startsWith('play') && command.length > 5)
     {
+
       const melody = command.substring(5,command.length);
-      var playableMelody = [];
-      melody.split(' ').forEach({
-          //TODO: BUG in this line
-          // playableMelody.add({note: self, duration: '4n'});
+
+      const inputArray = melody.split(' ');
+      const outputArray = inputArray.map((note) => {
+        return { note: note, duration: "4n" };
+      });
+
+      // var playableMelody = [];
+      playMelody(outputArray);
+
+      
+      // melody.split(' ').forEach({
+      //     //TODO: BUG in this line
+      //     // playableMelody.add({note: self, duration: '4n'});
         
-      }
+      // }
     }
 
      if(command == 'stop') {
@@ -1147,6 +1159,7 @@ function noteToMidi(note) {
 function playMelody(melody) {
 
     console.log(melody);
+    
 
     if(melody==null || melody.length < 2)
           melody = [
@@ -1174,9 +1187,15 @@ function playMelody(melody) {
     // Schedule the notes to be played
     let time = 0;
     melody.forEach(({ note, duration }) => {
+      // console.log(self);
+      // if(self instanceof String) {
+        
+      //   note = self;
+      //   duration = '4n';
+      // }
 
-      if (!duration || duration.length < 2)
-        duration = '4n';
+      // if (!duration || duration.length < 2)
+      //   duration = '4n';
 
       journeyOrder.push(noteToMidi(note));
       synth.triggerAttackRelease(note, duration, time);

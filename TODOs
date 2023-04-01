@@ -3,9 +3,11 @@ TODOs
 
 
 
-make play journey mark and be multiplayer
+make play journey mark and be multiplayer <-- works but plays back on local machine so you get duplicates. need to de-dupe.
 
-build tone map so you can play specific music
+add other types of music and auto transpose (like the japanese flute library)
+
+Mikowski space? 
 
 allow users to edit content of their cubes
 
@@ -15,6 +17,8 @@ re-center hypercube
 
 
 DONE
+
+build tone map so you can play specific music
 
 "play" music by feeding a melody then move the user from place to corresponding place
 

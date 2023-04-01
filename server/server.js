@@ -13,6 +13,8 @@ app.use(express.static(__dirname + "/public"));
 // app.use(express.static("public"));
 
 const visitedCubes = {};
+const userBalances = {};
+
 
 io.on("connection", (socket) => {
   console.log('A user connected');
@@ -21,8 +23,26 @@ io.on("connection", (socket) => {
   app.get('/', function(req, res){
       res.redirect('/public/index.html')
   ;
-  });
 
+  });
+  
+  app.get('/api/users/:userId/balance', (req, res) => {
+    const { userId } = req.params;
+  
+    // If the user has no balance stored, initialize it
+    initializeUser(userId);
+  
+    const balance = userBalances[userId];
+  
+    res.json({ balance });
+  });
+    
+  function initializeUser(userId) {
+    if (!userBalances[userId]) {
+      userBalances[userId] = 10;
+    }
+  }
+  
 
   socket.on("sceneUpdate", (data) => {
     socket.broadcast.emit("sceneUpdate", data);

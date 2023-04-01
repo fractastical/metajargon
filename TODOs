@@ -3,18 +3,25 @@ TODOs
 
 
 
-make play journey mark and be multiplayer <-- works but plays back on local machine so you get duplicates. need to de-dupe.
+upon visit pay owner of cube
+
+add persistant  data source  
+
+do a zoom at multiple depths  <-- have GPT code
 
 add other types of music and auto transpose (like the japanese flute library)
 
-Mikowski space? 
-
-allow users to edit content of their cubes
-
-do a zoom at multiple depths 
-
 
 DONE
+
+make play journey mark and be multiplayer <-- works but plays back on local machine so you get duplicates. need to de-dupe.
+
+
+Mikowski space? 
+
+
+allow users to edit content of their cubes (can change label)
+
 
 re-center hypercube
 

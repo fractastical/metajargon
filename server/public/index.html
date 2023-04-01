@@ -71,7 +71,7 @@
     <div class="login-section">
 
       <!-- <input type="text" value="cheese" /> -->
-      <p style="color:white; text-align:left">Your credits: 0</p>
+      <div id="balance" style="color:white; text-align:left">Credits: 0</div>
   <!--  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>-->
       <button id="loginWithMetamask">Login with MetaMask</button>
     
@@ -623,6 +623,9 @@ async function loginWithMetaMask() {
     // Use the Ethereum address as a unique identifier for the user
     console.log("User's Ethereum address:", userAddress);
     socket.emit("ethAddress", userAddress);
+    const balance = await getUserBalance(userAddress);
+    updateBalanceDisplay(balance);
+
 
     // Authenticate the user and proceed with your app's login flow
     // Example: store the user's Ethereum address in a cookie or session, fetch user data from your server, etc.
@@ -1238,6 +1241,15 @@ terminal.onData((data) => {
       // }
     }
 
+    if(command == 'mine') {
+
+      
+          terminal.write('you don\'t have enough monet to mine.\r\n');
+
+          // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+
+         }
+
      if(command == 'stop') {
           player.stop();
           playJourney([]);
@@ -1344,6 +1356,26 @@ function playMelody(melody) {
 
 
 }
+<!-- SECTION: CREDITS --> 
+
+async function getUserBalance(userId) {
+  const response = await fetch(`/api/users/${userId}/balance`);
+  const data = await response.json();
+
+  return data.balance;
+}
+
+function updateBalanceDisplay(balance) {
+  const balanceElement = document.getElementById("balance");
+  balanceElement.textContent = `Credits: ${balance}`;
+}
+
+async function onUserLogin(userId) {
+  const balance = await getUserBalance(userId);
+  updateBalanceDisplay(balance);
+}
+
+
 
     </script>
 

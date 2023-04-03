@@ -1177,14 +1177,15 @@ fitAddon.fit();
 // Set up a simple prompt
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
 
-terminal.write('Commands: "play" "stop" "faster" "slower" "claim" "mine" \r\n');
+terminal.write('Commands: "library" "play" "stop" "faster" "slower" "claim" \r\n');
 terminal.write('$ ');
 
-const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
+// const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
 // await Tone.start();
 
 // Handle user input
 let inputBuffer = '';
+
 terminal.onData((data) => {
   // If the user pressed Enter, process the command
   if (data === '\r') {
@@ -1195,9 +1196,18 @@ terminal.onData((data) => {
     //C4 D4 E4 F4 G4 A4 B4 C5
 
     if (lastAction == "claimed"){
-      
       socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube, "name":command});
       allCubes[selectedCube].name = "command";
+    }
+
+    if(command == 'help') {
+      terminal.write('  "library" "play" "stop" "faster" "slower" "claim" .\r\n');
+
+  }
+    if(command == 'library') {
+
+      terminal.write(' Beethoven for op 131 remix. Chopin for Nocture 20 remix.\r\n');
+
     }
     if(command == 'claim') {
 
@@ -1213,10 +1223,16 @@ terminal.onData((data) => {
 
 
     }
-    if(command == 'play Chopin') {
-          playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+    if(command.includes('Beethoven')) {
+      const bplayer = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
+      bplayer.autostart = true;
+      playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
           // playMelody();
-          player.start();
+    } else if(command.includes('Chopin')) {
+        const cplayer = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
+          playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
+          // playMelody();
+          cplayer.autostart = true;
     } else if (command == 'play melody') {
       playMelody(); 
 
@@ -1243,7 +1259,7 @@ terminal.onData((data) => {
 
     if(command == 'mine') {
 
-      
+
           terminal.write('you don\'t have enough monet to mine.\r\n');
 
           // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);

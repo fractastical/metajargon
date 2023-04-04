@@ -3,8 +3,24 @@ BUGS
 
 Basically two completely non working systems
     - userauth no longer works after persistnat storage due to confusion between sql liate and mongo modalities
-    - midi player does not work wiht inport
+    - midi player does not work wiht inport 
+    - mp3 player does not allow multiople instanced of player 
+    - gpt keeps giving junk code
 
+music flow should work as follows
+    - midi player is loaded
+    - midi player interprets midi and triggers cube movements and highlighting sequences
+    - MP3 plyer plays at same time as midi
+
+user auth flow should work as follows
+    - user clicks login to metmask
+    - if not authed- gives starting balance
+    - user can claim items, this subtracts some starting balance
+    - once user claims 
+
+BIG issues
+    - don't understand how require or modules work properly in Node
+    - database logic collision for user
 
 
 IDEAS

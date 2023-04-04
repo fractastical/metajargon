@@ -7,12 +7,21 @@ const io = require("socket.io")(http);
 const path = require('path');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/yourDatabaseName', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-});
+const connectToMongoDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+// Call the async function to connect to MongoDB
+connectToMongoDB();
 
 
 const { Schema, model } = mongoose;
@@ -44,27 +53,41 @@ io.on("connection", (socket) => {
 
   });
 
-  app.get('/api/users/:userId/balance', (req, res) => {
-    const { userId } = req.params;
 
-    // If the user has no balance stored, initialize it
-    await initializeUser(userId);
+  app.get('/api/users/:userId/balance', async (req, res) => {
+    const { userId } = req.params;
   
-    const user = await UserBalance.findOne({ userId });
-  
-    res.json({ balance: user.balance });
-  });
-    
-  function initializeUser(userId) {
     try {
+      // If the user has no balance stored, initialize it
+      await initializeUser(userId);
+  
       const user = await UserBalance.findOne({ userId });
-      if (!user) {
-        await UserBalance.create({ userId, balance: 10 });
-      }
+  
+      res.json({ balance: user.balance });
     } catch (err) {
       console.error(err);
+      res.status(500).json({ error: 'An error occurred while retrieving the balance.' });
     }
+  });
+
+  
+const initializeUser = async (userId) => {
+  try {
+    const user = await UserBalance.findOne({ userId });
+
+    if (!user) {
+      const newUser = new UserBalance({
+        userId,
+        balance: 10,
+      });
+
+      await newUser.save();
     }
+  } catch (err) {
+    console.error(err);
+    throw new Error('An error occurred while initializing the user.');
+  }
+};
   
 
   socket.on("sceneUpdate", (data) => {

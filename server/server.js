@@ -50,6 +50,61 @@ const initializeUser = (username) => {
 
 initializeUser('exampleUser');
 
+app.get('/balance/:username', (req, res) => {
+  const { username } = req.params;
+  
+  // Find the user in the database
+  const user = db.get('users').find({ username }).value();
+
+  if (!user) {
+    // If the user is not found, initialize the user with a starting balance
+    initializeUser(username);
+    
+    // Get the newly created user
+    const newUser = db.get('users').find({ username }).value();
+    
+    // Return the user's balance
+    res.json({ balance: newUser.balance });
+  } else {
+    // If the user is found, return the user's balance
+    res.json({ balance: user.balance });
+  }
+});
+
+
+app.get('/api/balance/:username', (req, res) => {
+  const { username } = req.params;
+
+  getUserBalance(username, (err, balance) => {
+    if (err) {
+      res.status(500).json({ error: 'Error fetching balance.' });
+    } else if (balance !== null) {
+      res.status(200).json({ balance });
+    } else {
+
+
+      res.status(404).json({ error: 'User not found.' });
+    }
+  });
+});
+
+
+const getUserBalance = (username, callback) => {
+  const query = 'SELECT balance FROM users WHERE username = ?';
+
+  db.get(query, [username], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      callback(err, null);
+    } else if (row) {
+      console.log(`User ${username} has a balance of ${row.balance}.`);
+      callback(null, row.balance);
+    } else {
+      console.log(`User ${username} not found.`);
+      callback(null, null);
+    }
+  });
+};
 
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 

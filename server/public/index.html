@@ -623,8 +623,24 @@ async function loginWithMetaMask() {
     // Use the Ethereum address as a unique identifier for the user
     console.log("User's Ethereum address:", userAddress);
     socket.emit("ethAddress", userAddress);
-    const balance = await getUserBalance(userAddress);
-    updateBalanceDisplay(balance);
+
+
+      try {
+      const response = await fetch(`/api/balance/${userAddress}`);
+      if (response.ok) {
+        const data = await response.json();
+        const balance = data.balance;
+        console.log('Balance:', balance);
+        // Display the balance on the page, e.g., update the DOM with the balance value
+      } else {
+        console.error('Error fetching balance:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching balance:', error);
+    }
+
+    // const balance = await getUserBalance(userAddress);
+    // updateBalanceDisplay(balance);
 
 
     // Authenticate the user and proceed with your app's login flow
@@ -1374,12 +1390,27 @@ function playMelody(melody) {
 }
 <!-- SECTION: CREDITS --> 
 
-async function getUserBalance(userId) {
-  const response = await fetch(`/api/users/${userId}/balance`);
-  const data = await response.json();
 
-  return data.balance;
-}
+
+
+// async function getUserBalance(activeUser, (err, balance) => {
+//   if (err) {
+//     console.error('Error fetching balance:', err);
+//   } else if (balance !== null) {
+//     console.log('Balance fetched:', balance);
+//   } else {
+//     console.log('User not found.');
+//   }
+// });
+
+
+
+// getUserBalance(userId) {
+//   const response = await fetch(`/api/users/${userId}/balance`);
+//   const data = await response.json();
+
+//   return data.balance;
+// }
 
 function updateBalanceDisplay(balance) {
   const balanceElement = document.getElementById("balance");

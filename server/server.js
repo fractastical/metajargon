@@ -5,33 +5,51 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
-const connectToMongoDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('Connected to MongoDB');
-  } catch (err) {
-    console.error(err);
-    process.exit(1);
-  }
+// const connectToMongoDB = async () => {
+//   try {
+//     await mongoose.connect(process.env.MONGODB_URI, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     });
+//     console.log('Connected to MongoDB');
+//   } catch (err) {
+//     console.error(err);
+//     process.exit(1);
+//   }
+// };
+
+// // Call the async function to connect to MongoDB
+// connectToMongoDB();
+
+
+// const { Schema, model } = mongoose;
+
+// const userBalanceSchema = new Schema({
+//   userId: { type: String, unique: true },
+//   balance: Number,
+// });
+
+// const UserBalance = model('UserBalance', userBalanceSchema);
+
+const db = require('./database');
+
+const initializeUser = (username) => {
+  const query = 'INSERT OR IGNORE INTO users (username, balance) VALUES (?, ?)';
+  const params = [username, 10];
+
+  db.run(query, params, (err) => {
+    if (err) {
+      console.error(err.message);
+    } else {
+      console.log(`Initialized user ${username} with a balance of 10.`);
+    }
+  });
 };
 
-// Call the async function to connect to MongoDB
-connectToMongoDB();
+initializeUser('exampleUser');
 
-
-const { Schema, model } = mongoose;
-
-const userBalanceSchema = new Schema({
-  userId: { type: String, unique: true },
-  balance: Number,
-});
-
-const UserBalance = model('UserBalance', userBalanceSchema);
 
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 
@@ -54,40 +72,40 @@ io.on("connection", (socket) => {
   });
 
 
-  app.get('/api/users/:userId/balance', async (req, res) => {
-    const { userId } = req.params;
+  // app.get('/api/users/:userId/balance', async (req, res) => {
+  //   const { userId } = req.params;
   
-    try {
-      // If the user has no balance stored, initialize it
-      await initializeUser(userId);
+  //   try {
+  //     // If the user has no balance stored, initialize it
+  //     await initializeUser(userId);
   
-      const user = await UserBalance.findOne({ userId });
+  //     const user = await UserBalance.findOne({ userId });
   
-      res.json({ balance: user.balance });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while retrieving the balance.' });
-    }
-  });
+  //     res.json({ balance: user.balance });
+  //   } catch (err) {
+  //     console.error(err);
+  //     res.status(500).json({ error: 'An error occurred while retrieving the balance.' });
+  //   }
+  // });
 
   
-const initializeUser = async (userId) => {
-  try {
-    const user = await UserBalance.findOne({ userId });
+// const initializeUser = async (userId) => {
+//   try {
+//     const user = await UserBalance.findOne({ userId });
 
-    if (!user) {
-      const newUser = new UserBalance({
-        userId,
-        balance: 10,
-      });
+//     if (!user) {
+//       const newUser = new UserBalance({
+//         userId,
+//         balance: 10,
+//       });
 
-      await newUser.save();
-    }
-  } catch (err) {
-    console.error(err);
-    throw new Error('An error occurred while initializing the user.');
-  }
-};
+//       await newUser.save();
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     throw new Error('An error occurred while initializing the user.');
+//   }
+// };
   
 
   socket.on("sceneUpdate", (data) => {

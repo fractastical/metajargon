@@ -72,11 +72,11 @@
     <div class="login-section">
 
       <!-- <input type="text" value="cheese" /> -->
-      <div id="balance" style="color:white; text-align:left">Credits: 0</div>
+      <img src="img/space-monet.png" width="80px"/> <div id="balance" style="color:white; text-align:left">0 space money </div>
   <!--  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>-->
-      <button id="loginWithMetamask">Login with MetaMask</button>
+      <button id="loginWithMetamask">Login</button>
     
-      <img  onclick="playJourney()" src="img/steam-login.png"/>
+     <!-- <img  onclick="playJourney()" src="img/steam-login.png"/>-->
 
 
     </div>
@@ -1447,7 +1447,7 @@ function playMelody(melody) {
 
 function updateBalanceDisplay(balance) {
   const balanceElement = document.getElementById("balance");
-  balanceElement.textContent = `Credits: ${balance}`;
+  balanceElement.textContent = `Space Money: ${balance}`;
 }
 
 async function onUserLogin(userId) {

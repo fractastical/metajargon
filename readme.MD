@@ -1,6 +1,6 @@
 
 
-Cube of all possible mathematical cubes 
+Cube of all metamathematical cubes 
 now is multiversally displayed.
 Rising with morning mountain dew
 with rulial pixels now abundant made.
@@ -15,14 +15,18 @@ Clean energy powers a world without pollution,
 Mars vistas and ability to change the weather, 
 Equality and empathy guide humanity's evolution.
 
-Where all things exist in harmonic ratio 
-That is where you should with us go. 
+Where all things in harmonic ratios go,
+Come join us there, let the music flow.
+
+
+
 
 
 Multiversal Sonnet 0
 
 
 Credits: Joel Dietz + ChatGPT 3.5
+
 
 
 

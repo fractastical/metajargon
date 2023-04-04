@@ -1,15 +1,20 @@
 TODOs
 
+separate 
 
-patch multi payers
+lots of junk code from GPT on 
+
+"discoverable items"
+
+improper idea of coordinates
+
+link to other spaces
 
 add beethoven bust 
 
 refactor terminal or add more classic logic
 
 upon visit pay owner of cube
-
-add persistant  data source  
 
 do a zoom at multiple depths  <-- have GPT code
 
@@ -18,6 +23,9 @@ add other types of music and auto transpose (like the japanese flute library)
 
 
 DONE
+
+add persistant data source   <-done but garbage from GPT needs clean up
+
 
 make play journey mark and be multiplayer <-- works but plays back on local machine so you get duplicates. need to de-dupe.
 

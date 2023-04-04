@@ -1,28 +1,39 @@
-TODOs
+BUGS
 
-separate 
 
-lots of junk code from GPT on 
+Basically two completely non working systems
+    - userauth no longer works after persistnat storage due to confusion between sql liate and mongo modalities
+    - midi player does not work wiht inport
 
-"discoverable items"
 
-improper idea of coordinates
 
-link to other spaces
+IDEAS
 
 add beethoven bust 
 
-refactor terminal or add more classic logic
+
+link to other spaces
+
 
 upon visit pay owner of cube
 
 do a zoom at multiple depths  <-- have GPT code
 
+
+improper idea of coordinates
+    - cube numbers and location need to be persistant (i.e should be numbered from center out) 
+
 add other types of music and auto transpose (like the japanese flute library)
  - mabye to midi 
 
+"discoverable items"
+
+
 
 DONE
+
+refactor terminal or add more classic logic
+
 
 add persistant data source   <-done but garbage from GPT needs clean up
 

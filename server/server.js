@@ -5,6 +5,24 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/yourDatabaseName', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+});
+
+
+const { Schema, model } = mongoose;
+
+const userBalanceSchema = new Schema({
+  userId: { type: String, unique: true },
+  balance: Number,
+});
+
+const UserBalance = model('UserBalance', userBalanceSchema);
 
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 
@@ -25,23 +43,28 @@ io.on("connection", (socket) => {
   ;
 
   });
-  
+
   app.get('/api/users/:userId/balance', (req, res) => {
     const { userId } = req.params;
-  
+
     // If the user has no balance stored, initialize it
-    initializeUser(userId);
+    await initializeUser(userId);
   
-    const balance = userBalances[userId];
+    const user = await UserBalance.findOne({ userId });
   
-    res.json({ balance });
+    res.json({ balance: user.balance });
   });
     
   function initializeUser(userId) {
-    if (!userBalances[userId]) {
-      userBalances[userId] = 10;
+    try {
+      const user = await UserBalance.findOne({ userId });
+      if (!user) {
+        await UserBalance.create({ userId, balance: 10 });
+      }
+    } catch (err) {
+      console.error(err);
     }
-  }
+    }
   
 
   socket.on("sceneUpdate", (data) => {

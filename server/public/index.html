@@ -57,6 +57,7 @@
 <!-- <script src="https://threejs.org/examples/jsm/renderers/CSS3DRenderer.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/midi-player-js@2.0.12/dist/MidiPlayer.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
 
@@ -626,7 +627,7 @@ async function loginWithMetaMask() {
 
 
       try {
-      const response = await fetch(`/api/balance/${userAddress}`);
+      const response = await fetch(`/balance/${userAddress}`);
       if (response.ok) {
         const data = await response.json();
         const balance = data.balance;
@@ -749,6 +750,37 @@ function createTextLabel(text) {
     // The lowest MIDI note number, 0, corresponds to C-1 (C minus one), while the highest, 127, corresponds to G9. Middle C (C4) has a MIDI note number of 60. The MIDI note numbers are used to represent pitches and trigger sounds on MIDI-compatible devices and software synthesizers.
 
 // Cube 63 currently assigned to MinkowskiSound
+
+var MidiPlayer = require('midi-player-js');
+
+// import { Player } from 'midi-player-js';
+
+// Load the MIDI file
+const midiFileUrl = 'beethoven_op131_allegro_001_piano.mid';
+
+// Create a new player
+const player = new Player();
+
+// Load the MIDI file into the player
+player.loadFile(midiFileUrl);
+
+// Set up an event listener for MIDI events
+player.on('midiEvent', (event) => {
+  // Look for 'Note on' events with a non-zero velocity
+  if (event.name === 'Note on' && event.velocity > 0) {
+    const note = event.noteNumber;
+
+    // Use the note value to determine which cube to highlight or visit
+    const cubeIndex = note % (gridSize * gridSize * gridSize); // Assuming a 9x9x9 grid of cubes
+    // const cube = cubes[cubeIndex];
+
+    // Highlight the cube or start a journey to the cube
+    // You can use your existing functions or create new ones to handle this
+  }
+});
+
+// Start playing the MIDI file
+player.play();
 
 /*
 
@@ -1222,7 +1254,7 @@ terminal.onData((data) => {
   }
     if(command == 'library') {
 
-      terminal.write(' Beethoven for op 131 remix. Chopin for Nocture 20 remix.\r\n');
+      terminal.write(' Beethoven for op. 131 remix. Chopin for Nocturne 20 remix.\r\n');
 
     }
     if(command == 'claim') {

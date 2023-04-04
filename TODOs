@@ -1,7 +1,11 @@
 TODOs
 
 
+patch multi payers
 
+add beethoven bust 
+
+refactor terminal or add more classic logic
 
 upon visit pay owner of cube
 
@@ -10,6 +14,7 @@ add persistant  data source
 do a zoom at multiple depths  <-- have GPT code
 
 add other types of music and auto transpose (like the japanese flute library)
+ - mabye to midi 
 
 
 DONE

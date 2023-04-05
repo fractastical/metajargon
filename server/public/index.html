@@ -373,6 +373,7 @@ function createUniqueObject(x, y, z, type) {
 
 
 const cubeObjects = [];
+var analyser;
 
 
 function loadModel(url, parentObject) {
@@ -493,6 +494,17 @@ async function onDocumentMouseDown(event) {
             // socket.emit("sceneUpdate", "visiting ");
                 // console.log(parentCube.uuid);
             socket.emit("cubeVisited", parentCube.uuid);
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audioElement = new Audio('beethoven_op131_allegro_001.mp3');
+            const sourceNode = audioContext.createMediaElementSource(audioElement);
+            analyser = audioContext.createAnalyser();
+            sourceNode.connect(analyser);
+            analyser.fftSize = 256; // Set the FFT size (power of 2, default is 2048)
+            sourceNode.connect(audioContext.destination);
+
+
+            audioElement.play();
+            analyzeFrequencyAndHighlightCubes();
 
             controls.target.copy(parentCube.position);
             // takeSnapshot(parentCube);
@@ -753,18 +765,14 @@ function createTextLabel(text) {
 
 
 
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const audioElement = new Audio('beethoven_op131_allegro_001.mp3');
-const sourceNode = audioContext.createMediaElementSource(audioElement);
-const analyser = audioContext.createAnalyser();
-sourceNode.connect(analyser);
-analyser.fftSize = 256; // Set the FFT size (power of 2, default is 2048)
-sourceNode.connect(audioContext.destination);
-
 
 function analyzeFrequencyAndHighlightCubes() {
+  console.log("analyzeFrequencyAndHighlightCubes");
+
   // Create an array to store the frequency data
   const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  
+  console.log(frequencyData);
 
   // Get the frequency data from the analyser
   analyser.getByteFrequencyData(frequencyData);
@@ -773,10 +781,9 @@ function analyzeFrequencyAndHighlightCubes() {
   for (let i = 0; i < frequencyData.length; i++) {
     // Normalize the frequency value (0 to 1)
     const normalizedFrequency = frequencyData[i] / 255;
-
+    console.log("nf" + normalizedFrequency);
     // Determine the index of the cube to highlight based on the normalized frequency
-    const cubeIndex = Math.floor(normalizedFrequency * totalCubes);
-
+    const cubeIndex = Math.floor(normalizedFrequency * (5*5*5) * Math.random());
     // Highlight the cube with the index cubeIndex
     highlightCube(cubeIndex);
   }
@@ -785,8 +792,6 @@ function analyzeFrequencyAndHighlightCubes() {
   requestAnimationFrame(analyzeFrequencyAndHighlightCubes);
 }
 
-audioElement.play();
-analyzeFrequencyAndHighlightCubes();
 
 function highlightCube(cubeIndex) {
   // Get the cube from the grid using cubeIndex
@@ -805,31 +810,31 @@ function highlightCube(cubeIndex) {
 
 
 // Load the MIDI file
-const midiFileUrl = 'beethoven_op131_allegro_001_piano.mid';
+// const midiFileUrl = 'beethoven_op131_allegro_001_piano.mid';
 
 // Create a new player
 // const player = new Player();
 
-// Load the MIDI file into the player
-player.loadFile(midiFileUrl);
+// // Load the MIDI file into the player
+// player.loadFile(midiFileUrl);
 
-// Set up an event listener for MIDI events
-player.on('midiEvent', (event) => {
-  // Look for 'Note on' events with a non-zero velocity
-  if (event.name === 'Note on' && event.velocity > 0) {
-    const note = event.noteNumber;
+// // Set up an event listener for MIDI events
+// player.on('midiEvent', (event) => {
+//   // Look for 'Note on' events with a non-zero velocity
+//   if (event.name === 'Note on' && event.velocity > 0) {
+//     const note = event.noteNumber;
 
-    // Use the note value to determine which cube to highlight or visit
-    const cubeIndex = note % (gridSize * gridSize * gridSize); // Assuming a 9x9x9 grid of cubes
-    // const cube = cubes[cubeIndex];
+//     // Use the note value to determine which cube to highlight or visit
+//     const cubeIndex = note % (gridSize * gridSize * gridSize); // Assuming a 9x9x9 grid of cubes
+//     // const cube = cubes[cubeIndex];
 
-    // Highlight the cube or start a journey to the cube
-    // You can use your existing functions or create new ones to handle this
-  }
-});
+//     // Highlight the cube or start a journey to the cube
+//     // You can use your existing functions or create new ones to handle this
+//   }
+// });
 
-// Start playing the MIDI file
-player.play();
+// // Start playing the MIDI file
+// player.play();
 
 /*
 

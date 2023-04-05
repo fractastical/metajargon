@@ -780,10 +780,10 @@ function analyzeFrequencyAndHighlightCubes() {
   // Process the frequency data and highlight the cubes
   for (let i = 0; i < frequencyData.length; i++) {
     // Normalize the frequency value (0 to 1)
-    const normalizedFrequency = frequencyData[i] / 255;
+    const normalizedFrequency = frequencyData[i] / 256;
     console.log("nf" + normalizedFrequency);
     // Determine the index of the cube to highlight based on the normalized frequency
-    const cubeIndex = Math.floor(normalizedFrequency * (5*5*5) * Math.random());
+    const cubeIndex = Math.floor(normalizedFrequency * (5*5*5));
     // Highlight the cube with the index cubeIndex
     highlightCube(cubeIndex);
   }

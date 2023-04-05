@@ -2,8 +2,8 @@ BUGS
 
 
 Basically two completely non working systems
-    - userauth no longer works after persistnat storage due to confusion between sql liate and mongo modalities
-    - midi player does not work wiht inport 
+    - userauth no longer works after persistant storage due to confusion between sql lite and mongo modalities
+    - midi player does not work with inport 
     - mp3 player does not allow multiople instanced of player 
     - gpt keeps giving junk code
 
@@ -11,6 +11,7 @@ music flow should work as follows
     - midi player is loaded
     - midi player interprets midi and triggers cube movements and highlighting sequences
     - MP3 plyer plays at same time as midi
+[ decision may be to abandon MIDI in favor of winamp like system ]
 
 user auth flow should work as follows
     - user clicks login to metmask

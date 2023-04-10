@@ -494,17 +494,17 @@ async function onDocumentMouseDown(event) {
             // socket.emit("sceneUpdate", "visiting ");
                 // console.log(parentCube.uuid);
             socket.emit("cubeVisited", parentCube.uuid);
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const audioElement = new Audio('beethoven_op131_allegro_001.mp3');
-            const sourceNode = audioContext.createMediaElementSource(audioElement);
-            analyser = audioContext.createAnalyser();
-            sourceNode.connect(analyser);
-            analyser.fftSize = 256; // Set the FFT size (power of 2, default is 2048)
-            sourceNode.connect(audioContext.destination);
+            // const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            // const audioElement = new Audio('beethoven_op131_allegro_001.mp3');
+            // const sourceNode = audioContext.createMediaElementSource(audioElement);
+            // analyser = audioContext.createAnalyser();
+            // sourceNode.connect(analyser);
+            // analyser.fftSize = 256; // Set the FFT size (power of 2, default is 2048)
+            // sourceNode.connect(audioContext.destination);
 
 
-            audioElement.play();
-            analyzeFrequencyAndHighlightCubes();
+            // audioElement.play();
+            // analyzeFrequencyAndHighlightCubes();
 
             controls.target.copy(parentCube.position);
             // takeSnapshot(parentCube);
@@ -1517,6 +1517,116 @@ async function onUserLogin(userId) {
   updateBalanceDisplay(balance);
 }
 
+<!-- SECTION: 3DCONWAY --> 
+
+
+function createInitial3DGrid(size) {
+  const grid = new Array(size);
+  for (let x = 0; x < size; x++) {
+    grid[x] = new Array(size);
+    for (let y = 0; y < size; y++) {
+      grid[x][y] = new Array(size);
+      for (let z = 0; z < size; z++) {
+        grid[x][y][z] = Math.random() > 0.5 ? 1 : 0; // Random initial state
+      }
+    }
+  }
+  return grid;
+}
+
+// const cubeSize = 8; // Adjust the size of the 3D grid as needed
+
+// for (const uuid in cubes) {
+//   const cube = cubes[uuid];
+//   const initialGrid = createInitial3DGrid(cubeSize);
+//   animate3DGameOfLife(cube, initialGrid);
+// }
+
+function animate3DGameOfLife(cube, grid) {
+  grid = getNextState(grid);
+  console.log(grid);
+  cube.remove(...cube.children); // Remove previous cells
+  visualize3DGrid(grid, cube);
+  setTimeout(() => animate3DGameOfLife(cube, grid), 500); // Set the delay between updates
+}
+
+function visualize3DGrid(grid, cube) {
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid[x].length; y++) {
+      for (let z = 0; z < grid[x][y].length; z++) {
+        if (grid[x][y][z] === 1) {
+          const cell = new THREE.Mesh(geometry, material);
+          cell.position.set(x, y, z);
+          cube.add(cell);
+        }
+      }
+    }
+  }
+}
+
+function getNextState(grid) {
+  const nextGrid = JSON.parse(JSON.stringify(grid));
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid[x].length; y++) {
+      for (let z = 0; z < grid[x][y].length; z++) {
+        const neighborsCount = getNeighborsCount(x, y, z, grid);
+
+        if (grid[x][y][z] === 1) {
+          // Cell is alive
+          if (neighborsCount < 2 || neighborsCount > 3) {
+            // Underpopulation or overpopulation
+            nextGrid[x][y][z] = 0;
+          }
+        } else {
+          // Cell is dead
+          if (neighborsCount === 3) {
+            // Reproduction
+            nextGrid[x][y][z] = 1;
+          }
+        }
+      }
+    }
+  }
+  return nextGrid;
+}
+
+function getNeighborsCount(x, y, z, grid) {
+  let count = 0;
+  for (let i = -1; i <= 1; i++) {
+    for (let j = -1; j <= 1; j++) {
+      for (let k = -1; k <= 1; k++) {
+        if (i === 0 && j === 0 && k === 0) continue; // Ignore the current cell
+        const xi = (x + i + grid.length) % grid.length;
+        const yj = (y + j + grid[0].length) % grid[0].length;
+        const zk = (z + k + grid[0][0].length) % grid[0][0].length;
+        count += grid[xi][yj][zk] === 1 ? 1 : 0;
+      }
+    }
+  }
+  return count;
+}
+
+function seedGameOfLife(cubeGrid, probability) {
+  for (let x = 0; x < cubeGrid.length; x++) {
+    for (let y = 0; y < cubeGrid[0].length; y++) {
+      for (let z = 0; z < cubeGrid[0][0].length; z++) {
+        cubeGrid[x][y][z] = Math.random() < probability ? 1 : 0;
+      }
+    }
+  }
+}
+
+// Example usage:
+const gridSize = 9;
+const cubeGrid = new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0)));
+const initialProbability = 0.3; // Adjust the probability of a cell being alive (0 to 1)
+seedGameOfLife(cubeGrid, initialProbability);
+
+
+animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
 
 
     </script>

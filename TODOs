@@ -1,6 +1,8 @@
 BUGS
 
 
+Cube also not moving highlight system properly
+
 Basically two completely non working systems
     - userauth no longer works after persistant storage due to confusion between sql lite and mongo modalities
     - midi player does not work with inport 
@@ -26,6 +28,10 @@ BIG issues
 
 IDEAS
 
+conways game of life in cubes, syncronized to music
+   -https://github.com/fractastical/game-of-life-threejs
+   -GPT4 also wrote code
+   
 add beethoven bust 
 
 

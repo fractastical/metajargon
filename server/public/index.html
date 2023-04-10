@@ -785,7 +785,7 @@ function analyzeFrequencyAndHighlightCubes() {
     // Determine the index of the cube to highlight based on the normalized frequency
     const cubeIndex = Math.floor(normalizedFrequency * (5*5*5));
     // Highlight the cube with the index cubeIndex
-    highlightCube(cubeIndex);
+    highlightCube(cubeIndex, frequencyData[i]);
   }
 
   // Call this function again using requestAnimationFrame
@@ -793,20 +793,29 @@ function analyzeFrequencyAndHighlightCubes() {
 }
 
 
-function highlightCube(cubeIndex) {
-  // Get the cube from the grid using cubeIndex
+function highlightCube(cubeIndex, frequency) {
+  // Get the cube from the grid using cubeUUID
+  console.log(frequency);
   const cube = allCubes[cubeIndex];
-  //getCubeByIndex(cubeIndex);
+
+  // Define frequency ranges for better control
+  const minFrequency = 20;
+  const maxFrequency = 20000;
+
+  // Map the frequency to lightness in HSL color space (0% to 100%)
+  const lightness = 100 - (((frequency - minFrequency) / (maxFrequency - minFrequency)) * 100);
 
   // Generate a random rainbow hue (0 to 360 degrees)
   const hue = Math.random() * 360;
 
-  // Convert the hue to a CSS HSL color string
-  const color = `hsl(${hue}, 100%, 50%)`;
+  // Convert the hue and lightness to a CSS HSL color string
+  const color = `hsl(${hue}, 100%, ${lightness}%)`;
 
   // Set the cube's material color to the generated color
   cube.material.color.set(color);
 }
+
+
 
 
 // Load the MIDI file

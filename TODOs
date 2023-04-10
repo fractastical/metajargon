@@ -6,7 +6,6 @@ Cube also not moving highlight system properly
 Basically two completely non working systems
     - userauth no longer works after persistant storage due to confusion between sql lite and mongo modalities
     - midi player does not work with inport 
-    - mp3 player does not allow multiople instanced of player 
     - gpt keeps giving junk code
 
 music flow should work as follows
@@ -31,7 +30,7 @@ IDEAS
 conways game of life in cubes, syncronized to music
    -https://github.com/fractastical/game-of-life-threejs
    -GPT4 also wrote code
-   
+
 add beethoven bust 
 
 
@@ -54,6 +53,8 @@ add other types of music and auto transpose (like the japanese flute library)
 
 
 DONE
+
+- mp3 player does not allow multiople instanced of player 
 
 refactor terminal or add more classic logic
 

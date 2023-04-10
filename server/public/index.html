@@ -1296,7 +1296,7 @@ terminal.write('$ ');
 
 // Handle user input
 let inputBuffer = '';
-
+var player; 
 terminal.onData((data) => {
   // If the user pressed Enter, process the command
   if (data === '\r') {
@@ -1335,15 +1335,15 @@ terminal.onData((data) => {
 
     }
     if(command.includes('Beethoven')) {
-      const bplayer = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
-      bplayer.autostart = true;
+      player = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
+      player.autostart = true;
       playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
           // playMelody();
     } else if(command.includes('Chopin')) {
-        const cplayer = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
+      player = new Tone.Player("chopin_nocturne_20.mp3").toDestination();
           playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
           // playMelody();
-          cplayer.autostart = true;
+          player.autostart = true;
     } else if (command == 'play melody') {
       playMelody(); 
 

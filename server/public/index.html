@@ -1521,18 +1521,46 @@ async function onUserLogin(userId) {
 
 
 function createInitial3DGrid(size) {
-  const grid = new Array(size);
+  const cubeGrid = seedGameOfLife(size);
+  const cubeObjects = [];
+
   for (let x = 0; x < size; x++) {
-    grid[x] = new Array(size);
+    cubeObjects[x] = [];
     for (let y = 0; y < size; y++) {
-      grid[x][y] = new Array(size);
+      cubeObjects[x][y] = [];
       for (let z = 0; z < size; z++) {
-        grid[x][y][z] = Math.random() > 0.5 ? 1 : 0; // Random initial state
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshBasicMaterial({color: 'black'});
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(x, y, z);
+        scene.add(cube);
+        cubeObjects[x][y][z] = cube;
       }
     }
   }
-  return grid;
+
+  // Update the cube materials based on the initial Game of Life grid state
+  updateCubeMaterials(cubeGrid, cubeObjects);
+
+  return { cubeGrid, cubeObjects };
 }
+
+function updateCubeMaterials(cubeGrid, cubeObjects) {
+  for (let x = 0; x < cubeGrid.length; x++) {
+    for (let y = 0; y < cubeGrid[0].length; y++) {
+      for (let z = 0; z < cubeGrid[0][0].length; z++) {
+        const alive = cubeGrid[x][y][z] === 1;
+        const cube = cubeObjects[x][y][z];
+        cube.material.color.set(alive ? 'white' : 'black'); // Set the color based on the cell state
+      }
+    }
+  }
+}
+
+// Usage:
+// Assuming you have a 3D array called `cubeObjects` containing your Three.js cubes
+// and `cubeGrid` is the 3D grid state from the `seedGameOfLife` function
+// updateCubeMaterials(cubeGrid, cubeObjects);
 
 // const cubeSize = 8; // Adjust the size of the 3D grid as needed
 
@@ -1623,7 +1651,7 @@ function seedGameOfLife(cubeGrid, probability) {
 const gridSize = 9;
 const cubeGrid = new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0)));
 const initialProbability = 0.3; // Adjust the probability of a cell being alive (0 to 1)
-seedGameOfLife(cubeGrid, initialProbability);
+// seedGameOfLife(cubeGrid, initialProbability);
 
 
 animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));

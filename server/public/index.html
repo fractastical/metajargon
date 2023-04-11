@@ -1637,6 +1637,27 @@ function getNeighborsCount(x, y, z, grid) {
   return count;
 }
 
+function testGridStateMatch(cubeGrid, cubeObjects) {
+  for (let x = 0; x < cubeGrid.length; x++) {
+    for (let y = 0; y < cubeGrid[x].length; y++) {
+      for (let z = 0; z < cubeGrid[x][y].length; z++) {
+        const cubeAlive = cubeGrid[x][y][z] === 1;
+        const cubeColor = cubeObjects[x][y][z].material.color;
+        const expectedColor = cubeAlive ? new THREE.Color('white') : new THREE.Color('black');
+        
+        if (!cubeColor.equals(expectedColor)) {
+          console.error(`Mismatch at (${x}, ${y}, ${z}): expected ${expectedColor.getHexString()}, got ${cubeColor.getHexString()}`);
+          return false;
+        }
+      }
+    }
+  }
+
+  console.log('Test passed: 3D grid state matches Game of Life grid state.');
+  return true;
+}
+
+
 function seedGameOfLife(cubeGrid, probability) {
   for (let x = 0; x < cubeGrid.length; x++) {
     for (let y = 0; y < cubeGrid[0].length; y++) {
@@ -1656,6 +1677,8 @@ const initialProbability = 0.3; // Adjust the probability of a cell being alive 
 
 animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
 
+const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
+testGridStateMatch(cubeGrid, cubeObjects);
 
     </script>
 

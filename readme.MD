@@ -1,20 +1,7 @@
-# Space money
-
-Space Money (to be pronounced "Monet") is the operating title for the Mars Monetary System, a initial monetary system designed as a collaborative project between Joel Dietz and chatGPT.  
  
 
 
 <img width="426" alt="beethoven" src="https://user-images.githubusercontent.com/589191/229956477-89eb496a-23d0-444b-a596-f1e4bd970dce.png">
-
-
-The "seed" version works as follows:  
-  
-1] register an account  
-2] claim a cube  
-3] put something in the cube  
-4] every time someone visits your cube you get some money  
-  
-The first 333 cubes will be free for dope artists and then we will start selling cubes to finance our space missions (Full disclosure this is a work in progress!)
 
 
 # Multiversal Sonnet 0.11
@@ -42,6 +29,21 @@ Come join us there, and let abundance grow.
 
 
 Credits: Joel Dietz + ChatGPT 3.5
+
+
+
+# Space money TBD
+
+Space Money (to be pronounced "Monet") is the operating title for the Mars Monetary System, a initial monetary system designed as a collaborative project between Joel Dietz and chatGPT.  
+
+The "seed" version works as follows:  
+  
+1] register an account  
+2] claim a cube  
+3] put something in the cube  
+4] every time someone visits your cube you get some money  
+  
+The first 333 cubes will be free for dope artists and then we will start selling cubes to finance our space missions (Full disclosure this is a work in progress!)
 
 
 

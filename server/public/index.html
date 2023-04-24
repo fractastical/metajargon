@@ -968,7 +968,7 @@ playAudioBuffer();
 
     
     // Play the notes associated with the cubes in the journey
-    async function playJourney(path) {
+    async function playJourney(path, color) {
 
       const clock = new THREE.Clock();
 
@@ -1027,6 +1027,14 @@ playAudioBuffer();
 
                   // Move the camera to the current cube's position with an offset
                   const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 5));
+
+                  const outline = allCubes[journeyOrder[journeyIndex]].getObjectByProperty("type", "LineSegments");
+                    if (outline) {
+                        // console.log("red-ing " + cubeId);
+
+                      outline.material.color.set("red");
+                    }
+
                   // TODO: come back and replays on your local machine
                   // socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
 
@@ -1333,6 +1341,12 @@ terminal.onData((data) => {
       }
 
 
+    }
+    if(command.includes('Bach')) {
+      player = new Tone.Player("bach_remixbwv1007.mp3").toDestination();
+      player.autostart = true;
+      playJourney([61,63,65,67,69,68,66,64,24]);
+          // playMelody();
     }
     if(command.includes('Beethoven')) {
       player = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
@@ -1677,8 +1691,8 @@ const initialProbability = 0.3; // Adjust the probability of a cell being alive 
 
 animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
 
-const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
-testGridStateMatch(cubeGrid, cubeObjects);
+// const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
+// testGridStateMatch(cubeGrid, cubeObjects);
 
     </script>
 

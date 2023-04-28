@@ -1708,8 +1708,8 @@ earth();
 function earth() {
 
     // Create Earth sphere
-    const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const earthTexture = new THREE.TextureLoader().load('https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg');
+    const earthGeometry = new THREE.SphereGeometry(32, 32, 32);
+    const earthTexture = new THREE.TextureLoader().load('/img/world.topo.bathy.200412.3x5400x2700.jpg');
     const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     allCubes[64].add(earth);

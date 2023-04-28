@@ -1895,9 +1895,60 @@ function createMovingSphere(arc, color) {
   animateSphere();
 }
 
+<!-- SECTION: MARS --> 
 
+function createMarker(latitude, longitude, color, planet) {
+  const markerGeometry = new THREE.SphereGeometry(0.005, 32, 32);
+  const markerMaterial = new THREE.MeshBasicMaterial({ color: color });
+  const marker = new THREE.Mesh(markerGeometry, markerMaterial);
 
+  const phi = (90 - latitude) * (Math.PI / 180);
+  const theta = (longitude + 180) * (Math.PI / 180);
+  const radius = (planet === 'mars') ? 1.01 : 1.01;
 
+  marker.position.x = -radius * Math.sin(phi) * Math.cos(theta);
+  marker.position.y = radius * Math.cos(phi);
+  marker.position.z = radius * Math.sin(phi) * Math.sin(theta);
+
+  return marker;
+}
+
+function mars() {
+
+      // Create Mars
+      const marsRadius = 1.88;
+      const marsGeometry = new THREE.SphereGeometry(marsRadius, 32, 32);
+      const marsTexture = new THREE.TextureLoader().load('img/2k_mars.jpeg'); // Use an appropriate Mars texture
+      const marsMaterial = new THREE.MeshBasicMaterial({ map: marsTexture });
+      const mars = new THREE.Mesh(marsGeometry, marsMaterial);
+      allCubes[88].add(mars);
+
+      // Add markers for Mars settlements
+      const marsSettlement1 = createMarker(12.74, 77.59, marsRadius, 0xff0000);
+      const marsSettlement2 = createMarker(-23.7, 133.88, marsRadius, 0x00ff00);
+
+      // Create an arc between settlements
+      const marsArc = createArc(marsSettlement1.position, marsSettlement2.position, 0xffff00);
+
+      // Animate a sphere moving along the arc
+      const marsMovingSphere = createMovingSphere(marsArc, 0.005, 0.02, 0x0000ff);
+
+      // Set camera position
+      camera.position.z = 5;
+
+      // Animate the scene
+      function animate() {
+        requestAnimationFrame(animate);
+        mars.rotation.y += 0.001;
+        // marsMovingSphere.position.copy(marsArc.getPointAt(marsMovingSphere.userData.t));
+        // marsMovingSphere.userData.t += marsMovingSphere.userData.speed;
+        // if (marsMovingSphere.userData.t > 1) marsMovingSphere.userData.t = 0;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+}
+mars();
 
 <!-- SECTION: ASCIIART --> 
 

@@ -1361,6 +1361,7 @@ terminal.onData((data) => {
           // playMelody();
     }
     if(command.includes('Beethoven')) {
+      changeTextCubeColor(beethovenCube, 'red');
       player = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
       player.autostart = true;
       playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
@@ -1739,16 +1740,26 @@ async function loadTextFromFile(url) {
 }
 
 async function createTexturedCube(textUrl, width, height) {
-  console.log("createTexturedCube");
-  const text = await loadTextFromFile(textUrl);
-  const canvas = createTextCanvas(text, width, height);
-  const texture = new THREE.CanvasTexture(canvas);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
-  const geometry = new THREE.BoxGeometry(100, 100, 100);
-    console.log("creating canvas");
+  const text = await fetch(textUrl).then(response => response.text());
+  const textCanvas = createTextCanvas(text, width, height);
+  const texture = new THREE.CanvasTexture(textCanvas);
+
+  const geometry = new THREE.BoxGeometry(40, 40, 40);
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.4
+  });
 
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
+
+  const edges = new THREE.EdgesGeometry(geometry);
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+  const wireframe = new THREE.LineSegments(edges, lineMaterial);
+
+  cube.add(wireframe);
   return cube;
 }
 
@@ -1771,12 +1782,39 @@ function createTextCanvas(text, width, height, fontSize = 5) {
   return canvas;
 }
 
+function updateTextColor(cube, newColor) {
+  const material = cube.material;
+  
+  for (let i = 0; i < 6; i++) {
+    if (material[i] && material[i].map) {
+      const texture = material[i].map;
+      const canvas = texture.image;
+      const ctx = canvas.getContext('2d');
+      const text = ctx.canvas.innerHTML;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = newColor;
+      ctx.font = '5px monospace';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+      texture.needsUpdate = true;
+    }
+  }
+}
 
 const textUrl = 'beethoven.txt';
 const width = 512;
 const height = 512;
 
-createTexturedCube(textUrl, width, height);
+const beethovenCube = createTexturedCube(textUrl, width, height);
+
+async function changeTextCubeColor(cubePromise, newColor) {
+  const cube = await cubePromise;
+  updateTextColor(cube, newColor);
+}
 
 
 

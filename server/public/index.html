@@ -1277,6 +1277,11 @@ async function takeSnapshot(cube) {
 
 <!---  SECTION: terminal -->
 
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!  
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
 
 // Create a new terminal instance
 const terminal = new Terminal();
@@ -1313,7 +1318,14 @@ terminal.onData((data) => {
     // Process the command
     console.log("User typed command:", command);
     //C4 D4 E4 F4 G4 A4 B4 C5
+    if(isNumeric(command))
+    {
+      // console.log ("isN");
+      const lerpFactor = 1;
+      const targetPosition = allCubes[parseInt(command)].position.clone().add(new THREE.Vector3(0, 0, 8));
+      camera.position.lerp(targetPosition, lerpFactor);
 
+    }
     if (lastAction == "claimed"){
       socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube, "name":command});
       allCubes[selectedCube].name = "command";
@@ -1690,7 +1702,30 @@ const initialProbability = 0.3; // Adjust the probability of a cell being alive 
 
 
 animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
+earth();
 
+function earth() {
+
+    // Create Earth sphere
+    const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const earthTexture = new THREE.TextureLoader().load('https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg');
+    const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    allCubes[64].add(earth);
+
+    // Position camera and start animation
+    // camera.position.z = 3;
+    const animate = function () {
+      requestAnimationFrame(animate);
+
+      // Rotate Earth
+      earth.rotation.y += 0.005;
+
+      renderer.render(scene, camera);
+    };
+
+
+}
 // const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
 // testGridStateMatch(cubeGrid, cubeObjects);
 

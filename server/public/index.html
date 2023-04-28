@@ -1701,7 +1701,7 @@ const initialProbability = 0.3; // Adjust the probability of a cell being alive 
 // seedGameOfLife(cubeGrid, initialProbability);
 
 
-animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
+// animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
 earth();
 
 function earth() {
@@ -1726,6 +1726,60 @@ function earth() {
 
 
 }
+
+<!-- SECTION: ASCIIART --> 
+
+async function loadTextFromFile(url) {
+  console.log("loading file");
+
+  const response = await fetch(url);
+  const text = await response.text();
+  return text;
+
+}
+
+async function createTexturedCube(textUrl, width, height) {
+  console.log("createTexturedCube");
+  const text = await loadTextFromFile(textUrl);
+  const canvas = createTextCanvas(text, width, height);
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.MeshBasicMaterial({ map: texture });
+  const geometry = new THREE.BoxGeometry(100, 100, 100);
+    console.log("creating canvas");
+
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+  return cube;
+}
+
+function createTextCanvas(text, width, height, fontSize = 5) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, width, height);
+  ctx.font = `${fontSize}px monospace`;
+  ctx.fillStyle = 'black';
+  const lines = text.split('\n');
+  const lineHeight = fontSize + 2;
+  let yPos = fontSize;
+  for (const line of lines) {
+    ctx.fillText(line, 0, yPos);
+    yPos += lineHeight;
+  }
+  return canvas;
+}
+
+
+const textUrl = 'beethoven.txt';
+const width = 512;
+const height = 512;
+
+createTexturedCube(textUrl, width, height);
+
+
+
 // const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
 // testGridStateMatch(cubeGrid, cubeObjects);
 

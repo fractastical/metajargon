@@ -555,8 +555,8 @@ async function onDocumentMouseDown(event) {
                     child.material.transparent = true;
                     child.material.needsUpdate = true;
                 } else if (child.isMesh) {
-                    child.rotation.x += 0.002;
-                    child.rotation.y += 0.002;
+                    // child.rotation.x += 0.002;
+                    // child.rotation.y += 0.002;
                 }
             });
 
@@ -1704,29 +1704,58 @@ const initialProbability = 0.3; // Adjust the probability of a cell being alive 
 
 // animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
 earth();
+<!-- SECTION: NETWORKSTATE --> 
 
 function earth() {
 
     // Create Earth sphere
-    const earthGeometry = new THREE.SphereGeometry(32, 32, 32);
+    const earthGeometry = new THREE.SphereGeometry(10, 10, 10);
     const earthTexture = new THREE.TextureLoader().load('/img/world.topo.bathy.200412.3x5400x2700.jpg');
     const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     allCubes[64].add(earth);
+    // Add a community marker off the coast of Honduras
+    const communityLat = 16.5;
+    const communityLon = -86.5;
+    const communityRadius = 10.01;
 
-    // Position camera and start animation
+    const communityPosition = latLongToVector3(communityLat, communityLon, communityRadius);
+
+    const communityGeometry = new THREE.SphereGeometry(.2, 32, 32);
+    const communityMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const communityMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+
+    communityMarker.position.copy(communityPosition);
+    earth.add(communityMarker);
+
+    // Set camera position and animate
     // camera.position.z = 3;
+
     const animate = function () {
       requestAnimationFrame(animate);
 
-      // Rotate Earth
-      earth.rotation.y += 0.005;
+      earth.rotation.y += 0.001;
 
       renderer.render(scene, camera);
     };
 
+    animate();
+
 
 }
+
+function latLongToVector3(lat, lon, radius) {
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta)
+  );
+}
+
+
 
 <!-- SECTION: ASCIIART --> 
 
@@ -1744,7 +1773,7 @@ async function createTexturedCube(textUrl, width, height) {
   const textCanvas = createTextCanvas(text, width, height);
   const texture = new THREE.CanvasTexture(textCanvas);
 
-  const geometry = new THREE.BoxGeometry(40, 40, 40);
+  const geometry = new THREE.BoxGeometry(10, 10, 10);
   const material = new THREE.MeshBasicMaterial({
     map: texture,
     side: THREE.DoubleSide,

@@ -1782,6 +1782,7 @@ function createTextCanvas(text, width, height, fontSize = 5) {
   return canvas;
 }
 
+// TODO: fix. Another GPT #fail
 function updateTextColor(cube, newColor) {
   const material = cube.material;
   
@@ -1790,7 +1791,7 @@ function updateTextColor(cube, newColor) {
       const texture = material[i].map;
       const canvas = texture.image;
       const ctx = canvas.getContext('2d');
-      const text = ctx.canvas.innerHTML;
+      const text = textContent[i]; // Use the saved text content
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 

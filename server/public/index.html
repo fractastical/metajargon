@@ -1707,6 +1707,25 @@ earth();
 
 <!-- SECTION: NETWORKSTATE --> 
 
+class ArcCurve extends THREE.Curve {
+  constructor(start, end, height) {
+    super();
+    this.start = start;
+    this.end = end;
+    this.height = height;
+  }
+
+  getPoint(t) {
+    const x = this.start.x + t * (this.end.x - this.start.x);
+    const y = this.start.y + t * (this.end.y - this.start.y);
+    const z = this.start.z + t * (this.end.z - this.start.z);
+    const arcHeight = (1 - 2 * t) * this.height;
+
+    return new THREE.Vector3(x, y + arcHeight, z);
+  }
+}
+
+
 function earth() {
 
     // Create Earth sphere
@@ -1725,10 +1744,10 @@ function earth() {
 
     const communityGeometry = new THREE.SphereGeometry(.2, 32, 32);
     const communityMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const communityMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    const hondurasMarker = new THREE.Mesh(communityGeometry, communityMaterial);
 
-    communityMarker.position.copy(communityPosition);
-    earth.add(communityMarker);
+    hondurasMarker.position.copy(communityPosition);
+    earth.add(hondurasMarker);
     
 
     const catawbaMarker = new THREE.Mesh(communityGeometry, communityMaterial);
@@ -1760,9 +1779,17 @@ function earth() {
 
 
 // Create animated arcs from other locations to Luštica Bay
+
+
 const hondurasToLusticaBayArc = createAnimatedArc(prosperaCoords, lusticaBayCoords, 0xff0000, earth);
 const catawbaToLusticaBayArc = createAnimatedArc(catawbaCoords, lusticaBayCoords, 0xff00ff, earth);
 const ubudToLusticaBayArc = createAnimatedArc(ubudCoords, lusticaBayCoords, 0xffff00, earth) ;
+
+// TODO: fix, fails on error  "Uncaught TypeError: arc.getPointAt is not a function"
+ 
+// const hondurasToLusticaBayArc = createArc(hondurasMarker.position, lusticaBayMarker.position, 0xff0000);
+// const catawbaToLusticaBayArc = createArc(catawbaMarker.position, lusticaBayMarker.position, 0xff00ff);
+// const ubudToLusticaBayArc = createArc(ubudMarker.position, lusticaBayMarker.position, 0xffff00);
 
 // createMovingSphere(hondurasToLusticaBayArc.geometry, 0xff0000);
 // createMovingSphere(catawbaToLusticaBayArc.geometry, 0xff00ff);
@@ -1795,15 +1822,43 @@ function latLongToVector3(lat, lon, radius) {
   );
 }
 
+function createArc(start, end, color) {
+  const midPoint = new THREE.Vector3(
+    (start.x + end.x) / 2,
+    (start.y + end.y) / 2 + 0.3,
+    (start.z + end.z) / 2
+  );
+
+  const arcCurve = new THREE.CatmullRomCurve3([start, midPoint, end], false, 'catmullrom', 0.5);
+  const arcPoints = arcCurve.getPoints(50);
+  const arcGeometry = new THREE.BufferGeometry().setFromPoints(arcPoints);
+  const arcMaterial = new THREE.LineBasicMaterial({ color: color });
+  const arc = new THREE.Line(arcGeometry, arcMaterial);
+  scene.add(arc);
+  return arcCurve;
+}
+
+
+// function createArc(start, end, color) {
+//   const arcCurve = new ArcCurve(start, end, 0.3);
+//   const arcPoints = arcCurve.getPoints(50);
+//   const arcGeometry = new THREE.BufferGeometry().setFromPoints(arcPoints);
+//   const arcMaterial = new THREE.LineBasicMaterial({ color: color });
+//   const arc = new THREE.Line(arcGeometry, arcMaterial);
+//   scene.add(arc);
+//   return arcCurve;
+// }
+
+
 function createAnimatedArc(startCoords, endCoords, color, earth) {
   const arc = new THREE.CatmullRomCurve3([
-    latLongToVector3(startCoords.lat, startCoords.lon, globeRadius + .7),
+    latLongToVector3(startCoords.lat, startCoords.lon, globeRadius + .8),
     latLongToVector3(
       (startCoords.lat + endCoords.lat) / 2,
       (startCoords.lon + endCoords.lon) / 2,
-      globeRadius + .9
+      globeRadius + 1
     ),
-    latLongToVector3(endCoords.lat, endCoords.lon, globeRadius + .7),
+    latLongToVector3(endCoords.lat, endCoords.lon, globeRadius + .8),
   ]);
 
   const points = arc.getPoints(50);

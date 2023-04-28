@@ -132,6 +132,8 @@
             if (outline) {
                      console.log("blue-ing visited " + cubeId);
                     selectedCube = cubeId;
+                    // selectedCube.xPos;
+
                     outline.material.color.set("blue");
                     const synth = new Tone.Synth().toDestination();
                     Tone.start();
@@ -1872,6 +1874,9 @@ function createAnimatedArc(startCoords, endCoords, color, earth) {
   return line;
 }
 
+
+
+
 function createMovingSphere(arc, color) {
   const sphereGeometry = new THREE.SphereGeometry(0.05, 32, 32);
   const sphereMaterial = new THREE.MeshBasicMaterial({ color: color });
@@ -1916,7 +1921,7 @@ function createMarker(latitude, longitude, color, planet) {
 function mars() {
 
       // Create Mars
-      const marsRadius = 1.88;
+      const marsRadius = 10.88;
       const marsGeometry = new THREE.SphereGeometry(marsRadius, 32, 32);
       const marsTexture = new THREE.TextureLoader().load('img/2k_mars.jpeg'); // Use an appropriate Mars texture
       const marsMaterial = new THREE.MeshBasicMaterial({ map: marsTexture });
@@ -1934,7 +1939,7 @@ function mars() {
       const marsMovingSphere = createMovingSphere(marsArc, 0.005, 0.02, 0x0000ff);
 
       // Set camera position
-      camera.position.z = 5;
+      // camera.position.z = 5;
 
       // Animate the scene
       function animate() {
@@ -1948,7 +1953,42 @@ function mars() {
       animate();
 
 }
+
+
+function tradeRoute() {
+
+  // Create the cube
+  const cubeGeometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
+  const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  scene.add(cube);
+
+  console.log(allCubes[63]);
+  // Position of Earth and Mars
+  const earthPosition = new THREE.Vector3(allCubes[63].position.x, allCubes[63].position.y, allCubes[63].position.z);
+  const marsPosition = new THREE.Vector3(allCubes[88].position.x, allCubes[88].position.y, allCubes[88].position.z); // Adjust the position of Mars as needed
+  console.log(earthPosition);
+  console.log(marsPosition);
+
+  // Animation
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+    console.log(t);
+    // Update the cube position
+    t += 0.001;
+    if (t > 1) {
+      t = 0;
+    }
+    cube.position.lerpVectors(earthPosition, marsPosition, t);
+  }
+  animate();
+
+
+}
 mars();
+tradeRoute();
 
 <!-- SECTION: ASCIIART --> 
 

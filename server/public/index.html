@@ -51,7 +51,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.110.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.30/Tone.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.min.js"></script>
-<!-- DUD from GPT-4 <script src="https://steamcommunity.com/public/javascript/webui/webui.js"></script> -->
+<!-- DUD from GPT-4 <script src="https://steamprospera.com/public/javascript/webui/webui.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <!--<script src="https://cdn.skypack.dev/pin/three@v0.136.0-4Px7Kx1INqCFBN0tXUQc/mode=imports,min/unoptimized/examples/jsm/renderers/CSS3DRenderer.js"></script>-->
 <!-- <script src="https://threejs.org/examples/jsm/renderers/CSS3DRenderer.js"></script> -->
@@ -769,7 +769,7 @@ const API_KEY = '633FAC6F87C73A7A24676D7C4D4D6AC0';
 function steamLogin() {
   playJourney();
   // var login = new SteamLogin();
-  // login.openidPopup('https://steamcommunity.com/openid/', 'https://yourwebsite.com/auth', handleLoginResponse);
+  // login.openidPopup('https://steamprospera.com/openid/', 'https://yourwebsite.com/auth', handleLoginResponse);
 }
 
 // Handle the login response
@@ -1857,52 +1857,52 @@ function earth() {
     const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     allCubes[123].add(earth);
-    // Add a community marker off the coast of Honduras
-    const communityLat = 16.5;
-    const communityLon = -86.5;
-    const communityRadius = globeRadius + 0.5;
+    // Add a prospera marker off the coast of Honduras
+    const prosperaLat = 16.5;
+    const prosperaLon = -86.5;
+    const prosperaRadius = globeRadius + 0.5;
     const prosperaCoords = { lat: 16.5, lon: -86.5 };
 
-    const communityPosition = latLongToVector3(communityLat, communityLon, communityRadius);
+    const prosperaPosition = latLongToVector3(prosperaLat, prosperaLon, prosperaRadius);
 
-    const communityGeometry = new THREE.SphereGeometry(.2, 32, 32);
-    const communityMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const hondurasMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    const prosperaGeometry = new THREE.SphereGeometry(.2, 32, 32);
+    const prosperaMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const hondurasMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
 
-    hondurasMarker.position.copy(communityPosition);
+    hondurasMarker.position.copy(prosperaPosition);
     earth.add(hondurasMarker);
     
 
-    const catawbaMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    const catawbaMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
     const catawbaLat = 35.5849;
     const catawbaLon = -81.2078;
     const catawbaCoords = { lat: 35.5849, lon: -81.2078 };
 
-    const catawbaMarkerPosition = latLongToVector3(catawbaLat, catawbaLon, communityRadius);
+    const catawbaMarkerPosition = latLongToVector3(catawbaLat, catawbaLon, prosperaRadius);
     catawbaMarker.position.copy(catawbaMarkerPosition);
     earth.add(catawbaMarker);
 
     // Luštica Bay, Montenegro
 
-    const lustica = new THREE.Mesh(communityGeometry, communityMaterial);
+    const lustica = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
 
     const lusticaBayCoords = { lat: 42.3919, lon: 18.6506 };
-    const lusticaBayMarkerPosition = latLongToVector3(lusticaBayCoords.lat, lusticaBayCoords.lon, communityRadius);
-    const lusticaBayMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    const lusticaBayMarkerPosition = latLongToVector3(lusticaBayCoords.lat, lusticaBayCoords.lon, prosperaRadius);
+    const lusticaBayMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
     lusticaBayMarker.position.copy(lusticaBayMarkerPosition);
     earth.add(lusticaBayMarker);
 
     // Parq Ubud, Bali
     const ubudCoords = { lat: -8.5069, lon: 115.2625 };
-    const ubudMarkerPosition = latLongToVector3(ubudCoords.lat, ubudCoords.lon, communityRadius);
-    const ubudMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    const ubudMarkerPosition = latLongToVector3(ubudCoords.lat, ubudCoords.lon, prosperaRadius);
+    const ubudMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
     ubudMarker.position.copy(ubudMarkerPosition);
     earth.add(ubudMarker);
 
 
     const zanzibarCoords = { lat: -6.1652, lon: 39.1989 };
-    const zanzibarMarkerPosition = latLongToVector3(zanzibarCoords.lat, zanzibarCoords.lon, communityRadius);
-    const zanzibarMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    const zanzibarMarkerPosition = latLongToVector3(zanzibarCoords.lat, zanzibarCoords.lon, prosperaRadius);
+    const zanzibarMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
     ubudMarker.position.copy(zanzibarMarkerPosition);
     earth.add(ubudMarker);
 
@@ -1923,9 +1923,10 @@ const zanzibarToLusticaBayArc = createAnimatedArc(zanzibarCoords, lusticaBayCoor
 // const hondurasToLusticaBayArc = createArc(hondurasMarker.position, lusticaBayMarker.position, 0xff0000);
 // const catawbaToLusticaBayArc = createArc(catawbaMarker.position, lusticaBayMarker.position, 0xff00ff);
 // const ubudToLusticaBayArc = createArc(ubudMarker.position, lusticaBayMarker.position, 0xffff00);
+console.log(hondurasToLusticaBayArc);
 
-// createMovingSphere(hondurasToLusticaBayArc.geometry, 0xff0000);
-// createMovingSphere(catawbaToLusticaBayArc.geometry, 0xff00ff);
+createMovingSphere(hondurasToLusticaBayArc, 0xff0000);
+// createMovingSphere(catawbaToLusticaBayArc, 0xff00ff);
 // createMovingSphere(ubudToLusticaBayArc.geometry, 0xffff00);
 
     // Set camera position and animate
@@ -2002,7 +2003,7 @@ function createAnimatedArc(startCoords, endCoords, color, earth) {
 
   earth.add(line);
 
-  return line;
+  return arc;
 }
 
 

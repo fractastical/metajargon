@@ -13,7 +13,7 @@
               top: 0;
               left: 0;
               right: 0;
-              height: 100px;
+              height: 50px;
               display: flex;
               align-items: center;
               justify-content: flex-end;
@@ -82,13 +82,15 @@
 <script src="js/icequine.js"></script>
 <script src="js/0parser.js"></script>
 <script src="js/lambdaTerms.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/three-gltf-loader@1.111.0/index.min.js
+"></script>
 
 <script>
     var mol = "S 1 2 3^K 3^K 2";
     // var mol = "chemSKI rewrite terminSK. The node S plays two roles: as the combinator S and as a fanout. The node K behaves as combinator K but also as a termination.</a>";
 
 </script>
-
 
 <link rel="stylesheet" type="text/css" href="css/icequine-on-white.css">
 
@@ -1420,7 +1422,7 @@ terminal.onData((data) => {
       // console.log ("isN");
       const lerpFactor = 1;
       selectedCubeIndex = parseInt(command);
-      const targetPosition = allCube[selectedCubeIndex].position.clone().add(new THREE.Vector3(0, 0, 8));
+      const targetPosition = allCubes[selectedCubeIndex].position.clone().add(new THREE.Vector3(0, 0, 8));
       camera.position.lerp(targetPosition, lerpFactor);
 
     }
@@ -1446,6 +1448,37 @@ terminal.onData((data) => {
       loop();
 
   }
+  if(command == 'castle') {
+
+          // Load the GLB file using the GLTFLoader
+          const loader = new GLTFLoader();
+          loader.load('https://multiversal.s3.us-east-2.amazonaws.com/5bd62a2a-0668-4ea2-b104-c575ba4fade3-1682691738/output.glb', (gltf) => {
+            // Create an Object3D to hold the GLB model
+            const model = new THREE.Object3D();
+
+            // Add the GLB model to the Object3D
+            model.add(gltf.scene);
+
+            // Scale and position the model to fit inside the cube
+            model.scale.set(0.1, 0.1, 0.1); // Adjust the scale as needed
+            model.position.set(0, 0, 0); // Adjust the position as needed
+
+            // Add the model to the cube
+            allCubes[selectedCubeIndex].add(model);
+          });
+
+          // Your animation loop
+          function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+          }
+
+          animate();
+
+}
+
+
+  
     if(command == 'h2o' ||  command == 'water' ) {
       // console.log("typed ox");
       h2o(selectedCubeIndex, (Math.random() / 5));

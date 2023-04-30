@@ -2312,7 +2312,118 @@ animate();
 }
 
 
+async function fetchMoleculeData(query) {
+  const url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${query}/record/SDF/?record_type=3d&response_type=display`;
+  const response = await fetch(url);
+  const sdfData = await response.text();
+  return sdfData;
+}
 
+fetchMoleculeData('water').then((sdfData) => {
+  console.log(sdfData);
+});
+
+function anymolecule(name, startingCube = 1)
+{
+
+
+}
+function parseSDF(sdfData) {
+  const lines = sdfData.split('\n');
+  const atomCount = parseInt(lines[3].slice(0, 3).trim(), 10);
+  const bondCount = parseInt(lines[3].slice(3, 6).trim(), 10);
+
+  const atoms = [];
+  for (let i = 4; i < 4 + atomCount; i++) {
+    const line = lines[i];
+    const x = parseFloat(line.slice(0, 10).trim());
+    const y = parseFloat(line.slice(10, 20).trim());
+    const z = parseFloat(line.slice(20, 30).trim());
+    const symbol = line.slice(31, 34).trim();
+    atoms.push({ symbol, x, y, z });
+  }
+
+  const bonds = [];
+  for (let i = 4 + atomCount; i < 4 + atomCount + bondCount; i++) {
+    const line = lines[i];
+    const atom1 = parseInt(line.slice(0, 3).trim(), 10);
+    const atom2 = parseInt(line.slice(3, 6).trim(), 10);
+    const bondType = parseInt(line.slice(6, 9).trim(), 10);
+    bonds.push({ atom1, atom2, bondType });
+  }
+
+  return { atoms, bonds };
+}
+
+fetchMoleculeData('water').then((sdfData) => {
+  const molecule = parseSDF(sdfData);
+  console.log(molecule);
+});
+
+// Helper function to create spheres for atoms
+function createAtomSphere(color, radius, position) {
+  const geometry = new THREE.SphereGeometry(radius, 32, 32);
+  const material = new THREE.MeshPhongMaterial({ color });
+  const sphere = new THREE.Mesh(geometry, material);
+  sphere.position.set(position.x, position.y, position.z);
+  return sphere;
+}
+
+// Helper function to create cylinders for bonds
+function createBondCylinder(color, start, end, radius) {
+  const direction = new THREE.Vector3().subVectors(end, start);
+  const length = direction.length();
+  const geometry = new THREE.CylinderGeometry(radius, radius, length, 32);
+  const material = new THREE.MeshPhongMaterial({ color });
+  const cylinder = new THREE.Mesh(geometry, material);
+
+  cylinder.position.copy(start).addScaledVector(direction, 0.5);
+  cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+  return cylinder;
+}
+
+// Add lighting to the scene
+// const light = new THREE.PointLight(0xffffff, 1, 1000);
+// light.position.set(50, 50, 50);
+// scene.add(light);
+
+// Assuming you have parsed the SDF data and have the atoms and bonds information
+const molecule = parseSDF(sdfData);
+const atomColorMap = { O: 0xff0000, H: 0x00ff00 };
+const atomRadiusMap = { O: 0.5, H: 0.25 };
+const bondColor = 0x0000ff;
+const bondRadius = 0.1;
+
+// Create atoms and add them to the scene
+molecule.atoms.forEach((atom) => {
+  const sphere = createAtomSphere(atomColorMap[atom.symbol], atomRadiusMap[atom.symbol], new THREE.Vector3(atom.x, atom.y, atom.z));
+  scene.add(sphere);
+});
+
+// Create bonds and add them to the scene
+molecule.bonds.forEach((bond) => {
+  const start = new THREE.Vector3(
+    molecule.atoms[bond.atom1 - 1].x,
+    molecule.atoms[bond.atom1 - 1].y,
+    molecule.atoms[bond.atom1 - 1].z
+  );
+  const end = new THREE.Vector3(
+    molecule.atoms[bond.atom2 - 1].x,
+    molecule.atoms[bond.atom2 - 1].y,
+    molecule.atoms[bond.atom2 - 1].z
+  );
+  const cylinder = createBondCylinder(bondColor, start, end, bondRadius);
+  scene.add(cylinder);
+});
+
+// camera.position.z = 5;
+
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+animate();
 
 
 // var whichP = location.hash;

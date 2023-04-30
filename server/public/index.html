@@ -539,6 +539,8 @@ function createGridOfCubes() {
         camera.position.z = 300;
 
         const raycaster = new THREE.Raycaster();
+        const clickableObjects = [];
+
         const mouse = new THREE.Vector2();
         let clickedObject = null;
 
@@ -1849,6 +1851,7 @@ class ArcCurve extends THREE.Curve {
   }
 }
 
+var zuzaluMarker;
 
 function earth() {
 
@@ -1889,10 +1892,12 @@ function earth() {
     const zuzaluCoords = { lat: 42.3919, lon: 18.6506 };
     const zuzaluMarkerPosition = latLongToVector3(zuzaluCoords.lat, zuzaluCoords.lon, prosperaRadius);
     const zuzaluMaterial = new THREE.MeshBasicMaterial({ color:zuzaluColor });
-    const zuzaluMarker = new THREE.Mesh(prosperaGeometry, zuzaluMaterial);
+    zuzaluMarker = new THREE.Mesh(prosperaGeometry, zuzaluMaterial);
 
     zuzaluMarker.position.copy(zuzaluMarkerPosition);
     earth.add(zuzaluMarker);
+    clickableObjects.push(zuzaluMarker);
+
 
     // Parq Ubud, Bali
     const ubudCoords = { lat: -8.5069, lon: 115.2625 };
@@ -2013,6 +2018,27 @@ function createAnimatedArc(startCoords, endCoords, color, earth) {
   return arc;
 }
 
+
+function onCanvasClick(event) {
+  event.preventDefault();
+
+  // Calculate mouse position in normalized device coordinates
+  const mouse = new THREE.Vector2();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  // Update the picking ray with the camera and mouse position
+  raycaster.setFromCamera(mouse, camera);
+
+  // Calculate objects intersecting the picking ray
+  const intersects = raycaster.intersectObjects(clickableObjects);
+
+  // Check if Lustica Bay marker was clicked and open the URL in a new tab
+  if (intersects.length > 0 && intersects[0].object === zuzaluMarker) {
+    console.log("zuzalu clicked");
+    window.open("https://app.tryspace.com/T9Dh6wP/desert", "_blank");
+  }
+}
 
 
 
@@ -2311,6 +2337,8 @@ animate();
 
 // const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
 // testGridStateMatch(cubeGrid, cubeObjects);
+renderer.domElement.addEventListener("click", onCanvasClick, false);
+
 
     </script>
 

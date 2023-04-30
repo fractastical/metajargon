@@ -98,57 +98,6 @@
 
     <div class="login-section">
 
-      <div class="row">
-        <div class="col-2 menu" style="text-align: left;">
-          <div class="scol-12"></div>
-          <div class="scol-12"></div>
-          <div class="scol-12"> <span3  id="buttonAge" class="image2" ></span3></div>
-          <div class="scol-12"> <span3  id="whichChem" class="image2" ></span3></div>
-         <div class="scol-12"> <!-- 
-            <span3 id="agetext">&nbsp;</span3><br><br><br><br>
-            <span3  id="buttonAge" class="image2" ></span3>--> <br><br><br>
-            <span3 id="chemtext">chemSKI</span3>  
-            <br><br>
-            <span3  id="whichChem2" class="image2" ></span3> 
-          </div> 
-        </div>
-        <div class="col-7 menu">
-          <ul>
-            <li>    
-              <span2> 
-                <select  class="theme-construction" id="listofmols" onchange="selectionLambda();">
-                  <option value="SKInote">MENU</option>
-                  <option value="SKKI">SKKI --> I </option>
-                  <option value="SIISII"> (SII)(SII) </option>
-                  <option value="SKILAMBDAEX"> (&lambda;x.&lambda;y.y x x) K S I </option>
-                  <option value="IA">chemSKI and chemSKI+&lambda; rewrite I-A</option>
-                  <option value="SK">only chemSKI rewrite S-K (at port 2 of S)</option>
-                  <option value="SK3">only chemSKI rewrite S-K (at port 3 of S)</option>
-                  <option value="AS">only chemSKI rewrite A-S</option>
-                  <option value="IS">only chemSKI rewrite I-S</option>
-                  <option value="KS">only chemSKI rewrite K-S</option>
-                  <option value="SS1">only chemSKI rewrite S-S</option>
-                  <option value="AK">chemSKI and chemSKI+&lambda; rewrite A-K</option>
-                  <option value="KAB">chemSKI and chemSKI+&lambda; rewrite K-A </option>
-                  <option value="SABC">chemSKI and chemSKI+&lambda; rewrite S-A</option>
-                </select>
-              </span2> 
-            </li>
-            <li> &lambda; or SKI -> mol &nbsp;<div><textarea id="inputlambda" class="image2" style="height: 80px; width: 100%;  background-color: #010101; 
-       color: #6495ED;  font-size: 14px;"></textarea> </div>
-            </li>
-            <li> mol -> &lambda; or SKI &nbsp;<div><textarea id="evaluation" class="image2" style="height: 80px; width: 100%;  background-color: #010101; 
-       color: #6495ED;  font-size: 14px;"></textarea> </div></li>
-            <li>
-               <span3>rewrites weights slider</span3> <div class="slidecontainer">GROW &nbsp;<input class="slider" type="range" min="0" max="100" value="50" id="rewritesRange"> &nbsp; SLIM</div>
-            </li>
-          </ul>
-        </div>
-        <div class="col-3 menu" style="text-align: left;">
-          <span3 style="text-align: left;"> nodes &sim; </span3><span id="nodenumber"></span><br><br>
-          <span3 id="errors"></span3>
-        </div>
-      </div>
       
         <!-- <div class="row">
           <div class="col-2 menu">
@@ -1483,6 +1432,13 @@ terminal.onData((data) => {
       loop();
 
   }
+    if(command == 'oxygen') {
+      console.log("typed ox");
+      oxygen(allCubes[8]);
+      playJourney([8]);
+
+  }
+  
     if(command == 'library') {
 
       terminal.write(' Beethoven for op. 131. Chopin for Nocturne 20. Bach for BWV1007.\r\n');
@@ -2242,16 +2198,54 @@ async function changeTextCubeColor(cubePromise, newColor) {
 
 <!-- SECTION: CHEMSKI --> 
 
+function oxygen(cube) {
 
-var whichP = location.hash;
-whichP = whichP.replace(/#/g, "");
-if (whichP != "") {
-document.getElementById("listofmols").value = whichP;
-} else {
-document.getElementById("listofmols").value = "SKInote";
+    // Create atom models
+    const oxygenGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const oxygenMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+    const oxygenAtom = new THREE.Mesh(oxygenGeometry, oxygenMaterial);
+
+    const hydrogenGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+    const hydrogenMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    const hydrogenAtom1 = new THREE.Mesh(hydrogenGeometry, hydrogenMaterial);
+    const hydrogenAtom2 = new THREE.Mesh(hydrogenGeometry, hydrogenMaterial);
+
+    // Position the atoms
+    oxygenAtom.position.set(0, 0, 0);
+    hydrogenAtom1.position.set(-1, 1, 0);
+    hydrogenAtom2.position.set(1, 1, 0);
+
+    // Add atoms to the scene
+    cube.add(oxygenAtom);
+    cube.add(hydrogenAtom1);
+    cube.add(hydrogenAtom2);
+
+// Set up the camera position
+// camera.position.z = 5;
+
+// Render the scene
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
 }
-whichButtons("SKInote"); 
-selectionLambda();
+animate();
+
+
+}
+
+
+
+
+
+// var whichP = location.hash;
+// whichP = whichP.replace(/#/g, "");
+// if (whichP != "") {
+// document.getElementById("listofmols").value = whichP;
+// } else {
+// document.getElementById("listofmols").value = "SKInote";
+// }
+// whichButtons("SKInote"); 
+// selectionLambda();
 
 
   // TODO: fix, document comes up with near empy gtml file

@@ -63,7 +63,7 @@ function loop(dt) {
   var maxNumberOfNodesStr = 1024;
   var maxNumberOfNodes = maxNumberOfNodesStr - 2;
   var numberOfCenterNodes = Math.floor(nodes.length / 4);
-  var rewriteWeight = 40 / 100;
+  var rewriteWeight = 50 / 100;
           
   if (nodes.length > 4*maxNumberOfNodes) { setSpeed(0);}
           

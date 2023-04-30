@@ -180,7 +180,7 @@
         var allCubes = [];
         const socket = io();
         var credits = 10;
-
+        var selectedCube;
 
         // TODO: I think this doesn't work becauese scene hasn't rendered :(
 
@@ -1118,7 +1118,9 @@ playAudioBuffer();
                   const lerpFactor = movementProgress / movementDuration;
 
                   // Move the camera to the current cube's position with an offset
-                  const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0, 0, 35));
+                  // const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0,0,35));
+                  const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0,0,35));
+
 
                   const outline = allCubes[journeyOrder[journeyIndex]].getObjectByProperty("type", "LineSegments");
                     if (outline) {
@@ -1129,8 +1131,9 @@ playAudioBuffer();
 
                   // TODO: come back and replays on your local machine
                   // socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
+                  camera.position.lerp(targetPosition, 0.01);
 
-                  camera.position.lerp(targetPosition, lerpFactor);
+                  // camera.position.lerp(targetPosition, lerpFactor);
             }
             requestAnimationFrame(animate);
               const visitDuration = 3000; // Duration of each visit in milliseconds
@@ -1414,7 +1417,8 @@ terminal.onData((data) => {
     {
       // console.log ("isN");
       const lerpFactor = 1;
-      const targetPosition = allCubes[parseInt(command)].position.clone().add(new THREE.Vector3(0, 0, 8));
+      selectedCube = allCubes[parseInt(command)];
+      const targetPosition = selectedCube.position.clone().add(new THREE.Vector3(0, 0, 8));
       camera.position.lerp(targetPosition, lerpFactor);
 
     }
@@ -1424,7 +1428,7 @@ terminal.onData((data) => {
     }
 
     if(command == 'help') {
-      terminal.write('  "library" "play" "stop" "faster" "slower" "claim" .\r\n');
+      terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "oxygen" \r\n');
 
   }
   if(command == 'loop') {
@@ -1434,8 +1438,8 @@ terminal.onData((data) => {
   }
     if(command == 'oxygen') {
       console.log("typed ox");
-      oxygen(allCubes[8]);
-      playJourney([8]);
+      oxygen(selectedCube);
+      // playJourney(selectedCube.uuid);
 
   }
   
@@ -1896,6 +1900,14 @@ function earth() {
     earth.add(ubudMarker);
 
 
+    const zanzibarCoords = { lat: -6.1652, lon: 39.1989 };
+    const zanzibarMarkerPosition = latLongToVector3(zanzibarCoords.lat, zanzibarCoords.lon, communityRadius);
+    const zanzibarMarker = new THREE.Mesh(communityGeometry, communityMaterial);
+    ubudMarker.position.copy(zanzibarMarkerPosition);
+    earth.add(ubudMarker);
+
+
+
 
 // Create animated arcs from other locations to Luštica Bay
 
@@ -1903,6 +1915,8 @@ function earth() {
 const hondurasToLusticaBayArc = createAnimatedArc(prosperaCoords, lusticaBayCoords, 0xff0000, earth);
 const catawbaToLusticaBayArc = createAnimatedArc(catawbaCoords, lusticaBayCoords, 0xff00ff, earth);
 const ubudToLusticaBayArc = createAnimatedArc(ubudCoords, lusticaBayCoords, 0xffff00, earth) ;
+const zanzibarToLusticaBayArc = createAnimatedArc(zanzibarCoords, lusticaBayCoords, 0x0000ff, earth) ;
+
 
 // TODO: fix, fails on error  "Uncaught TypeError: arc.getPointAt is not a function"
  
@@ -2201,7 +2215,7 @@ async function changeTextCubeColor(cubePromise, newColor) {
 function oxygen(cube) {
 
     // Create atom models
-    const oxygenGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const oxygenGeometry = new THREE.SphereGeometry(.5, 32, 32);
     const oxygenMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
     const oxygenAtom = new THREE.Mesh(oxygenGeometry, oxygenMaterial);
 
@@ -2219,6 +2233,9 @@ function oxygen(cube) {
     cube.add(oxygenAtom);
     cube.add(hydrogenAtom1);
     cube.add(hydrogenAtom2);
+
+    // camera.position.z = 5;
+
 
 // Set up the camera position
 // camera.position.z = 5;

@@ -1396,7 +1396,7 @@ fitAddon.fit();
 // Set up a simple prompt
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
 
-terminal.write('Commands: "library" "play" "stop" "faster" "slower" "claim" "earth" "mars" "oxygen" \r\n');
+terminal.write('Commands: "library" "play" "stop" "faster" "slower" "claim" "earth" "mars" "water" \r\n');
 terminal.write('$ ');
 
 // const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
@@ -1428,7 +1428,7 @@ terminal.onData((data) => {
     }
 
     if(command == 'help') {
-      terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "oxygen" \r\n');
+      terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" \r\n');
 
   }
   if(command == 'loop') {
@@ -1436,9 +1436,10 @@ terminal.onData((data) => {
       loop();
 
   }
-    if(command == 'oxygen') {
-      console.log("typed ox");
-      oxygen(selectedCube);
+    if(command == 'h2o' ||  command == 'water' ) {
+      // console.log("typed ox");
+      h2o(selectedCube, (Math.random() / 5));
+
       // playJourney(selectedCube.uuid);
 
   }
@@ -1862,49 +1863,54 @@ function earth() {
     const prosperaLon = -86.5;
     const prosperaRadius = globeRadius + 0.5;
     const prosperaCoords = { lat: 16.5, lon: -86.5 };
-
+    const prosperaColor =  0xff0000;
+    const prosperaMaterial = new THREE.MeshBasicMaterial({ color: prosperaColor });
     const prosperaPosition = latLongToVector3(prosperaLat, prosperaLon, prosperaRadius);
-
     const prosperaGeometry = new THREE.SphereGeometry(.2, 32, 32);
-    const prosperaMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const hondurasMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
-
-    hondurasMarker.position.copy(prosperaPosition);
-    earth.add(hondurasMarker);
+    const prosperaMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
+    prosperaMarker.position.copy(prosperaPosition);
+    earth.add(prosperaMarker);
     
 
-    const catawbaMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
     const catawbaLat = 35.5849;
     const catawbaLon = -81.2078;
     const catawbaCoords = { lat: 35.5849, lon: -81.2078 };
-
+    const catwabaColor =  0xff00ff;
+    const catwabaMaterial = new THREE.MeshBasicMaterial({ color: catwabaColor });
+    const catawbaMarker = new THREE.Mesh(prosperaGeometry, catwabaMaterial);
     const catawbaMarkerPosition = latLongToVector3(catawbaLat, catawbaLon, prosperaRadius);
     catawbaMarker.position.copy(catawbaMarkerPosition);
     earth.add(catawbaMarker);
 
     // Luštica Bay, Montenegro
 
-    const lustica = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
+    const zuzalu = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
+    const zuzaluColor =  0xffffff;
+    const zuzaluCoords = { lat: 42.3919, lon: 18.6506 };
+    const zuzaluMarkerPosition = latLongToVector3(zuzaluCoords.lat, zuzaluCoords.lon, prosperaRadius);
+    const zuzaluMaterial = new THREE.MeshBasicMaterial({ color:zuzaluColor });
+    const zuzaluMarker = new THREE.Mesh(prosperaGeometry, zuzaluMaterial);
 
-    const lusticaBayCoords = { lat: 42.3919, lon: 18.6506 };
-    const lusticaBayMarkerPosition = latLongToVector3(lusticaBayCoords.lat, lusticaBayCoords.lon, prosperaRadius);
-    const lusticaBayMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
-    lusticaBayMarker.position.copy(lusticaBayMarkerPosition);
-    earth.add(lusticaBayMarker);
+    zuzaluMarker.position.copy(zuzaluMarkerPosition);
+    earth.add(zuzaluMarker);
 
     // Parq Ubud, Bali
     const ubudCoords = { lat: -8.5069, lon: 115.2625 };
+    const ubudColor =  0xee00ee;
     const ubudMarkerPosition = latLongToVector3(ubudCoords.lat, ubudCoords.lon, prosperaRadius);
+    const ubudMaterial = new THREE.MeshBasicMaterial({ color:zuzaluColor });
     const ubudMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
     ubudMarker.position.copy(ubudMarkerPosition);
     earth.add(ubudMarker);
 
 
     const zanzibarCoords = { lat: -6.1652, lon: 39.1989 };
+    const zanzibarColor =  0x00ee00;
     const zanzibarMarkerPosition = latLongToVector3(zanzibarCoords.lat, zanzibarCoords.lon, prosperaRadius);
-    const zanzibarMarker = new THREE.Mesh(prosperaGeometry, prosperaMaterial);
-    ubudMarker.position.copy(zanzibarMarkerPosition);
-    earth.add(ubudMarker);
+    const zanzibarMaterial = new THREE.MeshBasicMaterial({ color:zanzibarColor });
+    const zanzibarMarker = new THREE.Mesh(prosperaGeometry, zanzibarMaterial);
+    zanzibarMarker.position.copy(zanzibarMarkerPosition);
+    earth.add(zanzibarMarker);
 
 
 
@@ -1912,22 +1918,23 @@ function earth() {
 // Create animated arcs from other locations to Luštica Bay
 
 
-const hondurasToLusticaBayArc = createAnimatedArc(prosperaCoords, lusticaBayCoords, 0xff0000, earth);
-const catawbaToLusticaBayArc = createAnimatedArc(catawbaCoords, lusticaBayCoords, 0xff00ff, earth);
-const ubudToLusticaBayArc = createAnimatedArc(ubudCoords, lusticaBayCoords, 0xffff00, earth) ;
-const zanzibarToLusticaBayArc = createAnimatedArc(zanzibarCoords, lusticaBayCoords, 0x0000ff, earth) ;
+const hondurasTozuzaluArc = createAnimatedArc(prosperaCoords, zuzaluCoords, prosperaColor, earth);
+const catawbaTozuzaluArc = createAnimatedArc(catawbaCoords, zuzaluCoords, catwabaColor, earth);
+const ubudTozuzaluArc = createAnimatedArc(ubudCoords, zuzaluCoords, ubudColor, earth) ;
+const zanzibarTozuzaluArc = createAnimatedArc(zanzibarCoords, zuzaluCoords, zanzibarColor, earth) ;
 
 
 // TODO: fix, fails on error  "Uncaught TypeError: arc.getPointAt is not a function"
  
-// const hondurasToLusticaBayArc = createArc(hondurasMarker.position, lusticaBayMarker.position, 0xff0000);
-// const catawbaToLusticaBayArc = createArc(catawbaMarker.position, lusticaBayMarker.position, 0xff00ff);
-// const ubudToLusticaBayArc = createArc(ubudMarker.position, lusticaBayMarker.position, 0xffff00);
-console.log(hondurasToLusticaBayArc);
+// const hondurasTozuzaluArc = createArc(hondurasMarker.position, zuzaluMarker.position, 0xff0000);
+// const catawbaTozuzaluArc = createArc(catawbaMarker.position, zuzaluMarker.position, 0xff00ff);
+// const ubudTozuzaluArc = createArc(ubudMarker.position, zuzaluMarker.position, 0xffff00);
+console.log(hondurasTozuzaluArc);
 
-createMovingSphere(hondurasToLusticaBayArc, 0xff0000);
-// createMovingSphere(catawbaToLusticaBayArc, 0xff00ff);
-// createMovingSphere(ubudToLusticaBayArc.geometry, 0xffff00);
+createMovingSphere(hondurasTozuzaluArc, 0xff0000);
+createMovingSphere(catawbaTozuzaluArc, 0xff00ff);
+createMovingSphere(ubudTozuzaluArc, 0xffff00);
+createMovingSphere(zanzibarTozuzaluArc, 0xffff00);
 
     // Set camera position and animate
     // camera.position.z = 3;
@@ -2009,27 +2016,42 @@ function createAnimatedArc(startCoords, endCoords, color, earth) {
 
 
 
-function createMovingSphere(arc, color) {
-  const sphereGeometry = new THREE.SphereGeometry(0.05, 32, 32);
-  const sphereMaterial = new THREE.MeshBasicMaterial({ color: color });
-  const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-  scene.add(sphere);
+function createMovingSphere(arc, colorx) {
 
-  let t = 0;
+  const sphereGeometry = new THREE.SphereGeometry(2, 32, 32);
+const sphereMaterial = new THREE.MeshBasicMaterial({color: colorx});
 
-  function animateSphere() {
-    t += 0.01;
+// Create the sphere mesh
+const movingSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+scene.add(movingSphere);
 
-    if (t > 1) {
-      t = 0;
-    }
+// Set up the camera position
+camera.position.z = 5;
 
-    const point = arc.getPointAt(t);
-    sphere.position.set(point.x, point.y, point.z);
-    requestAnimationFrame(animateSphere);
-  }
+// Set up the sphere's initial position and speed
+const speed = 0.01;
+let position = 0;
 
-  animateSphere();
+// Define the path for the sphere
+function spherePath(position) {
+  const x = Math.sin(position) * 2;
+  const y = Math.cos(position) * 2;
+  const z = 0;
+  return new THREE.Vector3(x, y, z);
+}
+
+// Render the scene
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Update the sphere's position
+  position += speed;
+  movingSphere.position.copy(spherePath(position));
+
+  renderer.render(scene, camera);
+}
+animate();
+
 }
 
 <!-- SECTION: MARS --> 
@@ -2213,7 +2235,8 @@ async function changeTextCubeColor(cubePromise, newColor) {
 
 <!-- SECTION: CHEMSKI --> 
 
-function oxygen(cube) {
+function h2o(cube, offset = 0) {
+
 
     // Create atom models
     const oxygenGeometry = new THREE.SphereGeometry(.5, 32, 32);
@@ -2224,6 +2247,11 @@ function oxygen(cube) {
     const hydrogenMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
     const hydrogenAtom1 = new THREE.Mesh(hydrogenGeometry, hydrogenMaterial);
     const hydrogenAtom2 = new THREE.Mesh(hydrogenGeometry, hydrogenMaterial);
+
+    const velocityOxygen = new THREE.Vector3(0.02 + offset, 0.03 + offset, 0);
+    const velocityHydrogen1 = new THREE.Vector3(0.02 + offset, 0.03 + offset, 0);
+    const velocityHydrogen2 = new THREE.Vector3(0.02 + offset, 0.03 + offset, 0);
+
 
     // Position the atoms
     oxygenAtom.position.set(0, 0, 0);
@@ -2244,6 +2272,10 @@ function oxygen(cube) {
 // Render the scene
 function animate() {
   requestAnimationFrame(animate);
+  oxygenAtom.position.add(velocityOxygen);
+  hydrogenAtom1.position.add(velocityHydrogen1);
+  hydrogenAtom2.position.add(velocityHydrogen2);
+
   renderer.render(scene, camera);
 }
 animate();

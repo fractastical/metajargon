@@ -1465,15 +1465,17 @@ terminal.onData((data) => {
 
 
     }
-    if(command.includes('Earth')) {
+    if(command.toLowerCase() == 'earth') {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
+      selectedCube = allCubes[123];
       playJourney([123]);
           // playMelody();
     }
-    if(command.includes('Mars')) {
+    if(command.toLowerCase() == 'mars')  {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
+      selectedCube = allCubes[124];
       playJourney([124]);
           // playMelody();
     }

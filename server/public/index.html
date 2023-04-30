@@ -1357,19 +1357,19 @@ terminal.onData((data) => {
 
     }
     if(command.includes('Bach')) {
-      player = new Tone.Player("bach_remixbwv1007.mp3").toDestination();
+      player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       player.autostart = true;
       playJourney([61,63,65,67,69,68,66,64,24]);
           // playMelody();
     }
     if(command.includes('Beethoven')) {
       changeTextCubeColor(beethovenCube, 'red');
-      player = new Tone.Player("beethoven_op131_allegro_001.mp3").toDestination();
+      player = new Tone.Player("snd/beethoven_op131_allegro_001.mp3").toDestination();
       player.autostart = true;
       playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
           // playMelody();
     } else if(command.includes('Chopin')) {
-      player = new Tone.Player("chopin_nocturne_20.mp3").toDestination();
+      player = new Tone.Player("snd/chopin_nocturne_20.mp3").toDestination();
           playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
           // playMelody();
           player.autostart = true;

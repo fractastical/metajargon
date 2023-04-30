@@ -82,9 +82,9 @@
 <script src="js/icequine.js"></script>
 <script src="js/0parser.js"></script>
 <script src="js/lambdaTerms.js"></script>
-<script src="
+<!-- <script src="
 https://cdn.jsdelivr.net/npm/three-gltf-loader@1.111.0/index.min.js
-"></script>
+"></script> -->
 
 <script>
     var mol = "S 1 2 3^K 3^K 2";
@@ -1400,7 +1400,7 @@ fitAddon.fit();
 // Set up a simple prompt
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
 
-terminal.write('Commands: "library" "play" "stop" "faster" "slower" "claim" "earth" "mars" "water" \r\n');
+terminal.write('Commands: "library" "play" "stop" "faster" "slower" "claim" "earth" "mars" "molecule_name"   \r\n');
 terminal.write('$ ');
 
 // const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
@@ -1425,30 +1425,23 @@ terminal.onData((data) => {
       const targetPosition = allCubes[selectedCubeIndex].position.clone().add(new THREE.Vector3(0, 0, 8));
       camera.position.lerp(targetPosition, lerpFactor);
 
-    }
-    if (lastAction == "claimed"){
+    } else  if (lastAction == "claimed"){
       socket.emit("claim", {"activeUser": activeUser, "cube": selectedCubeIndex, "name":command});
       allCubes[selectedCubeIndex].name = "command";
-    }
-
-    if(command == 'help') {
+    } else if(command == 'help') {
       terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" \r\n');
 
-  }
-  if(command.includes('+'))
-   {
+  } else if(command.includes('+'))  {
 
     commandSequence = command.split('+');
     h2o(commandSequence[0], 0);
 
 
-  }
-  if(command == 'loop') {
+  } else if(command == 'loop') {
 
       loop();
 
-  }
-  if(command == 'castle') {
+  } else  if(command == 'castle') {
 
           // Load the GLB file using the GLTFLoader
           const loader = new GLTFLoader();
@@ -1475,24 +1468,17 @@ terminal.onData((data) => {
 
           animate();
 
-}
-
-
-  
-    if(command == 'h2o' ||  command == 'water' ) {
+} if(command == 'h2o' ||  command == 'water' ) {
       // console.log("typed ox");
       h2o(selectedCubeIndex, (Math.random() / 5));
 
       // playJourney(selectedCube.uuid);
 
-  }
-  
-    if(command == 'library') {
+  } else if(command == 'library') {
 
       terminal.write(' Beethoven for op. 131. Chopin for Nocturne 20. Bach for BWV1007.\r\n');
 
-    }
-    if(command == 'claim') {
+  } else if(command == 'claim') {
 
       if(activeUser == "")
         terminal.write('   You are not logged in. You cannot claim.\r\n');
@@ -1505,31 +1491,24 @@ terminal.onData((data) => {
       }
 
 
-    }
-    if(command.toLowerCase() == 'earth') {
+    } else  if(command.toLowerCase() == 'earth') {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
       selectedCubeIndex  = 123;
       playJourney([123]);
           // playMelody();
-    }
-    if(command.toLowerCase() == 'mars')  {
+    } else if(command.toLowerCase() == 'mars')  {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
       selectedCubeIndex  = 124;
       playJourney([124]);
           // playMelody();
-    }
-
-    // allCubes[].add(mars);
-
-    if(command.includes('Bach')) {
+    } else if(command.includes('Bach')) {
       player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       player.autostart = true;
       playJourney([61,63,65,67,69,68,66,64,24]);
           // playMelody();
-    }
-    if(command.includes('Beethoven')) {
+    } else if(command.includes('Beethoven')) {
       changeTextCubeColor(beethovenCube, 'red');
       player = new Tone.Player("snd/beethoven_op131_allegro_001.mp3").toDestination();
       player.autostart = true;
@@ -1562,36 +1541,36 @@ terminal.onData((data) => {
       //     // playableMelody.add({note: self, duration: '4n'});
         
       // }
-    }
-
-    if(command == 'mine') {
+    } else if(command == 'mine') {
 
 
           terminal.write('you don\'t have enough monet to mine.\r\n');
 
           // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
 
-         }
-
-     if(command == 'stop') {
+         } else  if(command == 'stop') {
           player.stop();
           playJourney([]);
 
-         }
-         if(command == 'faster') {
+         } else if(command == 'faster') {
           bpm += 10;
           console.log(bpm);
 
           // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
 
-         }
-         if(command == 'slower') {
+         } else if(command == 'slower') {
           bpm -= 10;
           console.log(bpm);
           // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
 
+         } else 
+         {
+
+          anyMolecule(command, selectedCubeIndex) 
+
          }
 
+         
     // Clear the line and print a new prompt
     terminal.write('\x1B[2K\x1B[G');
     terminal.write('$ ');
@@ -2392,14 +2371,37 @@ molecule.bonds.forEach((bond) => {
   allCubes[172].add(cylinder);
 });
 
-// camera.position.z = 5;
+const atomCount = molecule.atoms.length;
+const moleculePosition = new THREE.Vector3(0, 0, 0);
 
+molecule.atoms.forEach((atom) => {
+  moleculePosition.add(new THREE.Vector3(atom.x, atom.y, atom.z));
+});
+
+moleculePosition.divideScalar(atomCount);
+molecule.position = moleculePosition;
+console.log(molecule);
+// Calculate the direction vector pointing from the molecule's position to the center
+const center = new THREE.Vector3(0, 0, 0);
+const direction = new THREE.Vector3().subVectors(center, molecule.position);
+
+// Normalize and scale the direction vector according to the desired speed
+const speed = 0.01; // Adjust this value as needed
+direction.normalize().multiplyScalar(speed);
+
+// Your animation loop
 function animate() {
   requestAnimationFrame(animate);
+
+  // Update the position of the molecule
+  molecule.position.add(direction);
+
   renderer.render(scene, camera);
 }
 
 animate();
+
+
 
 
 }

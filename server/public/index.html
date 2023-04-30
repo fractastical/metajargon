@@ -180,7 +180,7 @@
         var allCubes = [];
         const socket = io();
         var credits = 10;
-        var selectedCube;
+        var selectedCubeIndex = 172;
 
         // TODO: I think this doesn't work becauese scene hasn't rendered :(
 
@@ -221,7 +221,7 @@
             const outline = cube.getObjectByProperty("type", "LineSegments");
             if (outline) {
                      console.log("blue-ing visited " + cubeId);
-                    selectedCube = cubeId;
+                    selectedCubeIndex = cubeId;
                     // selectedCube.xPos;
 
                     outline.material.color.set("blue");
@@ -498,7 +498,6 @@ function createGridOfCubes() {
     const gridSize = 7;
     const cubeDistance = cubeSize + 60;
     var cubeNumber = 1;
-    var selectedCube = "";
 
     for (let x = 0; x < gridSize; x++) {
         for (let y = 0; y < gridSize; y++) {
@@ -515,6 +514,7 @@ function createGridOfCubes() {
                 cubeNumber++; 
             }
         }
+
     }
 }
 
@@ -1419,18 +1419,26 @@ terminal.onData((data) => {
     {
       // console.log ("isN");
       const lerpFactor = 1;
-      selectedCube = allCubes[parseInt(command)];
-      const targetPosition = selectedCube.position.clone().add(new THREE.Vector3(0, 0, 8));
+      selectedCubeIndex = parseInt(command);
+      const targetPosition = allCube[selectedCubeIndex].position.clone().add(new THREE.Vector3(0, 0, 8));
       camera.position.lerp(targetPosition, lerpFactor);
 
     }
     if (lastAction == "claimed"){
-      socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube, "name":command});
-      allCubes[selectedCube].name = "command";
+      socket.emit("claim", {"activeUser": activeUser, "cube": selectedCubeIndex, "name":command});
+      allCubes[selectedCubeIndex].name = "command";
     }
 
     if(command == 'help') {
       terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" \r\n');
+
+  }
+  if(command.includes('+'))
+   {
+
+    commandSequence = command.split('+');
+    h2o(commandSequence[0], 0);
+
 
   }
   if(command == 'loop') {
@@ -1440,7 +1448,7 @@ terminal.onData((data) => {
   }
     if(command == 'h2o' ||  command == 'water' ) {
       // console.log("typed ox");
-      h2o(selectedCube, (Math.random() / 5));
+      h2o(selectedCubeIndex, (Math.random() / 5));
 
       // playJourney(selectedCube.uuid);
 
@@ -1457,8 +1465,8 @@ terminal.onData((data) => {
         terminal.write('   You are not logged in. You cannot claim.\r\n');
       else  
       {
-        socket.emit("claim", {"activeUser": activeUser, "cube": selectedCube});
-        terminal.write('Cube ' + selectedCube + ' belongs to you. Please give it a name.\r\n');
+        socket.emit("claim", {"activeUser": activeUser, "cube": selectedCubeIndex});
+        terminal.write('Cube ' + selectedCubeIndex + ' belongs to you. Please give it a name.\r\n');
         lastAction = "claimed";
 
       }
@@ -1468,14 +1476,14 @@ terminal.onData((data) => {
     if(command.toLowerCase() == 'earth') {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
-      selectedCube = allCubes[123];
+      selectedCubeIndex  = 123;
       playJourney([123]);
           // playMelody();
     }
     if(command.toLowerCase() == 'mars')  {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
-      selectedCube = allCubes[124];
+      selectedCubeIndex  = 124;
       playJourney([124]);
           // playMelody();
     }
@@ -2054,7 +2062,7 @@ const movingSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 scene.add(movingSphere);
 
 // Set up the camera position
-camera.position.z = 5;
+// camera.position.z = 5;
 
 // Set up the sphere's initial position and speed
 const speed = 0.01;
@@ -2263,7 +2271,7 @@ async function changeTextCubeColor(cubePromise, newColor) {
 
 <!-- SECTION: CHEMSKI --> 
 
-function h2o(cube, offset = 0) {
+function h2o(cubeIndex, offset = 0) {
 
 
     // Create atom models
@@ -2287,9 +2295,9 @@ function h2o(cube, offset = 0) {
     hydrogenAtom2.position.set(1, 1, 0);
 
     // Add atoms to the scene
-    cube.add(oxygenAtom);
-    cube.add(hydrogenAtom1);
-    cube.add(hydrogenAtom2);
+    allCubes[cubeIndex].add(oxygenAtom);
+    allCubes[cubeIndex].add(hydrogenAtom1);
+    allCubes[cubeIndex].add(hydrogenAtom2);
 
     // camera.position.z = 5;
 
@@ -2319,16 +2327,52 @@ async function fetchMoleculeData(query) {
   return sdfData;
 }
 
-fetchMoleculeData('water').then((sdfData) => {
-  console.log(sdfData);
+
+async function anyMolecule(name, startingCube = 1)
+{
+   const sdfData = await fetchMoleculeData(name);
+  const molecule = parseSDF(sdfData);
+const atomColorMap = { O: 0xff0000, H: 0x00ff00 };
+const atomRadiusMap = { O: 0.5, H: 0.25 };
+const bondColor = 0x0000ff;
+const bondRadius = 0.1;
+
+// Create atoms and add them to the scene
+molecule.atoms.forEach((atom) => {
+  const sphere = createAtomSphere(atomColorMap[atom.symbol], atomRadiusMap[atom.symbol], new THREE.Vector3(atom.x, atom.y, atom.z));
+  allCubes[172].add(sphere);
 });
 
-function anymolecule(name, startingCube = 1)
-{
+// Create bonds and add them to the scene
+molecule.bonds.forEach((bond) => {
+  const start = new THREE.Vector3(
+    molecule.atoms[bond.atom1 - 1].x,
+    molecule.atoms[bond.atom1 - 1].y,
+    molecule.atoms[bond.atom1 - 1].z
+  );
+  const end = new THREE.Vector3(
+    molecule.atoms[bond.atom2 - 1].x,
+    molecule.atoms[bond.atom2 - 1].y,
+    molecule.atoms[bond.atom2 - 1].z
+  );
+  const cylinder = createBondCylinder(bondColor, start, end, bondRadius);
+  allCubes[172].add(cylinder);
+});
+
+// camera.position.z = 5;
+
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+animate();
 
 
 }
+
 function parseSDF(sdfData) {
+  console.log(sdfData);
   const lines = sdfData.split('\n');
   const atomCount = parseInt(lines[3].slice(0, 3).trim(), 10);
   const bondCount = parseInt(lines[3].slice(3, 6).trim(), 10);
@@ -2357,6 +2401,7 @@ function parseSDF(sdfData) {
 
 fetchMoleculeData('water').then((sdfData) => {
   const molecule = parseSDF(sdfData);
+
   console.log(molecule);
 });
 
@@ -2388,43 +2433,6 @@ function createBondCylinder(color, start, end, radius) {
 // scene.add(light);
 
 // Assuming you have parsed the SDF data and have the atoms and bonds information
-const molecule = parseSDF(sdfData);
-const atomColorMap = { O: 0xff0000, H: 0x00ff00 };
-const atomRadiusMap = { O: 0.5, H: 0.25 };
-const bondColor = 0x0000ff;
-const bondRadius = 0.1;
-
-// Create atoms and add them to the scene
-molecule.atoms.forEach((atom) => {
-  const sphere = createAtomSphere(atomColorMap[atom.symbol], atomRadiusMap[atom.symbol], new THREE.Vector3(atom.x, atom.y, atom.z));
-  scene.add(sphere);
-});
-
-// Create bonds and add them to the scene
-molecule.bonds.forEach((bond) => {
-  const start = new THREE.Vector3(
-    molecule.atoms[bond.atom1 - 1].x,
-    molecule.atoms[bond.atom1 - 1].y,
-    molecule.atoms[bond.atom1 - 1].z
-  );
-  const end = new THREE.Vector3(
-    molecule.atoms[bond.atom2 - 1].x,
-    molecule.atoms[bond.atom2 - 1].y,
-    molecule.atoms[bond.atom2 - 1].z
-  );
-  const cylinder = createBondCylinder(bondColor, start, end, bondRadius);
-  scene.add(cylinder);
-});
-
-// camera.position.z = 5;
-
-function animate() {
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-}
-
-animate();
-
 
 // var whichP = location.hash;
 // whichP = whichP.replace(/#/g, "");

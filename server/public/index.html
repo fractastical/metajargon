@@ -57,7 +57,7 @@
 <!-- <script src="https://threejs.org/examples/jsm/renderers/CSS3DRenderer.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
-<script src="js/midi-min.js"></script>
+<!--<script src="js/midi-min.js"></script>-->
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
 
@@ -66,13 +66,44 @@
 <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xterm-addon-webgl/lib/xterm-addon-webgl.js"></script>
 
+<!-- chemski dependencies -->
+<script src="js/d3.v5.9.4.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/pagelook-skilambda.js"></script>
+<script src="js/ioprep.js"></script>
+
+<script src="js/iceMol.js"></script>
+<script src="js/iceComments.js"></script>
+<script src="js/parameters.js"></script>
+<script src="js/nodes.js"></script>
+<script src="js/chemistry.js"></script>
+<!-- <script src="js/reactions.js"></script> -->
+<script src="js/myD3Graph.js"></script>
+<script src="js/icequine.js"></script>
+<script src="js/0parser.js"></script>
+<script src="js/lambdaTerms.js"></script>
+
+<script>
+    var mol = "S 1 2 3^K 3^K 2";
+    // var mol = "chemSKI rewrite terminSK. The node S plays two roles: as the combinator S and as a fanout. The node K behaves as combinator K but also as a termination.</a>";
+
+</script>
+
 </head>
 <body>
 
-    <div class="login-section">
 
-      <!-- <input type="text" value="cheese" /> -->
-      <img src="img/space-monet.png" width="80px"/> <div id="balance" style="color:white; text-align:left">0 space money </div>
+    <div class="login-section">
+      <div class="col-7 menu">
+        <ul>
+          <li> <div id="svgdiv"> </div></li>
+          <li><span> (Rewrites stop at max.  </span><span id="maxnodenumber">1024</span> nodes<span>)</span></li>
+          <li><span3>gravity slider</span3> <div class="slidecontainer">MIN &nbsp;<input class="slider" type="range" min="1" max="250" value="150" id="gravRange"> &nbsp; MAX</div></li>
+          <li><span2>CODE: </span2><span id="molyoulookat"></span></li>
+        </ul>
+      </div>
+          <!-- <input type="text" value="cheese" /> -->
+      <img src="img/space-monet.png" width="2px"/> <div id="balance" style="color:white; text-align:left">0 <!--space money --></div>
   <!--  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>-->
       <button id="loginWithMetamask">Login</button>
     
@@ -1337,6 +1368,11 @@ terminal.onData((data) => {
       terminal.write('  "library" "play" "stop" "faster" "slower" "claim" .\r\n');
 
   }
+  if(command == 'loop') {
+
+      loop();
+
+  }
     if(command == 'library') {
 
       terminal.write(' Beethoven for op. 131. Chopin for Nocturne 20. Bach for BWV1007.\r\n');
@@ -2079,6 +2115,18 @@ async function changeTextCubeColor(cubePromise, newColor) {
   updateTextColor(cube, newColor);
 }
 
+<!-- SECTION: CHEMSKI --> 
+
+
+  // TODO: fix, document comes up with near empy gtml file
+//   var maxNumberOfNodesStr = document.getElementById("maxnodenumber").innerHTML;
+//   var maxNumberOfNodes = maxNumberOfNodesStr - 2;
+//  var numberOfCenterNodes = Math.floor(nodes.length / 4);
+//  document.getElementById("nodenumber").innerHTML = numberOfCenterNodes;
+       
+        
+//   var rewriteWeight = (document.getElementById("rewritesRange").value) / 100;
+          
 
 
 // const { cubeGrid, cubeObjects } = createInitial3DGrid(3);

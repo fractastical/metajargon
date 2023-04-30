@@ -51,13 +51,19 @@ function loop(dt) {
 // added gloCount increase
   globCount +=1;
 
-  var maxNumberOfNodesStr = document.getElementById("maxnodenumber").innerHTML;
-  var maxNumberOfNodes = maxNumberOfNodesStr - 2;
-//  var numberOfCenterNodes = Math.floor(nodes.length / 4);
-//  document.getElementById("nodenumber").innerHTML = numberOfCenterNodes;
+  console.log(document);
+  // console.log(page);
+
+  // TODO: fix, document comes up with near empy gtml file
+//   var maxNumberOfNodesStr = document.getElementById("maxnodenumber").innerHTML;
+//   var maxNumberOfNodes = maxNumberOfNodesStr - 2;
+// //  var numberOfCenterNodes = Math.floor(nodes.length / 4);
+// //  document.getElementById("nodenumber").innerHTML = numberOfCenterNodes;
        
-        
-  var rewriteWeight = (document.getElementById("rewritesRange").value) / 100;
+  var maxNumberOfNodesStr = 1024;
+  var maxNumberOfNodes = maxNumberOfNodesStr - 2;
+  var numberOfCenterNodes = Math.floor(nodes.length / 4);
+  var rewriteWeight = 40 / 100;
           
   if (nodes.length > 4*maxNumberOfNodes) { setSpeed(0);}
           

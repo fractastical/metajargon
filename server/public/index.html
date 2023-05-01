@@ -1409,7 +1409,7 @@ terminal.onData((data) => {
       terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" "advanced" \r\n');
 
   } else if(command == 'advanced') {
-      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "claim" \r\n');
+      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "claim" "bpm" \r\n');
 
   } else if(command.includes('+'))  {
     console.log("split");

@@ -459,7 +459,6 @@ function createUniqueObject(x, y, z, type) {
 
     const object = new THREE.Mesh(geometry, material);
     object.scale.set(.3, .3, .3);
-
     object.position.set(x, y, z);
     scene.add(object);
     return object;
@@ -471,6 +470,7 @@ var analyser;
 var dataArray;
 var bufferLength;
 var beethovenText;
+
 // var cubesByGeometry = [][];
 
 function loadModel(url, parentObject) {
@@ -500,6 +500,7 @@ function createGridOfCubes() {
 
     ];
 
+    
     const gridSize = 7;
     const cubeDistance = cubeSize + 60;
     var cubeNumber = 1;
@@ -866,9 +867,11 @@ function createTextLabel(text) {
 
 
 
-function highlightCube(cubeIndex, frequency) {
+function highlightCube(cubeIndex, color) {
   // Get the cube from the grid using cubeUUID
-  console.log(cubeIndex +  " " + frequency);
+  // console.log(cubeIndex +  " " + frequency);
+
+  console.log(cubeIndex +  " " + color);
   const cube = allCubes[cubeIndex];
 
   // Define frequency ranges for better control
@@ -882,7 +885,7 @@ function highlightCube(cubeIndex, frequency) {
   const hue = Math.random() * 360;
 
   // Convert the hue and lightness to a CSS HSL color string
-  const color = `hsl(${hue}, 100%, ${lightness}%)`;
+  // const color = `hsl(${hue}, 100%, ${lightness}%)`;
 
   // Set the cube's material color to the generated color
   cube.material.color.set(color);
@@ -1500,8 +1503,8 @@ terminal.onData((data) => {
       // audioSource.connect(analyser);
       // audioSource.connect(audioContext.destination);
       // audioElement.play();
-
-      const audioContext = new AudioContext();
+    console.log("beethoven");
+    const audioContext = new AudioContext();
     const audioElement = new Audio('snd/beethoven_symphony_n7.mp3');
     const audioSource = audioContext.createMediaElementSource(audioElement);
     analyser = audioContext.createAnalyser();
@@ -1870,9 +1873,8 @@ function seedGameOfLife(cubeGrid, probability) {
 const gridSize = 9;
 const cubeGrid = new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0)));
 const initialProbability = 0.3; // Adjust the probability of a cell being alive (0 to 1)
-// seedGameOfLife(cubeGrid, initialProbability);
+// seedGameOfLife(cubeGr  id, initialProbability);
 const globeRadius = 15;
-
 // animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
 earth();
 
@@ -2613,10 +2615,13 @@ async function updateColors() {
   const newColors = baseColors.map((color) => {
     const hsl = new THREE.Color(color).getHSL({});
     const lightness = Math.min(1, hsl.l + ((highFreqSum / 255) ));
+    highlightCube(highFreqSum+20, hsl);
     return new THREE.Color().setHSL(hsl.h, hsl.s, lightness).getStyle();
     // return new THREE.Color().setHSL(240, 240, 244).getStyle();
 
   });
+
+
   // beethovenText = "boo";
   // Update the ASCII art with the new colors
   const textCanvas = createTextCanvas(beethovenText, newColors);

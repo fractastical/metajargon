@@ -92,7 +92,7 @@ https://cdn.jsdelivr.net/npm/three-gltf-loader@1.111.0/index.min.js
 
 </script>
 
-<link rel="stylesheet" type="text/css" href="css/icequine-on-white.css">
+<!-- <link rel="stylesheet" type="text/css" href="css/icequine-on-white.css"> -->
 
 </head>
 <body>
@@ -1408,9 +1408,12 @@ terminal.onData((data) => {
       terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" \r\n');
 
   } else if(command.includes('+'))  {
-
-    commandSequence = command.split('+');
-    h2o(commandSequence[0], 0);
+    console.log("split");
+    const commandSequence = command.split('+');
+    if(commandSequence.length > 1)
+        anyMolecule(commandSequence[1], commandSequence[0]);
+    else
+      h2o(commandSequence[0], 0);
 
 
   } else if(command == 'loop') {

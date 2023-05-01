@@ -2203,7 +2203,7 @@ async function createTexturedCube(textUrl, width, height) {
     map: texture,
     side: THREE.DoubleSide,
     transparent: true,
-    opacity: 0.4
+    opacity: 0.9
   });
 
   const cube = new THREE.Mesh(geometry, material);
@@ -2217,7 +2217,21 @@ async function createTexturedCube(textUrl, width, height) {
   return cube;
 }
 
+
 function createTextCanvas(text, width, height, fontSize = 5) {
+
+    const colors = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'blue',
+    'indigo',
+    'violet',
+  ];
+
+
+
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -2229,10 +2243,28 @@ function createTextCanvas(text, width, height, fontSize = 5) {
   const lines = text.split('\n');
   const lineHeight = fontSize + 2;
   let yPos = fontSize;
-  for (const line of lines) {
+  // for (const line of lines) {
+  //   ctx.fillStyle = colors[i % colors.length];
+  //   ctx.fillText(line, 0, yPos);
+  //   yPos += lineHeight;
+  // }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    ctx.fillStyle = colors[i % colors.length];
     ctx.fillText(line, 0, yPos);
+    // context.fillText(line, 0, i * size);
     yPos += lineHeight;
+
   }
+
+
+  // for (let i = 0; i < lines.length; i++) {
+  //   const line = lines[i];
+  //   context.fillStyle = colors[i % colors.length];
+  //   context.fillText(line, 0, i * size);
+  // }
+
   return canvas;
 }
 

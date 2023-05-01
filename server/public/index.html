@@ -471,6 +471,7 @@ var analyser;
 var dataArray;
 var bufferLength;
 var beethovenText;
+// var cubesByGeometry = [][];
 
 function loadModel(url, parentObject) {
     const loader = new THREE.GLTFLoader();
@@ -1501,7 +1502,7 @@ terminal.onData((data) => {
       // audioElement.play();
 
       const audioContext = new AudioContext();
-    const audioElement = new Audio('snd/beethoven_op131_allegro_001.mp3');
+    const audioElement = new Audio('snd/beethoven_symphony_n7.mp3');
     const audioSource = audioContext.createMediaElementSource(audioElement);
     analyser = audioContext.createAnalyser();
     analyser.fftSize = 256;
@@ -1513,7 +1514,7 @@ terminal.onData((data) => {
     dataArray = new Uint8Array(bufferLength);
 
     //   player.autostart = true;
-    //   playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
+      playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
 
 
         function animate() {
@@ -1565,7 +1566,16 @@ terminal.onData((data) => {
           player.stop();
           playJourney([]);
 
-         } else if(command == 'faster') {
+         } else if(command.includes('bpm ')) {
+
+          const speed = command.substring(4,command.length);
+
+          bpm = parseInt(speed);
+          console.log(bpm);
+
+          // playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70]);
+
+         }  else if(command == 'faster') {
           bpm += 10;
           console.log(bpm);
 

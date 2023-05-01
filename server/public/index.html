@@ -2461,6 +2461,17 @@ direction.normalize().multiplyScalar(speed);
 function animate() {
   requestAnimationFrame(animate);
 
+  // Calculate the gravitational force acting on the molecule
+  const gravitationalConstant = 0.0001; // Adjust this value as needed
+  const distanceToCenter = molecule.position.distanceTo(center);
+  const gravitationalForce = gravitationalConstant / (distanceToCenter * distanceToCenter);
+
+  // Calculate the direction vector pointing from the molecule's position to the center
+  const direction = new THREE.Vector3().subVectors(center, molecule.position);
+
+  // Normalize and scale the direction vector according to the gravitational force
+  direction.normalize().multiplyScalar(gravitationalForce);
+
   // Update the position of the molecule
   molecule.position.add(direction);
 

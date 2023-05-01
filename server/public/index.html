@@ -1958,10 +1958,10 @@ const zanzibarTozuzaluArc = createAnimatedArc(zanzibarCoords, zuzaluCoords, zanz
 // const ubudTozuzaluArc = createArc(ubudMarker.position, zuzaluMarker.position, 0xffff00);
 console.log(hondurasTozuzaluArc);
 
-createMovingSphere(hondurasTozuzaluArc, 0xff0000);
-createMovingSphere(catawbaTozuzaluArc, 0xff00ff);
-createMovingSphere(ubudTozuzaluArc, 0xffff00);
-createMovingSphere(zanzibarTozuzaluArc, 0xffff00);
+// createMovingSphere(hondurasTozuzaluArc, 0xff0000);
+// createMovingSphere(catawbaTozuzaluArc, 0xff00ff);
+// createMovingSphere(ubudTozuzaluArc, 0xffff00);
+// createMovingSphere(zanzibarTozuzaluArc, 0xffff00);
 
     // Set camera position and animate
     // camera.position.z = 3;
@@ -2064,43 +2064,33 @@ function onCanvasClick(event) {
 
 
 
-function createMovingSphere(arc, colorx) {
+function createMovingSphere(arc, radius, color, speed = 0.01) {
+  const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+  const sphereMaterial = new THREE.MeshBasicMaterial({ color: color });
+  const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  
+  const curve = new THREE.CatmullRomCurve3(arc);
+  let t = 0;
 
-  const sphereGeometry = new THREE.SphereGeometry(2, 32, 32);
-const sphereMaterial = new THREE.MeshBasicMaterial({color: colorx});
+  // Your animation loop
+  function animate() {
+    requestAnimationFrame(animate);
 
-// Create the sphere mesh
-const movingSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-scene.add(movingSphere);
+    // Update the position of the sphere along the curve
+    t += speed;
+    if (t >= 1) t = 0;
 
-// Set up the camera position
-// camera.position.z = 5;
+    const position = arc.getPoint(t);
+    sphere.position.copy(position);
 
-// Set up the sphere's initial position and speed
-const speed = 0.01;
-let position = 0;
+    renderer.render(scene, camera);
+  }
 
-// Define the path for the sphere
-function spherePath(position) {
-  const x = Math.sin(position) * 2;
-  const y = Math.cos(position) * 2;
-  const z = 0;
-  return new THREE.Vector3(x, y, z);
+  animate();
+
+  return sphere;
 }
 
-// Render the scene
-function animate() {
-  requestAnimationFrame(animate);
-
-  // Update the sphere's position
-  position += speed;
-  movingSphere.position.copy(spherePath(position));
-
-  renderer.render(scene, camera);
-}
-animate();
-
-}
 
 <!-- SECTION: MARS --> 
 

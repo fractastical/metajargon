@@ -468,7 +468,9 @@ function createUniqueObject(x, y, z, type) {
 
 const cubeObjects = [];
 var analyser;
-
+var dataArray;
+var bufferLength;
+var beethovenText;
 
 function loadModel(url, parentObject) {
     const loader = new THREE.GLTFLoader();
@@ -861,32 +863,6 @@ function createTextLabel(text) {
 
 
 
-
-function analyzeFrequencyAndHighlightCubes() {
-  console.log("analyzeFrequencyAndHighlightCubes");
-
-  // Create an array to store the frequency data
-  const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-  
-  console.log(frequencyData);
-
-  // Get the frequency data from the analyser
-  analyser.getByteFrequencyData(frequencyData);
-
-  // Process the frequency data and highlight the cubes
-  for (let i = 0; i < frequencyData.length; i++) {
-    // Normalize the frequency value (0 to 1)
-    const normalizedFrequency = frequencyData[i] / 256;
-    console.log("nf" + normalizedFrequency);
-    // Determine the index of the cube to highlight based on the normalized frequency
-    const cubeIndex = Math.floor(normalizedFrequency * (5*5*5));
-    // Highlight the cube with the index cubeIndex
-    highlightCube(cubeIndex, frequencyData[i]);
-  }
-
-  // Call this function again using requestAnimationFrame
-  requestAnimationFrame(analyzeFrequencyAndHighlightCubes);
-}
 
 
 function highlightCube(cubeIndex, frequency) {
@@ -1509,10 +1485,41 @@ terminal.onData((data) => {
       playJourney([61,63,65,67,69,68,66,64,24]);
           // playMelody();
     } else if(command.includes('Beethoven')) {
-      changeTextCubeColor(beethovenCube, 'red');
-      player = new Tone.Player("snd/beethoven_op131_allegro_001.mp3").toDestination();
-      player.autostart = true;
-      playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
+      // changeTextCubeColor(beethovenCube, 'red');
+      // player = new Tone.Player("snd/beethoven_op131_allegro_001.mp3").toDestination();
+      // const audioSource = audioContext.createMediaElementSource(audioElement);
+      // analyser = audioContext.createAnalyser();
+      // analyser.fftSize = 256;
+      // audioSource.connect(analyser);
+      // audioSource.connect(audioContext.destination);
+      // audioElement.play();
+
+      const audioContext = new AudioContext();
+    const audioElement = new Audio('snd/beethoven_op131_allegro_001.mp3');
+    const audioSource = audioContext.createMediaElementSource(audioElement);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    audioSource.connect(analyser);
+    audioSource.connect(audioContext.destination);
+    audioElement.play();
+
+    bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+
+    //   player.autostart = true;
+    //   playJourney([0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 120, 2, 3, 4, 70]);
+
+
+        function animate() {
+          requestAnimationFrame(animate);
+
+          updateColors();
+          renderer.render(scene, camera);
+      }
+
+      animate();
+
+
           // playMelody();
     } else if(command.includes('Chopin')) {
       player = new Tone.Player("snd/chopin_nocturne_20.mp3").toDestination();
@@ -2194,8 +2201,8 @@ async function loadTextFromFile(url) {
 }
 
 async function createTexturedCube(textUrl, width, height) {
-  const text = await fetch(textUrl).then(response => response.text());
-  const textCanvas = createTextCanvas(text, width, height);
+  beethovenText = await fetch(textUrl).then(response => response.text());
+  const textCanvas = createTextCanvas(beethovenText, colors);
   const texture = new THREE.CanvasTexture(textCanvas);
 
   const geometry = new THREE.BoxGeometry(10, 10, 10);
@@ -2217,10 +2224,7 @@ async function createTexturedCube(textUrl, width, height) {
   return cube;
 }
 
-
-function createTextCanvas(text, width, height, fontSize = 5) {
-
-    const colors = [
+const colors = [
     'red',
     'orange',
     'yellow',
@@ -2231,32 +2235,63 @@ function createTextCanvas(text, width, height, fontSize = 5) {
   ];
 
 
-
+function createTextCanvas(text, colors) {
   const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, width, height);
-  ctx.font = `${fontSize}px monospace`;
-  ctx.fillStyle = 'black';
   const lines = text.split('\n');
-  const lineHeight = fontSize + 2;
-  let yPos = fontSize;
-  // for (const line of lines) {
-  //   ctx.fillStyle = colors[i % colors.length];
-  //   ctx.fillText(line, 0, yPos);
-  //   yPos += lineHeight;
-  // }
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.fillText(line, 0, yPos);
-    // context.fillText(line, 0, i * size);
-    yPos += lineHeight;
+  const fontSize = 12; // Adjust this value as needed
+  // ctx.fillStyle = 'white';
+  ctx.font = `${fontSize}px monospace`;
+  ctx.textBaseline = 'top';
 
-  }
+  // Calculate the width and height of the canvas based on the text dimensions
+  const maxWidth = Math.max(...lines.map((line) => ctx.measureText(line).width));
+  const totalHeight = fontSize * lines.length;
+
+  // Set the canvas width and height
+  canvas.width = maxWidth;
+  canvas.height = totalHeight;
+
+  // Draw each line of the text with the corresponding color
+  lines.forEach((line, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    ctx.fillText(line, 0, fontSize * index);
+  });
+
+  return canvas;
+}
+
+// function createTextCanvas(text, width, height, fontSize = 5) {
+
+
+
+
+//   const canvas = document.createElement('canvas');
+//   canvas.width = width;
+//   canvas.height = height;
+//   const ctx = canvas.getContext('2d');
+//   ctx.fillStyle = 'white';
+//   ctx.fillRect(0, 0, width, height);
+//   ctx.font = `${fontSize}px monospace`;
+//   ctx.fillStyle = 'black';
+//   const lines = text.split('\n');
+//   const lineHeight = fontSize + 2;
+//   let yPos = fontSize;
+//   // for (const line of lines) {
+//   //   ctx.fillStyle = colors[i % colors.length];
+//   //   ctx.fillText(line, 0, yPos);
+//   //   yPos += lineHeight;
+//   // }
+
+//   for (let i = 0; i < lines.length; i++) {
+//     const line = lines[i];
+//     ctx.fillStyle = colors[i % colors.length];
+//     ctx.fillText(line, 0, yPos);
+//     // context.fillText(line, 0, i * size);
+//     yPos += lineHeight;
+
+//   }
 
 
   // for (let i = 0; i < lines.length; i++) {
@@ -2265,8 +2300,8 @@ function createTextCanvas(text, width, height, fontSize = 5) {
   //   context.fillText(line, 0, i * size);
   // }
 
-  return canvas;
-}
+//   return canvas;
+// }
 
 // TODO: fix. Another GPT #fail
 function updateTextColor(cube, newColor) {
@@ -2292,11 +2327,22 @@ function updateTextColor(cube, newColor) {
   }
 }
 
+
 const textUrl = 'beethoven.txt';
 const width = 512;
 const height = 512;
+var beethovenCube;
 
-const beethovenCube = createTexturedCube(textUrl, width, height);
+async function createBeethovenCube() {
+  const textUrl = 'beethoven.txt';
+  const width = 512;
+  const height = 512;
+
+  beethovenCube = await createTexturedCube(textUrl, width, height);
+
+
+}
+createBeethovenCube();
 
 async function changeTextCubeColor(cubePromise, newColor) {
   const cube = await cubePromise;
@@ -2516,6 +2562,70 @@ function createBondCylinder(color, start, end, radius) {
 // const { cubeGrid, cubeObjects } = createInitial3DGrid(3);
 // testGridStateMatch(cubeGrid, cubeObjects);
 renderer.domElement.addEventListener("click", onCanvasClick, false);
+
+<!-- SECTION: analyzeFrequencyAndHighlightCubes -->
+async function updateColors() {
+  analyser.getByteFrequencyData(dataArray);
+
+  // Determine the average value of the high-frequency bands
+  const highFreqStart = Math.floor(bufferLength * 0.7);
+  const highFreqEnd = bufferLength;
+  let highFreqSum = 0;
+  
+  for (let i = highFreqStart; i < highFreqEnd; i++) {
+    highFreqSum += dataArray[i];
+  }
+  console.log("hf+" + highFreqSum);
+
+  const highFreqAvg = highFreqSum / (highFreqEnd - highFreqStart);
+
+  console.log("ha+" + highFreqAvg);
+
+  // Define the colors based on the high-frequency bands
+  const baseColors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+  const newColors = baseColors.map((color) => {
+    const hsl = new THREE.Color(color).getHSL({});
+    const lightness = Math.min(1, hsl.l + ((highFreqSum / 255) ));
+    return new THREE.Color().setHSL(hsl.h, hsl.s, lightness).getStyle();
+    // return new THREE.Color().setHSL(240, 240, 244).getStyle();
+
+  });
+  // beethovenText = "boo";
+  // Update the ASCII art with the new colors
+  const textCanvas = createTextCanvas(beethovenText, newColors);
+  const texture = new THREE.CanvasTexture(textCanvas);
+  console.log(beethovenCube);
+  beethovenCube.material.map = texture;
+  beethovenCube.material.needsUpdate = true;
+}
+
+function analyzeFrequencyAndHighlightCubes() {
+  console.log("analyzeFrequencyAndHighlightCubes");
+
+  // Create an array to store the frequency data
+  const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  
+  console.log(frequencyData);
+
+  // Get the frequency data from the analyser
+  analyser.getByteFrequencyData(frequencyData);
+
+  // Process the frequency data and highlight the cubes
+  for (let i = 0; i < frequencyData.length; i++) {
+    // Normalize the frequency value (0 to 1)
+    const normalizedFrequency = frequencyData[i] / 256;
+    console.log("nf" + normalizedFrequency);
+    // Determine the index of the cube to highlight based on the normalized frequency
+    const cubeIndex = Math.floor(normalizedFrequency * (5*5*5));
+    // Highlight the cube with the index cubeIndex
+    highlightCube(cubeIndex, frequencyData[i]);
+  }
+
+  // Call this function again using requestAnimationFrame
+  requestAnimationFrame(analyzeFrequencyAndHighlightCubes);
+}
+
+
 
 
     </script>

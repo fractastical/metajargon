@@ -52,7 +52,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.30/Tone.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.min.js"></script>
 <!-- DUD from GPT-4 <script src="https://steamcommunity.com/public/javascript/webui/webui.js"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script> -->
 <!--<script src="https://cdn.skypack.dev/pin/three@v0.136.0-4Px7Kx1INqCFBN0tXUQc/mode=imports,min/unoptimized/examples/jsm/renderers/CSS3DRenderer.js"></script>-->
 <!-- <script src="https://threejs.org/examples/jsm/renderers/CSS3DRenderer.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -1100,10 +1100,10 @@ playAudioBuffer();
 
                   // Calculate interpolation factor
                   const lerpFactor = movementProgress / movementDuration;
-
+                  const cubeIndex = parseInt(journeyOrder[journeyIndex])
                   // Move the camera to the current cube's position with an offset
                   // const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0,0,35));
-                  const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0,0,35));
+                  const targetPosition = allCubes[cubeIndex].position.clone().add(new THREE.Vector3(0,0,35));
 
 
                   const outline = allCubes[journeyOrder[journeyIndex]].getObjectByProperty("type", "LineSegments");
@@ -1413,6 +1413,10 @@ terminal.onData((data) => {
 
   } else if(command == 'advanced') {
       terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "claim" "bpm" \r\n');
+
+    } else if(command.includes(','))  {
+
+      playJourney(command.split(',').forEach( self.trim()));
 
   } else if(command.includes('+'))  {
     console.log("split");

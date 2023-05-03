@@ -1453,6 +1453,7 @@ terminal.onData((data) => {
       goto(selectedCubeIndex); // Move the camera towards the cube at index 3
 
 
+
     } else  if (lastAction == "claimed"){
       socket.emit("claim", {"activeUser": activeUser, "cube": selectedCubeIndex, "name":command});
       allCubes[selectedCubeIndex].name = "command";
@@ -1547,7 +1548,12 @@ terminal.onData((data) => {
       }
 
 
-    } else  if(command.includes('rotatex')) {
+    } else  if(command.includes('zoom')) {
+      // zoomAndCreateSubCube(subCubeCoordinates, subCubeSize, subGridSpacing, duration, depth - 1, scale);
+
+      zoomAndCreateSubCube({ x: 3, y: 3, z: 3 }, 1, 6, 8000, 7, 0.1);
+
+} else  if(command.includes('rotatex')) {
     
         //     const yAxis = new THREE.Vector3(0, 1, 0);
         // rotateCameraAroundAxis(yAxis, 45); // Rotate the camera 45 degrees around the Y-axis
@@ -1854,6 +1860,7 @@ function updateCubeMaterials(cubeGrid, cubeObjects) {
     }
   }
 }
+      // goToCube({ x: 1, y: 1, z: 1 }, 1, 0.5, 1000);
 
 // Usage:
 // Assuming you have a 3D array called `cubeObjects` containing your Three.js cubes
@@ -2951,6 +2958,32 @@ function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
 }
 
 
+function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
+  const targetPosition = new THREE.Vector3(
+    coordinates.x * (cubeSize + gridSpacing),
+    coordinates.y * (cubeSize + gridSpacing),
+    coordinates.z * (cubeSize + gridSpacing)
+  );
+
+  const startPosition = camera.position.clone();
+  const startTime = Date.now();
+
+  function animate() {
+    const elapsed = Date.now() - startTime;
+    const progress = elapsed / duration;
+
+    if (progress < 1) {
+      camera.position.lerpVectors(startPosition, targetPosition, progress);
+      requestAnimationFrame(animate);
+    } else {
+      camera.position.copy(targetPosition);
+    }
+  }
+
+  animate();
+}
+
+
 function rotateCameraAroundAxis(axis, degrees) {
   // Convert degrees to radians
   const radians = (degrees * Math.PI) / 180;
@@ -2972,6 +3005,52 @@ function rotateCameraAroundAxis(axis, degrees) {
 
   // Make the camera look at the center
   camera.lookAt(new THREE.Vector3(0, 0, 0));
+}
+
+function zoomAndCreateSubCube(coordinates, cubeSize, gridSpacing, duration, depth, scale) {
+  if (depth <= 0) {
+    return;
+  }
+
+  goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration);
+
+  // Wait for the duration of the zoom before creating the subcube
+  setTimeout(() => {
+    // Create subcube inside the parent cube
+    const parentCube = findCubeByCoordinates(coordinates, cubeSize, gridSpacing);
+    const subCube = createCube(cubeSize * scale);
+    parentCube.add(subCube);
+
+    // Update the coordinates to zoom into the subcube
+    const subCubeCoordinates = { x: 3, y: 3, z: 3 };
+
+    // Update the cubeSize and gridSpacing based on the scale factor
+    const subCubeSize = cubeSize * scale;
+    const subGridSpacing = gridSpacing * scale;
+
+    // Zoom into the subcube and create another subcube inside it
+    zoomAndCreateSubCube(subCubeCoordinates, subCubeSize, subGridSpacing, duration, depth - 1, scale);
+  }, duration);
+}
+
+function findCubeByCoordinates(coordinates, cubeSize, gridSpacing) {
+  // Calculate the target position based on the coordinates, cubeSize, and gridSpacing
+  const targetPosition = new THREE.Vector3(
+    coordinates.x * (cubeSize + gridSpacing),
+    coordinates.y * (cubeSize + gridSpacing),
+    coordinates.z * (cubeSize + gridSpacing)
+  );
+
+  // Find the cube in the allCubes array based on its position
+  const cube = allCubes.find((cube) => cube.position.equals(targetPosition));
+  return cube;
+}
+
+function createCube(size) {
+  const geometry = new THREE.BoxGeometry(size, size, size);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cube = new THREE.Mesh(geometry, material);
+  return cube;
 }
 
 

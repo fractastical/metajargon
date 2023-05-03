@@ -1479,7 +1479,7 @@ terminal.onData((data) => {
 
   }
   else if(command == 'advanced') {
-      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "bpm" "count" "clean" "rotatex" "rotatey" "rotatez" "generate x" \r\n');
+      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "bpm" "count" "clean" "rotatex" "rotatey" "rotatez" "generate x" "hamlet" \r\n');
 
     } else if(command.includes(','))  {
 
@@ -1494,7 +1494,16 @@ terminal.onData((data) => {
       h2o(commandSequence[0], 0);
 
 
-  } else if(command == 'maze') {
+  } else if(command == 'hamlet') {
+
+    const text = "To be or not to be";
+const start = new THREE.Vector3(100, 100, 100);
+const end = new THREE.Vector3(-5, -5, -5);
+const duration = 10000; // 5 seconds
+
+animateText(text, start, end, duration);
+
+} else if(command == 'maze') {
 
       makeMeAMaze(allCubes[selectedCubeIndex]);
 
@@ -1666,7 +1675,7 @@ terminal.onData((data) => {
 
       // const creature = command.substring(8,command.length);
 
-      const input[Array = command.split(' ');
+      const inputArray = command.split(' ');
       if (inputArray[1])
         generate(inputArray[1]);
 
@@ -3062,6 +3071,56 @@ function createCube(size) {
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   return cube;
+}
+
+
+function createTextMesh(text, size, callback) {
+  const loader = new THREE.FontLoader();
+
+  loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+    const textGeometry = new THREE.TextGeometry(text, {
+      font: font,
+      size: size,
+      height: 0.1,
+      curveSegments: 12,
+    });
+
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    callback(textMesh);
+  });
+}
+
+
+function animateText(text, start, end, duration) {
+  // Create a text mesh
+  createTextMesh(text, 1, (textMesh) => {
+    // Set the initial position
+    textMesh.position.set(start.x, start.y, start.z);
+
+    // Add the text mesh to the scene
+    scene.add(textMesh);
+
+    // Animate the text mesh
+    let startTime = null;
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Update the position of the text mesh
+      textMesh.position.lerpVectors(start, end, progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // Remove the text mesh from the scene when the animation is complete
+        scene.remove(textMesh);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  });
 }
 
 

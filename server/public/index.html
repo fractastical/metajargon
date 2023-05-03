@@ -2862,6 +2862,7 @@ function garbageCollector(scene, percentage = 0.1) {
 
 <!-- SECTION: advanced navigation -->
 
+// TODO: don't love this
 function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
   const targetPosition = allCubes[cubeIndex].position.clone();
   const approachVector = new THREE.Vector3(0, 0, approachDistance);

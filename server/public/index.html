@@ -1429,8 +1429,17 @@ terminal.onData((data) => {
     console.log("Total number of objects in the scene:", countObjects(scene));
     terminal.write(objectCount + " active objects");
 
-  } else if(command == 'advanced') {
-      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "create link" "bpm" "count" \r\n');
+  } else if(command == 'clean') {
+
+    garbageCollector(scene, .1);
+
+  } else if(command == 'hard clean') {
+
+      garbageCollector(scene, .5);
+
+  }
+  else if(command == 'advanced') {
+      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "create link" "bpm" "count" "clean" \r\n');
 
     } else if(command.includes(','))  {
 
@@ -2802,7 +2811,43 @@ function countObjects(scene) {
   return objectCount;
 }
 
-console.log("Total number of objects in the scene:", countObjects(scene));
+// Function to compare objects based on their distance from the center
+function compareByDistance(a, b) {
+  const center = new THREE.Vector3(0, 0, 0);
+  const distanceA = a.position.distanceTo(center);
+  const distanceB = b.position.distanceTo(center);
+  return distanceB - distanceA;
+}
+
+// Garbage collector function
+function garbageCollector(scene, percentage = 0.1) {
+  const allObjects = [];
+
+  scene.traverse((object) => {
+    if (object instanceof THREE.Mesh) {
+      allObjects.push(object);
+    }
+  });
+
+  // Sort the objects by distance from the center
+  allObjects.sort(compareByDistance);
+
+  // Calculate the number of objects to remove (10%)
+  const numToRemove = Math.ceil(allObjects.length * percentage);
+
+  // Remove the farthest 10% of objects
+  for (let i = 0; i < numToRemove; i++) {
+    const object = allObjects[i];
+    object.geometry.dispose();
+    object.material.dispose();
+    scene.remove(object);
+  }
+}
+
+// Periodically call the garbage collector
+// setInterval(() => {
+//   garbageCollector(scene);
+// }, 10000); // Run garbage collector every 10 seconds
 
 
     </script>

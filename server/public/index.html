@@ -492,6 +492,8 @@ function loadModel(url, parentObject) {
 }
 
 
+
+
 function createGridOfCubes() {
     const geometryTypes = [
         'icosahedron',
@@ -2413,6 +2415,7 @@ function h2o(cubeIndex, offset = 0) {
     allCubes[cubeIndex].add(hydrogenAtom2);
 
     // camera.position.z = 5;
+    console.log("Total number of objects in the scene:", countObjects(scene));
 
 
 // Set up the camera position
@@ -2772,6 +2775,30 @@ class ExtendedOrbitControls extends THREE.OrbitControls {
     super.update();
   }
 }
+
+<!-- SECTION: Garbage collection -->
+
+function countObjects(scene) {
+  let objectCount = 0;
+
+  function countChildren(object) {
+    objectCount++;
+
+    if (object.children.length > 0) {
+      object.children.forEach(child => {
+        countChildren(child);
+      });
+    }
+  }
+
+  scene.children.forEach(child => {
+    countChildren(child);
+  });
+
+  return objectCount;
+}
+
+console.log("Total number of objects in the scene:", countObjects(scene));
 
 
     </script>

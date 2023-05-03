@@ -1479,7 +1479,7 @@ terminal.onData((data) => {
 
   }
   else if(command == 'advanced') {
-      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "bpm" "count" "clean" "rotatex" "rotatey" "rotatez" \r\n');
+      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "bpm" "count" "clean" "rotatex" "rotatey" "rotatez" "generate x" \r\n');
 
     } else if(command.includes(','))  {
 
@@ -1661,7 +1661,18 @@ terminal.onData((data) => {
       //     // playableMelody.add({note: self, duration: '4n'});
         
       // }
-    } else if(command == 'mine') {
+    }  else if(command.startsWith('generate') && command.length > 8)
+    {
+
+      // const creature = command.substring(8,command.length);
+
+      const input[Array = command.split(' ');
+      if (inputArray[1])
+        generate(inputArray[1]);
+
+    }
+        
+    else if(command == 'mine') {
 
 
           terminal.write('you don\'t have enough monet to mine.\r\n');

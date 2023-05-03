@@ -1409,10 +1409,13 @@ terminal.onData((data) => {
     if(isNumeric(command))
     {
       // console.log ("isN");
-      const lerpFactor = 1;
+      // const lerpFactor = 1;
       selectedCubeIndex = parseInt(command);
-      const targetPosition = allCubes[selectedCubeIndex].position.clone().add(new THREE.Vector3(0, 0, 8));
-      camera.position.lerp(targetPosition, lerpFactor);
+      // const targetPosition = allCubes[selectedCubeIndex].position.clone().add(new THREE.Vector3(0, 0, 8));
+      // camera.position.lerp(targetPosition, lerpFactor);
+
+      goto(selectedCubeIndex); // Move the camera towards the cube at index 3
+
 
     } else  if (lastAction == "claimed"){
       socket.emit("claim", {"activeUser": activeUser, "cube": selectedCubeIndex, "name":command});
@@ -1431,7 +1434,7 @@ terminal.onData((data) => {
 
   } else if(command == 'clean') {
 
-    garbageCollector(scene, .1);
+     garbageCollector(scene, .1);
 
   } else if(command == 'hard clean') {
 
@@ -1454,9 +1457,9 @@ terminal.onData((data) => {
       h2o(commandSequence[0], 0);
 
 
-  } else if(command == 'loop') {
+  } else if(command == 'maze') {
 
-      loop();
+      makeMeAMaze(allCubes[selectedCubeIndex]);
 
   } else  if(command == 'castle') {
 
@@ -2724,24 +2727,32 @@ function createMaze(width, height) {
   return maze;
 }
 
-const mazeWidth = 21;
-const mazeHeight = 21;
-const maze = createMaze(mazeWidth, mazeHeight);
+function makeMeAMaze (parent) {
+    console.log('maze');
+    console.log(parent);
 
-// const scene = new THREE.Scene();
-const blockSize = 1;
+    const mazeWidth = 21;
+    const mazeHeight = 21;
+    const maze = createMaze(mazeWidth, mazeHeight);
 
-for (let y = 0; y < mazeHeight; y++) {
-  for (let x = 0; x < mazeWidth; x++) {
-    if (!maze[y][x]) {
-      const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
-      const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
-      const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-      cube.position.set(x * blockSize, blockSize / 2, y * blockSize);
-      scene.add(cube);
+    // const scene = new THREE.Scene();
+    const blockSize = 1;
+
+    for (let y = 0; y < mazeHeight; y++) {
+      for (let x = 0; x < mazeWidth; x++) {
+        if (!maze[y][x]) {
+          const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
+          const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
+          const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+          cube.position.set(parent.xPos + x * blockSize, parent.yPos + blockSize / 2, parent.zPos + y * blockSize);
+          scene.add(cube);
+        }
+      }
     }
-  }
+
 }
+
+
 
 
 class ExtendedOrbitControls extends THREE.OrbitControls {
@@ -2849,6 +2860,31 @@ function garbageCollector(scene, percentage = 0.1) {
 //   garbageCollector(scene);
 // }, 10000); // Run garbage collector every 10 seconds
 
+<!-- SECTION: advanced navigation -->
+
+function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
+  const targetPosition = allCubes[cubeIndex].position.clone();
+  const approachVector = new THREE.Vector3(0, 0, approachDistance);
+  
+  // Rotate the approach vector by the specified side angle around the Y axis
+  approachVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), sideAngle);
+  
+  // Move the camera to the target position plus the approach vector
+  const cameraTarget = targetPosition.add(approachVector);
+  
+  // Animate the movement over time using the lerp function
+  const lerpFactor = 0.1;
+  const animateCamera = () => {
+    camera.position.lerp(cameraTarget, lerpFactor);
+    camera.lookAt(targetPosition);
+    
+    if (camera.position.distanceTo(cameraTarget) > 0.1) {
+      requestAnimationFrame(animateCamera);
+    }
+  };
+  
+  animateCamera();
+}
 
     </script>
 

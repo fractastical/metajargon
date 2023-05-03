@@ -1547,7 +1547,34 @@ terminal.onData((data) => {
       }
 
 
-    } else  if(command.toLowerCase() == 'earth') {
+    } else  if(command.includes('rotatex')) {
+    
+        //     const yAxis = new THREE.Vector3(0, 1, 0);
+        // rotateCameraAroundAxis(yAxis, 45); // Rotate the camera 45 degrees around the Y-axis
+
+        const xAxis = new THREE.Vector3(1, 0, 0);
+        rotateCameraAroundAxis(xAxis, 45); // Rotate the camera 30 degrees around the X-axis
+
+        // const customAxis = new THREE.Vector3(1, 1, 1).normalize();
+        // rotateCameraAroundAxis(customAxis, 60); // Rotate the camera 60 degrees around a custom axis
+
+    } else  if(command.includes('rotatey')) {
+    
+        const yAxis = new THREE.Vector3(0, 1, 0);
+        rotateCameraAroundAxis(yAxis, 45); // Rotate the camera 45 degrees around the Y-axis
+
+
+    // const customAxis = new THREE.Vector3(1, 1, 1).normalize();
+    // rotateCameraAroundAxis(customAxis, 60); // Rotate the camera 60 degrees around a custom axis
+
+} else  if(command.includes('rotatez')) {
+    
+    const zAxis = new THREE.Vector3(0, 0, 1);
+    rotateCameraAroundAxis(zAxis, 45); // Rotate the camera 45 degrees around the Y-axis
+
+
+
+}  else if(command.toLowerCase() == 'earth') {
       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
       // player.autostart = true;
       selectedCubeIndex  = 123;
@@ -2922,6 +2949,31 @@ function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
   
   animateCamera();
 }
+
+
+function rotateCameraAroundAxis(axis, degrees) {
+  // Convert degrees to radians
+  const radians = (degrees * Math.PI) / 180;
+
+  // Save the current camera position
+  const currentPosition = camera.position.clone();
+
+  // Create a new quaternion to represent the rotation
+  const quaternion = new THREE.Quaternion();
+
+  // Set the quaternion to represent a rotation around the specified axis
+  quaternion.setFromAxisAngle(axis, radians);
+
+  // Apply the rotation to the camera position
+  currentPosition.applyQuaternion(quaternion);
+
+  // Update the camera position
+  camera.position.copy(currentPosition);
+
+  // Make the camera look at the center
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
+}
+
 
 <!-- SECTION: Basic Tests -->
 

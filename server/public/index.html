@@ -561,7 +561,12 @@ function createGridOfCubes() {
 
         function getCubeByCoordinates(x, y, z) {
           const key = `${x},${y},${z}`;
-          return cubes.get(key);
+          return cubeMap.get(key);
+        }
+
+        function getCubeIndexByCoordinates(x, y, z) {
+          const key = `${x},${y},${z}`;
+          return cubeMap.get(key).uuid;
         }
 
 

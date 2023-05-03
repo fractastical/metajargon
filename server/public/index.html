@@ -2665,6 +2665,60 @@ function analyzeFrequencyAndHighlightCubes() {
   requestAnimationFrame(analyzeFrequencyAndHighlightCubes);
 }
 
+<!-- section: maze -->
+
+
+function createMaze(width, height) {
+  const maze = new Array(height).fill(null).map(() => new Array(width).fill(false));
+  const stack = [];
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [0, -1],
+    [-1, 0]
+  ];
+
+  function inBounds(x, y) {
+    return x >= 0 && x < width && y >= 0 && y < height;
+  }
+
+  function carve(x, y) {
+    maze[y][x] = true;
+    const shuffledDirections = directions.sort(() => Math.random() - 0.5);
+
+    for (const [dx, dy] of shuffledDirections) {
+      const nx = x + dx * 2;
+      const ny = y + dy * 2;
+
+      if (inBounds(nx, ny) && !maze[ny][nx]) {
+        maze[y + dy][x + dx] = true;
+        carve(nx, ny);
+      }
+    }
+  }
+
+  carve(1, 1);
+  return maze;
+}
+
+const mazeWidth = 21;
+const mazeHeight = 21;
+const maze = createMaze(mazeWidth, mazeHeight);
+
+// const scene = new THREE.Scene();
+const blockSize = 1;
+
+for (let y = 0; y < mazeHeight; y++) {
+  for (let x = 0; x < mazeWidth; x++) {
+    if (!maze[y][x]) {
+      const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
+      const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
+      const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      cube.position.set(x * blockSize, blockSize / 2, y * blockSize);
+      scene.add(cube);
+    }
+  }
+}
 
 
 

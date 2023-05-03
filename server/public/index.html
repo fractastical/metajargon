@@ -1380,7 +1380,7 @@ fitAddon.fit();
 // Set up a simple prompt
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
 
-terminal.write('Commands: "library" "play" "stop" "faster" "slower" "earth" "mars" "advanced"   \r\n');
+terminal.write('Commands: "library" "play" "stop" "faster" "slower" "earth" "mars" "advanced" "create link"   \r\n');
 terminal.write('$ ');
 
 // const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
@@ -1411,7 +1411,11 @@ terminal.onData((data) => {
     } else if(command == 'help') {
       terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" "advanced" \r\n');
 
-  } else if(command == 'advanced') {
+  } else if(command == 'create link') {
+      terminal.write(' Type "create link mars/2.3.4->www.mymetaverse.com/peace" \r\n');
+
+  }
+  else if(command == 'advanced') {
       terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "claim" "bpm" \r\n');
 
     } else if(command.includes(','))  {
@@ -1943,7 +1947,7 @@ function earth() {
     const zuzaluCoords = { lat: 42.3919, lon: 18.6506 };
     const zuzaluMarkerPosition = latLongToVector3(zuzaluCoords.lat, zuzaluCoords.lon, prosperaRadius);
     const zuzaluMaterial = new THREE.MeshBasicMaterial({ color:zuzaluColor });
-    zuzaluMarker = new THREE.Mesh(prosperaGeometry, zuzaluMaterial);
+    zuzaluMarker = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), zuzaluMaterial);
 
     zuzaluMarker.position.copy(zuzaluMarkerPosition);
     earth.add(zuzaluMarker);

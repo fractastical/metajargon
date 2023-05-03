@@ -1388,8 +1388,8 @@ fitAddon.fit();
 
 // Set up a simple prompt
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
-
-terminal.write('Commands: "library" "play" "stop" "faster" "slower" "earth" "mars" "advanced" "create link"   \r\n');
+const basicHelpString = 'Commands: "library" "play" "stop" "faster" "slower" "earth" "mars" "advanced" "help"   \r\n';
+terminal.write(basicHelpString);
 terminal.write('$ ');
 
 // const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
@@ -1418,14 +1418,19 @@ terminal.onData((data) => {
       socket.emit("claim", {"activeUser": activeUser, "cube": selectedCubeIndex, "name":command});
       allCubes[selectedCubeIndex].name = "command";
     } else if(command == 'help') {
-      terminal.write('  "library" "play" "stop" "faster" "slower" "claim" "water" "advanced" \r\n');
+      terminal.write(basicHelpString);
 
   } else if(command == 'create link') {
       terminal.write(' Type "create link mars/2.3.4->www.mymetaverse.com/peace" \r\n');
 
-  }
-  else if(command == 'advanced') {
-      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "claim" "bpm" \r\n');
+  } else if(command == 'count') {
+
+    var objectCount = countObjects(scene);
+    console.log("Total number of objects in the scene:", countObjects(scene));
+    terminal.write(objectCount + " active objects");
+
+  } else if(command == 'advanced') {
+      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "create link" "bpm" "count" \r\n');
 
     } else if(command.includes(','))  {
 
@@ -2415,7 +2420,6 @@ function h2o(cubeIndex, offset = 0) {
     allCubes[cubeIndex].add(hydrogenAtom2);
 
     // camera.position.z = 5;
-    console.log("Total number of objects in the scene:", countObjects(scene));
 
 
 // Set up the camera position

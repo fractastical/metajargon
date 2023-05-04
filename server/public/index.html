@@ -522,7 +522,6 @@ function createGridOfCubes() {
   for (let y = -Math.floor(gridSize / 2); y <= Math.floor(gridSize / 2); y++) {
     for (let z = -Math.floor(gridSize / 2); z <= Math.floor(gridSize / 2); z++) {
      const geometryType = geometryTypes[z];
-        cube.label = ""; // Initialize the label as an empty string
 
       // const activeCube =createCubeWithUniqueObject(xPos + 30, yPos + 30, zPos + 30, 0.5, geometryType, cubeNumber);
       const activeCube =createCubeWithUniqueObject(x * (cubeSize + cubeSpacing), y * (cubeSize + cubeSpacing), z * (cubeSize + cubeSpacing), 0.5, geometryType, cubeNumber);

@@ -3264,6 +3264,8 @@ function help() {
     terminal.write(`Available functions:\r\n${formattedList}`);
   }
 }
+help.helpText = "displays available functions along with descriptions of how to use";
+
 
 function onTerminalReady() {
   terminal.clear();
@@ -3279,6 +3281,23 @@ function listFunctionNames() {
   for (const key in window) {
     console.log(key);
     if (typeof window[key] === 'function' && window[key].helpText) {
+
+      functionsList.push(` ${key}`);
+    }
+  }
+
+  console.log(functionsList);
+
+  return functionsList;
+}
+
+function listAdvancedFunctionNames() {
+  let functionsList = [];
+
+
+  for (const key in window) {
+    console.log(key);
+    if (typeof window[key] === 'function' && window[key].advancedHelpText) {
 
       functionsList.push(` ${key}`);
     }

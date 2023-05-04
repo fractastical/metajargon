@@ -3258,12 +3258,20 @@ terminal.onData((data) => {
 //     terminal.write(objectCount + " active objects \r\n");
 
 //   } else if(command == 'clean') {
+function clean() {
 
-//      garbageCollector(scene, .1);
+     garbageCollector(scene, .1);
+ }
+ clean.advancedHelpText = "cleanup 10% of active files based on distance"
 
 //   } else if(command == 'hard clean') {
 
-//       garbageCollector(scene, .5);
+function hardClean() {
+
+garbageCollector(scene, .5);
+}
+clean.advancedHelpText = "cleanup 50% of active files based on distance"
+
 
 //   }
 //   else if(command == 'advanced') {
@@ -3625,6 +3633,19 @@ async function games() {
   }
 }
 games.helpText = "list available games"
+
+
+async function music() {
+  try {
+    const response = await fetch('/music');
+    const files = await response.json();
+    terminal.write(`Available games: ${files.join(', ')} Type "play" and then the music name to play game.\n\r$ `);
+  } catch (error) {
+    console.error('Error fetching music files:', error);
+    terminal.write('Error fetching music files');
+  }
+}
+music.helpText = "list available music"
 
 
 

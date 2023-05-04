@@ -113,6 +113,15 @@ const getUserBalance = (username, callback) => {
 app.use(express.static(__dirname + "/public"));
 
 // const jargPath = path.join(__dirname, 'public', 'jarg');
+app.get('/music', (req, res) => {
+  fs.readdir(path.join(__dirname, 'public', 'snd'), (err, files) => {
+    if (err) {
+      res.status(500).send('Error reading snd directory');
+    } else {
+      res.json(files.filter(file => file.endsWith('.mp3')));
+    }
+  });
+});
 
 app.get('/jarg-list', (req, res) => {
   fs.readdir(path.join(__dirname, 'public', 'jarg'), (err, files) => {

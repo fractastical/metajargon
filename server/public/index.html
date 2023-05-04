@@ -3162,11 +3162,12 @@ async function addGitHubContributionsChartToCube(cubeIndex) {
   addChartToCube(cube, contributionsData);
 }
 
+
 async function fetchGitHubContributionsData(owner, repo) {
   const url = `https://api.github.com/repos/${owner}/${repo}/stats/participation`;
   const response = await fetch(url, {
     headers: {
-      'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Replace with your GitHub access token
+      'Authorization': `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
     },
   });
 

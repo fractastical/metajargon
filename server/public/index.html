@@ -2613,8 +2613,86 @@ function garbageCollector(scene, percentage = 0.1) {
 
 <!-- SECTION: advanced navigation -->
 
+
+function moveBackward(distance) {
+  const direction = new THREE.Vector3(0, 0, -distance);
+  camera.localToWorld(direction);
+  camera.position.add(direction);
+}
+moveBackward.advancedHelpText = "move backwards on the z axis. ARG1: distance"
+
+function back(){
+
+  moveBackward(1);
+}
+back.helpText = "move backwards 10px on the z access"
+
+function moveForward(distance) {
+  const direction = new THREE.Vector3();
+  camera.getWorldDirection(direction);
+  direction.multiplyScalar(distance);
+  camera.position.add(direction);
+}
+
+function moveBackward(distance) {
+  const direction = new THREE.Vector3();
+  camera.getWorldDirection(direction);
+  direction.multiplyScalar(-distance);
+  camera.position.add(direction);
+}
+
+function moveLeft(distance) {
+  const direction = new THREE.Vector3();
+  camera.getWorldDirection(direction);
+  direction.cross(camera.up).normalize().multiplyScalar(-distance);
+  camera.position.add(direction);
+}
+
+function moveRight(distance) {
+  const direction = new THREE.Vector3();
+  camera.getWorldDirection(direction);
+  direction.cross(camera.up).normalize().multiplyScalar(distance);
+  camera.position.add(direction);
+}
+
+function moveUp(distance) {
+  const direction = new THREE.Vector3().copy(camera.up).normalize().multiplyScalar(distance);
+  camera.position.add(direction);
+}
+
+function moveDown(distance) {
+  const direction = new THREE.Vector3().copy(camera.up).normalize().multiplyScalar(-distance);
+  camera.position.add(direction);
+}
+
+
+window.addEventListener('keydown', (event) => {
+  const distance = 3;
+  switch (event.key.toLowerCase()) {
+    case 'w':
+      moveForward(distance);
+      break;
+    case 'a':
+      moveLeft(distance);
+      break;
+    case 's':
+      moveBackward(distance);
+      break;
+    case 'd':
+      moveRight(distance);
+      break;
+    case 'q':
+      moveDown(distance);
+      break;
+    case 'e':
+      moveUp(distance);
+      break;
+
+  }
+});
+
 // TODO: don't love this
-function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
+function g(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
   const targetPosition = allCubes[cubeIndex].position.clone();
   const approachVector = new THREE.Vector3(0, 0, approachDistance);
   
@@ -2637,7 +2715,7 @@ function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
   
   animateCamera();
 }
-goto.helpText = "go to a cube. ARG1: number of cube"
+g.helpText = "go to a cube. ARG1: number of cube"
 
 function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
   const targetPosition = new THREE.Vector3(

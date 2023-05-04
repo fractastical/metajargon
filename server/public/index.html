@@ -347,7 +347,7 @@ https://cdn.jsdelivr.net/npm/three-gltf-loader@1.111.0/index.min.js
 
             const cube = new THREE.LineSegments(edgesGeometry, lineMaterial);
             cube.uuid = cubeNumber;
-
+            cube.label = "";
 
             const smallEdgesGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(.2, .2, .2));
 
@@ -522,6 +522,7 @@ function createGridOfCubes() {
   for (let y = -Math.floor(gridSize / 2); y <= Math.floor(gridSize / 2); y++) {
     for (let z = -Math.floor(gridSize / 2); z <= Math.floor(gridSize / 2); z++) {
      const geometryType = geometryTypes[z];
+        cube.label = ""; // Initialize the label as an empty string
 
       // const activeCube =createCubeWithUniqueObject(xPos + 30, yPos + 30, zPos + 30, 0.5, geometryType, cubeNumber);
       const activeCube =createCubeWithUniqueObject(x * (cubeSize + cubeSpacing), y * (cubeSize + cubeSpacing), z * (cubeSize + cubeSpacing), 0.5, geometryType, cubeNumber);
@@ -1479,7 +1480,7 @@ terminal.onData((data) => {
 
   }
   else if(command == 'advanced') {
-      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "bpm" "count" "clean" "rotatex" "rotatey" "rotatez" "generate x" "hamlet" \r\n');
+      terminal.write('  "NUMBER" "MOLECULE_NAME" "NUMBER+molecule name" "bpm" "count" "clean" "rotatex" "rotatey" "rotatez" "hamlet" \r\n');
 
     } else if(command.includes(','))  {
 
@@ -3128,6 +3129,17 @@ function animateText(text, start, end, duration) {
 
 const cubeAt111 = getCubeByCoordinates(1, 1, 1);
 const cubeAtMinus111 = getCubeByCoordinates(-1, -1, -1);
+
+<!-- SECTION: Labels -->
+
+function setCubeLabel(cubeIndex, label) {
+  allCubes[cubeIndex].label = label;
+}
+
+function findCubeByLabel(label) {we 
+  return allCubes.find(cube => cube.label === label);
+}
+
 
     </script>
 

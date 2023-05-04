@@ -1164,7 +1164,6 @@ playAudioBuffer();
         // sequence.start();
     };
 
-    playJourney.helpText = "plays a journey";
 
 window.playJourney = playJourney;
 
@@ -1393,7 +1392,6 @@ function noteToMidi(note) {
 
   return noteIndex + 12 * (octave + 1);
 }
-noteToMidi.helpText = "This function turns a note to midi";
 
 
 function playMelody(melody) {
@@ -2464,6 +2462,13 @@ function createMaze(width, height) {
   return maze;
 }
 
+function maze()
+{
+  makeMeAMaze(allCubes[selectedCubeIndex])
+
+}
+maze.helpText = "make a maze inside the currently selected cube"
+
 function makeMeAMaze (parent) {
     console.log('maze');
     console.log(parent);
@@ -2623,7 +2628,7 @@ function goto(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
   
   animateCamera();
 }
-
+goto.helpText = "go to a cube. ARG1: number of cube"
 
 function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
   const targetPosition = new THREE.Vector3(
@@ -2649,6 +2654,59 @@ function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
 
   animate();
 }
+
+function rotatex() {
+
+  const xAxis = new THREE.Vector3(1, 0, 0);
+   rotateCameraAroundAxis(xAxis, 15);
+
+}
+rotatex.helpText = "rotate around x axis 15 degrees";
+
+
+function rotatey() {
+
+        const yAxis = new THREE.Vector3(0, 1, 0);
+        rotateCameraAroundAxis(yAxis, 15); 
+
+}
+rotatey.helpText = "rotate around y axis 15 degrees";
+
+
+function rotatez() {
+
+const zAxis = new THREE.Vector3(0, 0, 1);
+rotateCameraAroundAxis(zAxis, 15); 
+
+}
+rotatez.helpText = "rotate around z axis 15 degrees";
+
+
+function rotateCameraAroundXAxis(degrees) {
+
+        const xAxis = new THREE.Vector3(1, 0, 0);
+        rotateCameraAroundAxis(xAxis, degrees); // Rotate the camera 30 degrees around the X-axis
+
+}
+rotateCameraAroundXAxis.advancedHelpText = "rotate around x axis a certain number of degrees. ARG1:degrees";
+
+
+function rotateCameraAroundYAxis(degrees) {
+
+        const yAxis = new THREE.Vector3(0, 1, 0);
+      rotateCameraAroundAxis(xAxis, degrees); // Rotate the camera 30 degrees around the X-axis
+
+}
+rotateCameraAroundYAxis.advancedHelpText = "rotate around y axis a certain number of degrees. ARG1:degrees";
+
+
+function rotateCameraAroundZAxis(degrees) {
+
+const zAxis = new THREE.Vector3(0, 0, 1);
+rotateCameraAroundAxis(zAxis, degrees); // Rotate the camera 30 degrees around the X-axis
+
+}
+rotateCameraAroundZAxis.advancedHelpText = "rotate around y axis a certain number of degrees. ARG1:degrees";
 
 
 function rotateCameraAroundAxis(axis, degrees) {
@@ -2869,6 +2927,59 @@ function findCubeByLabel(label) {we
 
 <!---  SECTION: terminal -->
 
+function advanced() {
+  let functionsList = [];
+
+  for (const key in window) {
+    if (typeof window[key] === 'function' && window[key].advancedHelpText) {
+      functionsList.push(`${key}: ${window[key].advancedHelpText}`);
+    }
+  }
+
+  if (functionsList.length === 0) {
+    terminal.write('No functions with advancedHelpText found.');
+  } else {
+    const formattedList = functionsList.join('\r\n');
+    terminal.write(`Available functions:\r\n${formattedList}\r\n$`);
+  }
+}
+advanced.helpText = "displays advanced functions along with descriptions of how to use them";
+
+function initializeTerminalHistory() {
+  const terminalInput = document.querySelector('.terminal-input');
+  if (terminalInput) {
+    terminalInput.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        terminalInput.value = lastCommand;
+      }
+    });
+  }
+}
+
+setTimeout(() => {
+  initializeTerminalHistory();
+  onTerminalReady();
+}, 100);
+
+function help() {
+  let functionsList = [];
+
+  for (const key in window) {
+    if (typeof window[key] === 'function' && window[key].helpText) {
+      functionsList.push(`${key}: ${window[key].helpText}`);
+    }
+  }
+
+  if (functionsList.length === 0) {
+    terminal.write('No functions with helpText found.');
+  } else {
+    const formattedList = functionsList.join('\r\n');
+    terminal.write(`Available functions:\r\n${formattedList}\r\n$`);
+  }
+}
+help.helpText = "displays available functions along with descriptions of how to use them";
+
 function isNumeric(str) {
   if (typeof str != "string") return false // we only process strings!  
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
@@ -2903,6 +3014,8 @@ terminal.write('\r\n$ ');
 
 // Handle user input
 let inputBuffer = '';
+let lastCommand = '';
+
 var player; 
 
 terminal.onData((data) => {
@@ -2916,6 +3029,8 @@ terminal.onData((data) => {
     const commands = command.split(';');
 
     commands.forEach((command) => {
+
+      lastCommand = command;
       // Split the command by spaces
       const args = command.trim().split(/\s+/);
       const functionName = args.shift();
@@ -2924,6 +3039,7 @@ terminal.onData((data) => {
       if (typeof window[functionName] === 'function') {
         try {
           window[functionName](...args);
+
         } catch (error) {
           console.error(`Error while executing function ${functionName}:`, error);
           terminal.write(`An error occurred while executing ${functionName}: ${error.message}`);
@@ -2931,7 +3047,14 @@ terminal.onData((data) => {
       } else {
         terminal.write(`Unknown command: ${functionName}`);
       }
+    
     });
+
+    // Clear the line and print a new prompt
+    terminal.write('\x1B[2K\x1B[G');
+    terminal.write('$ ');
+
+
   } else if (data === '\x7F') {
     // If the user pressed Backspace, remove the last character from the input buffer
 
@@ -2943,6 +3066,8 @@ terminal.onData((data) => {
     inputBuffer += data;
     terminal.write(data);
   }
+
+
 
 });
 
@@ -3248,23 +3373,7 @@ terminal.onData((data) => {
 //   }
 // });
 
-function help() {
-  let functionsList = [];
 
-  for (const key in window) {
-    if (typeof window[key] === 'function' && window[key].helpText) {
-      functionsList.push(`${key}: ${window[key].helpText}`);
-    }
-  }
-
-  if (functionsList.length === 0) {
-    terminal.write('No functions with helpText found.');
-  } else {
-    const formattedList = functionsList.join('\r\n');
-    terminal.write(`Available functions:\r\n${formattedList}`);
-  }
-}
-help.helpText = "displays available functions along with descriptions of how to use";
 
 
 function onTerminalReady() {

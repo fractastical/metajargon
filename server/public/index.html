@@ -41,7 +41,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 80px;
+            height: 120px;
 
           }
 
@@ -87,11 +87,11 @@
 </head>
 <body>
 
-
+<!-- 
     <div class="login-section">
 
       
-        <!-- <div class="row">
+        <div class="row">
           <div class="col-2 menu">
           </div>
           <div class="col-7 menu">
@@ -142,19 +142,18 @@
             </div>
         </div>
         
-        -->
 
 
 
-          <!-- <input type="text" value="cheese" /> -->
-      <img src="img/space-monet.png" width="2px"/> <div id="balance" style="color:white; text-align:left">0 <!--space money --></div>
-  <!--  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>-->
-      <button id="loginWithMetamask">Login</button>
+       <input type="text" value="cheese" /> 
+      <img src="img/space-monet.png" width="2px"/> <div id="balance" style="color:white; text-align:left">0 </div>
+  <input id="journeyData" value="your journey data here"  type="text" onchange="playJourney()" size="20"/>
+      <button id="loginWithMetamask">Login</button> 
     
-     <!-- <img  onclick="playJourney()" src="img/steam-login.png"/>-->
+    <img  onclick="playJourney()" src="img/steam-login.png"/>
 
 
-    </div>
+    </div>-->
     <div id="terminal">
 
 
@@ -461,6 +460,8 @@ var dataArray;
 var bufferLength;
 var beethovenText;
 var cubeMap = new Map(); // Store the cubes with coordinates as keys
+var cubeLabels = new Map(); // Store the cubes with labels as keys
+
 
 
 // var cubesByGeometry = [][];
@@ -796,7 +797,7 @@ async function loginWithMetaMask() {
 <!--  Does not work out of box from GPT-4 seems to require a generic openID oauth libary --> 
 
 // Add a click event listener to the MetaMask login button
-document.getElementById("loginWithMetamask").addEventListener("click", loginWithMetaMask);
+// document.getElementById("loginWithMetamask").addEventListener("click", loginWithMetaMask);
 
 // Replace 'YOUR_API_KEY' with your actual Steam Web API key
 const API_KEY = '633FAC6F87C73A7A24676D7C4D4D6AC0';
@@ -1645,7 +1646,7 @@ const initialProbability = 0.3; // Adjust the probability of a cell being alive 
 // seedGameOfLife(cubeGr  id, initialProbability);
 const globeRadius = 15;
 // animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
-earth();
+createEarth();
 
 <!-- SECTION: NETWORKSTATE --> 
 
@@ -1669,7 +1670,7 @@ class ArcCurve extends THREE.Curve {
 
 var zuzaluMarker;
 
-function earth() {
+function createEarth() {
 
     // Create Earth sphere
     const earthGeometry = new THREE.SphereGeometry(globeRadius, globeRadius, globeRadius);
@@ -1904,7 +1905,7 @@ function createMarker(latitude, longitude, color, planet) {
   return marker;
 }
 
-function mars() {
+function createMars() {
 
       // Create Mars
       const marsRadius = 10.88;
@@ -1973,7 +1974,7 @@ function tradeRoute() {
 
 
 }
-mars();
+createMars();
 tradeRoute();
 
 <!-- SECTION: ASCIIART --> 
@@ -2300,11 +2301,6 @@ function parseSDF(sdfData) {
   return { atoms, bonds };
 }
 
-fetchMoleculeData('water').then((sdfData) => {
-  const molecule = parseSDF(sdfData);
-
-  console.log(molecule);
-});
 
 // Helper function to create spheres for atoms
 function createAtomSphere(color, radius, position) {
@@ -2923,8 +2919,14 @@ async function fetchGitHubContributionsData(owner, repo) {
 
 <!-- SECTION: Basic Tests -->
 
-const cubeAt111 = getCubeByCoordinates(1, 1, 1);
-const cubeAtMinus111 = getCubeByCoordinates(-1, -1, -1);
+// const cubeAt111 = getCubeByCoordinates(1, 1, 1);
+// const cubeAtMinus111 = getCubeByCoordinates(-1, -1, -1);
+
+// fetchMoleculeData('water').then((sdfData) => {
+//   const molecule = parseSDF(sdfData);
+
+//   console.log(molecule);
+// });
 
 <!-- SECTION: Labels -->
 
@@ -2952,7 +2954,7 @@ function advanced() {
     terminal.write('No functions with advancedHelpText found.');
   } else {
     const formattedList = functionsList.join('\r\n');
-    terminal.write(`Available functions:\r\n${formattedList}\r\n$`);
+    terminal.write(`\r\nAvailable functions:\r\n${formattedList}\r\n$`);
   }
 }
 advanced.helpText = "displays advanced functions along with descriptions of how to use them";
@@ -2970,7 +2972,7 @@ function complete() {
     terminal.write('No functions  found.');
   } else {
     const formattedList = functionsList.join('\r\n');
-    terminal.write(`Available functions:\r\n${formattedList}\r\n$`);
+    terminal.write(`\r\nAvailable functions:\r\n${formattedList}\r\n$`);
   }
 }
 complete.advancedHelpText = "all functions";
@@ -3005,7 +3007,7 @@ function help() {
     terminal.write('No functions with helpText found.');
   } else {
     const formattedList = functionsList.join('\r\n');
-    terminal.write(`Available functions:\r\n${formattedList}\r\n$`);
+    terminal.write(`\r\nAvailable functions:\r\n${formattedList}\r\n$`);
   }
 }
 help.helpText = "displays available functions along with descriptions of how to use them";
@@ -3259,14 +3261,30 @@ terminal.onData((data) => {
 // }  else if(command.toLowerCase() == 'earth') {
 //       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
 //       // player.autostart = true;
+
+cubeMap.set("earth", 123);
+function earth() {
+
+  playJourney([123]);
+}
+earth.helpText = "take me to earth";
+
 //       selectedCubeIndex  = 123;
 //       playJourney([123]);
 //           // playMelody();
 //     } else if(command.toLowerCase() == 'mars')  {
 //       // player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
 //       // player.autostart = true;
-//       selectedCubeIndex  = 124;
-//       playJourney([124]);
+
+cubeMap.set("mars", 124);
+function mars() {
+
+  playJourney([124]);
+}
+mars.helpText = "take me to mars";
+
+      // selectedCubeIndex  = 124;
+      // playJourney([124]);
 //           // playMelody();
 //     } else if(command.includes('Bach')) {
 //       player = new Tone.Player("snd/bach_remixbwv1007.mp3").toDestination();
@@ -3408,9 +3426,10 @@ terminal.onData((data) => {
 
 function onTerminalReady() {
   terminal.clear();
-  terminal.write('Welcome to the terminal.\r\n');
   terminal.write('Type "help" for a list of available functions, or view the initial list below:\r\n');
   terminal.write(listFunctionNames().toString());
+  terminal.write("\r\n$ ");
+
 }
 
 function listFunctionNames() {
@@ -3418,14 +3437,14 @@ function listFunctionNames() {
 
 
   for (const key in window) {
-    console.log(key);
+    // console.log(key);
     if (typeof window[key] === 'function' && window[key].helpText) {
 
       functionsList.push(` ${key}`);
     }
   }
 
-  console.log(functionsList);
+  // console.log(functionsList);
 
   return functionsList;
 }
@@ -3435,7 +3454,7 @@ function listAdvancedFunctionNames() {
 
 
   for (const key in window) {
-    console.log(key);
+    // console.log(key);
     if (typeof window[key] === 'function' && window[key].advancedHelpText) {
 
       functionsList.push(` ${key}`);
@@ -3447,6 +3466,39 @@ function listAdvancedFunctionNames() {
   return functionsList;
 }
 
+<!-- SECTION: JARGON -->
+
+async function listJargFiles() {
+  try {
+    const response = await fetch('jarg/');
+    const text = await response.text();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+
+    const links = doc.querySelectorAll('a');
+    const jargFiles = [];
+
+    links.forEach((link) => {
+      if (link.href.endsWith('.jarg')) {
+        jargFiles.push(link.textContent);
+      }
+    });
+
+    if (jargFiles.length > 0) {
+      terminal.write(`Jarg files found:`);
+      jargFiles.forEach((file) => terminal.write(file));
+    } else {
+      terminal.write('No jarg files found.');
+    }
+  } catch (error) {
+    console.error(error);
+    terminal.write('Error occurred while fetching the jarg files.');
+  }
+}
+listJargFiles.advancedHelpText = "list .jarg files that are available for playable games"
+
+// const fs = require("fs")
 
     </script>
 

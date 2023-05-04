@@ -109,6 +109,15 @@ const getUserBalance = (username, callback) => {
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 
 app.use(express.static(__dirname + "/public"));
+// app.use('/jarg', express.static(__dirname + '/public/jarg'));
+app.use('/jarg', express.static(__dirname + '/jarg'));
+app.use('/js', express.static(__dirname + '/js'));
+
+// app.use(express.static(__dirname + "/public/jarg"));
+
+// app.use('/jarg', express.static(path.join(__dirname, '/public/jarg')));
+// app.use('/jarg', express.static(path.join(__dirname, '/public/jarg')));
+
 
 // app.use(express.static("public"));
 

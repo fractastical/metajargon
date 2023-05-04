@@ -5,6 +5,8 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
+const fs = require('fs');
+
 // const mongoose = require('mongoose');
 
 // const connectToMongoDB = async () => {
@@ -109,14 +111,20 @@ const getUserBalance = (username, callback) => {
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 
 app.use(express.static(__dirname + "/public"));
-// app.use('/jarg', express.static(__dirname + '/public/jarg'));
-app.use('/jarg', express.static(__dirname + '/jarg'));
-app.use('/js', express.static(__dirname + '/js'));
 
-// app.use(express.static(__dirname + "/public/jarg"));
+// const jargPath = path.join(__dirname, 'public', 'jarg');
 
-// app.use('/jarg', express.static(path.join(__dirname, '/public/jarg')));
-// app.use('/jarg', express.static(path.join(__dirname, '/public/jarg')));
+app.get('/jarg-list', (req, res) => {
+  fs.readdir(path.join(__dirname, 'public', 'jarg'), (err, files) => {
+    if (err) {
+      res.status(500).send('Error reading jarg directory');
+    } else {
+      res.json(files.filter(file => file.endsWith('.jarg')));
+    }
+  });
+});
+
+
 
 
 // app.use(express.static("public"));

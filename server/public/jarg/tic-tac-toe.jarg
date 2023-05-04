@@ -1,0 +1,7 @@
++++ ticTacToeThreeJS
+-- Create a 3x3 grid using three.js objects.
+-- Implement a simple click event listener to place X or O in the grid.
+-- Check for a win or draw condition after each move.
+-- Display the result and reset the game when it's finished.
++++
+

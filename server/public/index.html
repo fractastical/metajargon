@@ -2458,12 +2458,13 @@ function createMaze(width, height) {
   return maze;
 }
 
+//TODO: latest GPT version crashes 
 function maze()
 {
   makeMeAMaze(allCubes[selectedCubeIndex])
 
 }
-maze.helpText = "make a maze inside the currently selected cube"
+// maze.helpText = "make a maze inside the currently selected cube"
 
 function makeMeAMaze(parent) {
   console.log('maze');
@@ -3468,35 +3469,19 @@ function listAdvancedFunctionNames() {
 
 <!-- SECTION: JARGON -->
 
-async function listJargFiles() {
+
+async function games() {
   try {
-    const response = await fetch('jarg/');
-    const text = await response.text();
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, 'text/html');
-
-    const links = doc.querySelectorAll('a');
-    const jargFiles = [];
-
-    links.forEach((link) => {
-      if (link.href.endsWith('.jarg')) {
-        jargFiles.push(link.textContent);
-      }
-    });
-
-    if (jargFiles.length > 0) {
-      terminal.write(`Jarg files found:`);
-      jargFiles.forEach((file) => terminal.write(file));
-    } else {
-      terminal.write('No jarg files found.');
-    }
+    const response = await fetch('/jarg-list');
+    const files = await response.json();
+    terminal.write(`Available games: ${files.join(', ')} Type "play" and then the game name to play game.\n\r$ `);
   } catch (error) {
-    console.error(error);
-    terminal.write('Error occurred while fetching the jarg files.');
+    console.error('Error fetching jarg files:', error);
+    terminal.write('Error fetching jarg files');
   }
 }
-listJargFiles.advancedHelpText = "list .jarg files that are available for playable games"
+games.helpText = "list available games"
+
 
 // const fs = require("fs")
 

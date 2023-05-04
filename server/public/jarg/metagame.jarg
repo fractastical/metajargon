@@ -1,0 +1,6 @@
++++ metagame($game_name)
+
+Determine if it is possible to implement the given game in a single JavaScript function with less than 50 lines of JavaScript code, assuming there is already an active three.js scene, and all that is needed is the game logic implementation.
+If it is possible, provide the jargon code for the game and JavaScript function.
+If it is not possible, explain that the implementation is out of scope due to the line constraint.
+++

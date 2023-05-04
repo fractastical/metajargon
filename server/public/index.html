@@ -72,6 +72,10 @@
 <script src="js/xterm-addon-webgl.js"></script>
 <link rel="stylesheet" href="css/xterm.css" />
 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 <script>
     var mol = "S 1 2 3^K 3^K 2";
     // var mol = "chemSKI rewrite terminSK. The node S plays two roles: as the combinator S and as a fanout. The node K behaves as combinator K but also as a termination.</a>";
@@ -3102,6 +3106,85 @@ function animateText(text, start, end, duration) {
   });
 }
 
+<!-- SECTION: Github -->
+
+async function createChartDataURL(contributionsData) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 256;
+
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: contributionsData.map((dataPoint) => dataPoint.date),
+        datasets: [
+          {
+            label: 'Contributions',
+            data: contributionsData.map((dataPoint) => dataPoint.contributions),
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          },
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            display: false,
+          },
+          y: {
+            display: false,
+          },
+        },
+      },
+    });
+
+    chart.on('render', () => {
+      resolve(canvas.toDataURL());
+    });
+  });
+}
+
+async function addChartToCube(cube, contributionsData) {
+  const dataURL = await createChartDataURL(contributionsData);
+  const texture = new THREE.TextureLoader().load(dataURL);
+  const material = new THREE.MeshBasicMaterial({ map: texture });
+  cube.material[0] = material; // Set the chart as the texture for one side of the cube
+}
+
+async function addGitHubContributionsChartToCube(cubeIndex) {
+  // Fetch the contributions data for the GitHub repository
+  const contributionsData = await fetchGitHubContributionsData('owner', 'repository'); // Replace 'owner' and 'repository' with the GitHub repository you want to visualize
+
+  // Add the chart to the cube
+  const cube = allCubes[cubeIndex];
+  addChartToCube(cube, contributionsData);
+}
+
+async function fetchGitHubContributionsData(owner, repo) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/stats/participation`;
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Replace with your GitHub access token
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch contributions data for ${owner}/${repo}`);
+  }
+
+  const data = await response.json();
+  const contributionsData = data.all.map((contributions, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (data.all.length - index));
+    return { date, contributions };
+  });
+
+  return contributionsData;
+}
+
+
 
 <!-- SECTION: Basic Tests -->
 
@@ -3117,6 +3200,7 @@ function setCubeLabel(cubeIndex, label) {
 function findCubeByLabel(label) {we 
   return allCubes.find(cube => cube.label === label);
 }
+
 
 
     </script>

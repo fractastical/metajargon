@@ -3645,17 +3645,89 @@ async function games() {
 games.helpText = "list available games"
 
 
-async function music() {
-  try {
-    const response = await fetch('/music');
-    const files = await response.json();
-    terminal.write(`Available music: ${files.join(', ')} Type "play" and then the music name to play game.\n\r$ `);
-  } catch (error) {
-    console.error('Error fetching music files:', error);
-    terminal.write('Error fetching music files');
+async function music(filename) {
+  if (!filename) {
+    try {
+      const response = await fetch('/music');
+      const files = await response.json();
+      terminal.write(`Available music: ${files.join(', ')} Type "play" and then the music name to play game.\n\r$ `);
+    } catch (error) {
+      console.error('Error fetching music files:', error);
+      terminal.write('Error fetching music files');
+    }
+  } else {
+    const analyzer = playMusic(filename);
+    // Connect the analyzer to the visualization here.
   }
 }
-music.helpText = "list available music"
+music.helpText = "list available music or play a specific music file";
+
+function playMusic(filename) {
+  const listener = new THREE.AudioListener();
+  camera.add(listener);
+
+  const sound = new THREE.Audio(listener);
+  const audioLoader = new THREE.AudioLoader();
+
+  audioLoader.load(`/music/${filename}`, function(buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.5);
+    sound.play();
+  });
+
+  const analyzer = new THREE.AudioAnalyser(sound, 32);
+  return analyzer;
+}
+
+// Initialize the Web Audio API
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// Create an analyzer node
+const analyzer = audioContext.createAnalyser();
+analyzer.fftSize = 1024; // You can change this value for a different frequency resolution
+analyzer.connect(audioContext.destination);
+
+// Get the frequency data array
+const frequencyData = new Uint8Array(analyzer.frequencyBinCount);
+
+
+function distanceToCamera(cube) {
+  return camera.position.distanceTo(cube.position);
+}
+
+function mapDistanceToFrequencyBand(distance, minDistance, maxDistance, minFrequency, maxFrequency) {
+  const normalizedDistance = (distance - minDistance) / (maxDistance - minDistance);
+  return Math.round(normalizedDistance * (maxFrequency - minFrequency) + minFrequency);
+}
+
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Update frequency data
+  analyzer.getByteFrequencyData(frequencyData);
+
+  // Loop through all the cubes in the scene
+  scene.traverse((object) => {
+    if (object.isMesh && object.geometry.type === 'BoxGeometry') {
+      const distance = distanceToCamera(object);
+      const frequencyBand = mapDistanceToFrequencyBand(
+        distance,
+        0, // Minimum distance (you can adjust this value)
+        50, // Maximum distance (you can adjust this value)
+        0, // Minimum frequency band
+        frequencyData.length - 1 // Maximum frequency band
+      );
+
+      // Update cube color based on its associated frequency band
+      const colorValue = frequencyData[frequencyBand] / 255;
+      object.material.color.setRGB(colorValue, colorValue, colorValue);
+    }
+  });
+
+  renderer.render(scene, camera);
+}
 
 
 

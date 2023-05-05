@@ -3092,7 +3092,7 @@ function complete() {
     terminal.write(`\r\nAvailable functions:\r\n${formattedList}\r\n$`);
   }
 }
-complete.advancedHelpText = "all functions";
+complete.advancedHelpText = "list all functions even those without help info";
 
 function initializeTerminalHistory() {
   const terminalInput = document.querySelector('.terminal-input');
@@ -3112,6 +3112,8 @@ setTimeout(() => {
 }, 100);
 
 function help() {
+
+
   let functionsList = [];
 
   for (const key in window) {
@@ -3253,9 +3255,12 @@ terminal.onData((data) => {
 
 //   } else if(command == 'count') {
 
-//     var objectCount = countObjects(scene);
-//     console.log("Total number of objects in the scene:", countObjects(scene));
-//     terminal.write(objectCount + " active objects \r\n");
+  function count() {
+    var objectCount = countObjects(scene);
+    console.log("Total number of objects in the scene:", objectCount);
+    terminal.write(" ... " +objectCount + " active objects \r\n");
+  }
+  count.advancedHelpText = "count total number of objects in scene"
 
 //   } else if(command == 'clean') {
 function clean() {
@@ -3579,13 +3584,14 @@ function disableAnimationLoop() {
 
 function onTerminalReady() {
   terminal.clear();
-  terminal.write('Type "help" for a list of available functions, or view the initial list below:\r\n');
+  terminal.write('Type "help" for a list of available functions or view the initial list below:\r\n');
   terminal.write(listFunctionNames().toString());
   terminal.write("\r\n$ ");
 
 }
 
 function listFunctionNames() {
+
   let functionsList = [];
 
 
@@ -3595,9 +3601,11 @@ function listFunctionNames() {
 
       functionsList.push(` ${key}`);
     }
+    functionsList.sort((a, b) => a.length - b.length);
+
   }
 
-  // console.log(functionsList);
+  console.log(functionsList);
 
   return functionsList;
 }
@@ -3612,6 +3620,8 @@ function listAdvancedFunctionNames() {
 
       functionsList.push(` ${key}`);
     }
+    functionsList.sort((a, b) => a.length - b.length);
+
   }
 
   console.log(functionsList);
@@ -3639,7 +3649,7 @@ async function music() {
   try {
     const response = await fetch('/music');
     const files = await response.json();
-    terminal.write(`Available games: ${files.join(', ')} Type "play" and then the music name to play game.\n\r$ `);
+    terminal.write(`Available music: ${files.join(', ')} Type "play" and then the music name to play game.\n\r$ `);
   } catch (error) {
     console.error('Error fetching music files:', error);
     terminal.write('Error fetching music files');

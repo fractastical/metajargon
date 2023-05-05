@@ -74,6 +74,9 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/three-css3drenderer@1.0.1/index.min.js
+"></script>
 
 
 <script>
@@ -244,6 +247,12 @@
 
         const textureLoader = new THREE.TextureLoader();
         // const imageTexture = textureLoader.load('img/jd.jpeg');
+
+        const cssRenderer = new THREE.CSS3DRenderer();
+        cssRenderer.setSize(window.innerWidth, window.innerHeight);
+        cssRenderer.domElement.style.position = 'absolute';
+        cssRenderer.domElement.style.top = 0;
+        document.body.appendChild(cssRenderer.domElement);
 
 
     const textures = [
@@ -2616,21 +2625,21 @@ function moveBackward(distance) {
 }
 
 function moveLeft(distance) {
-  camera.position.x -= distance;
+  // camera.position.x -= distance;
 
-  // const direction = new THREE.Vector3();
-  // camera.getWorldDirection(direction);
-  // direction.cross(camera.up).normalize().multiplyScalar(-distance);
-  // camera.position.add(direction);
+  const direction = new THREE.Vector3();
+  camera.getWorldDirection(direction);
+  direction.cross(camera.up).normalize().multiplyScalar(-distance);
+  camera.position.add(direction);
 }
 
 function moveRight(distance) {
-  camera.position.x += distance;
+  // camera.position.x += distance;
 
-  // const direction = new THREE.Vector3();
-  // camera.getWorldDirection(direction);
-  // direction.cross(camera.up).normalize().multiplyScalar(distance);
-  // camera.position.add(direction);
+  const direction = new THREE.Vector3();
+  camera.getWorldDirection(direction);
+  direction.cross(camera.up).normalize().multiplyScalar(distance);
+  camera.position.add(direction);
 }
 
 function moveUp(distance) {
@@ -3755,8 +3764,36 @@ async function moveTextBetweenPositions(text, duration = 5000, delayBetweenLines
 }
 
 
+// FRAME DEMO
 
-// const fs = require("fs")
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+const iframe = document.createElement('iframe');
+iframe.src = 'https://example.com';
+iframe.style.width = '256px';
+iframe.style.height = '256px';
+iframe.style.border = 'none';
+
+const cssObject = new THREE.CSS3DObject(iframe);
+cssObject.position.copy(cube.position);
+cssObject.scale.multiplyScalar(1 / 256); // Scale down to match the cube's size.
+cssObject.position.z += 0.5; // Position the iframe slightly in front of the cube's side.
+cssRenderer.scene.add(cssObject);
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  renderer.render(scene, camera);
+  cssRenderer.render(cssRenderer.scene, camera);
+}
+
+animate();
 
     </script>
 

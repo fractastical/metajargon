@@ -2616,17 +2616,21 @@ function moveBackward(distance) {
 }
 
 function moveLeft(distance) {
-  const direction = new THREE.Vector3();
-  camera.getWorldDirection(direction);
-  direction.cross(camera.up).normalize().multiplyScalar(-distance);
-  camera.position.add(direction);
+  camera.position.x -= distance;
+
+  // const direction = new THREE.Vector3();
+  // camera.getWorldDirection(direction);
+  // direction.cross(camera.up).normalize().multiplyScalar(-distance);
+  // camera.position.add(direction);
 }
 
 function moveRight(distance) {
-  const direction = new THREE.Vector3();
-  camera.getWorldDirection(direction);
-  direction.cross(camera.up).normalize().multiplyScalar(distance);
-  camera.position.add(direction);
+  camera.position.x += distance;
+
+  // const direction = new THREE.Vector3();
+  // camera.getWorldDirection(direction);
+  // direction.cross(camera.up).normalize().multiplyScalar(distance);
+  // camera.position.add(direction);
 }
 
 function moveUp(distance) {

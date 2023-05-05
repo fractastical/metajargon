@@ -2309,6 +2309,7 @@ animate();
 
 
 }
+addMolecule.advancedHelpText = "add any molecule by typing the name of the molecule"
 
 function parseSDF(sdfData) {
   console.log(sdfData);
@@ -2672,7 +2673,7 @@ function go(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
   // if cubeindex is a string search for approriate index in the cubeLabels map
   if(!isNumeric(cubeIndex) && (cubeLabels.get(cubeIndex) != undefined) )
          cubeIndex = cubeLabels.get(cubeIndex);
-  else 
+  else if (!isNumeric(cubeIndex))
       cubeIndex = cubeMap.get(cubeIndex).cube.uuid;
 
   console.log(cubeIndex);
@@ -3499,7 +3500,7 @@ function bpm(speed) {
   bpm = speed;
 
 }
-bpm.advancedHelpText = set 
+bpm.advancedHelpText = "set journey movement speed"; 
 
 //           bpm = parseInt(speed);
 //           console.log(bpm);
@@ -3621,6 +3622,40 @@ async function games() {
 }
 games.helpText = "list available games"
 
+async function poems(filename) {
+  if (!filename) {
+    try {
+      const response = await fetch('/poems');
+      const files = await response.json();
+      terminal.write(`Available poems: ${files.join(', ')} Type "text" and then the poem name to see the poem.\n\r$ `);
+
+    } catch (error) {
+      console.error('Error fetching poems:', error);
+      terminal.write('Error fetching poems');
+    }
+  } else {
+
+    readFileAndDoSomething("/poems/" + filename);
+  // call the function with the text as argument
+  // moveTextBetweenPositions(data);
+}
+}
+
+
+//TODO: fix Uncaught (in promise) TypeError: Failed to execute 'readAsText' on 'FileReader': parameter 1 is not of type 'Blob'
+function readFileAndDoSomething(filename,callback) {
+  const file = filename;
+  const reader = new FileReader();
+  reader.addEventListener('load', (event) => {
+    const text = event.target.result;
+    callback(text);
+    moveTextBetweenPositions(text);
+  });
+  reader.readAsText(file);
+}
+
+poems.helpText = "list available poems or show a specific poem";
+
 
 async function music(filename) {
   if (!filename) {
@@ -3674,6 +3709,46 @@ function mapDistanceToFrequencyBand(distance, minDistance, maxDistance, minFrequ
   return Math.round(normalizedDistance * (maxFrequency - minFrequency) + minFrequency);
 }
 
+
+async function moveTextBetweenPositions(text, duration = 5000, delayBetweenLines = 1000) {
+  const lines = text.split('\n');
+  const promises = [];
+  start = allCubes[selectedCubeIndex].position;
+  end = allCubes[cubeMap.get("hypercube")].position;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const promise = new Promise((resolve) => {
+      setTimeout(() => {
+        const textMesh = createTextMesh(line);
+        scene.add(textMesh);
+
+        const startTime = performance.now();
+        const endTime = startTime + duration;
+
+        function animate() {
+          const now = performance.now();
+          const progress = (now - startTime) / (endTime - startTime);
+
+          if (progress >= 1) {
+            textMesh.position.set(end.x, end.y, end.z);
+            resolve();
+          } else {
+            const newPosition = start.clone().lerp(end, progress);
+            textMesh.position.set(newPosition.x, newPosition.y, newPosition.z);
+            requestAnimationFrame(animate);
+          }
+        }
+
+        animate();
+      }, i * delayBetweenLines);
+    });
+
+    promises.push(promise);
+  }
+
+  await Promise.all(promises);
+}
 
 
 

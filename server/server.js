@@ -123,6 +123,16 @@ app.get('/music', (req, res) => {
   });
 });
 
+app.get('/poems', (req, res) => {
+  fs.readdir(path.join(__dirname, 'public', 'poems'), (err, files) => {
+    if (err) {
+      res.status(500).send('Error reading poems directory');
+    } else {
+      res.json(files.filter(file => file.endsWith('.txt')));
+    }
+  });
+});
+
 app.get('/jarg-list', (req, res) => {
   fs.readdir(path.join(__dirname, 'public', 'jarg'), (err, files) => {
     if (err) {

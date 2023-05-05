@@ -2233,7 +2233,7 @@ async function fetchMoleculeData(query) {
 }
 
 
-async function anyMolecule(name, startingCube = 1)
+async function addMolecule(name, startingCube = 1)
 {
    const sdfData = await fetchMoleculeData(name);
   const molecule = parseSDF(sdfData);

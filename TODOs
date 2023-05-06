@@ -1,12 +1,22 @@
+
+TOP
+
+zoom 
+jargon live loading and parsing 
+    - auto populatoing
+    - auto testing
+    - text prompt in terminal
+    
+add other types of music and auto transpose (like the japanese flute library)
+ - mabye to midi 
+
+
+
+
 USABILITY BUGS
 
-need to bring all JS libraries local so not hammered by low latency internet
+all journeys play on their own loop
 
-MAJOR Bugs 
-
-can't stop music
-some of the camera gets stuck after journey and won't move
-can't play subsequent journey 
 
 BUGS
 
@@ -52,7 +62,6 @@ group[molecules][33 bpm] - group all molecules nad give them a 33 bpm movement r
 
 IDEAS
 
-network state simulation visualizations 
 
 conways game of life in cubes, syncronized to music
    -https://github.com/fractastical/game-of-life-threejs
@@ -69,13 +78,21 @@ do a zoom at multiple depths  <-- have GPT code
 improper idea of coordinates
     - cube numbers and location need to be persistant (i.e should be numbered from center out) 
 
-add other types of music and auto transpose (like the japanese flute library)
- - mabye to midi 
 
 "discoverable items"
 
 
 DONE
+
+network state simulation visualizations 
+
+
+MAJOR Bugs 
+need to bring all JS libraries local so not hammered by low latency internet DONE 
+
+can't stop music FIXED 
+some of the camera gets stuck after journey and won't move FIXED
+can't play subsequent journey  FIXED
 
 music flow should work as follows
     - midi player is loaded

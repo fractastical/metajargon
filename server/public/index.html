@@ -63,7 +63,7 @@
 
 <script src="js/three.min.js"></script>
 <script src="js/OrbitControls.js"></script>
-<script src="js/Tone.js"></script>
+<!-- <script src="js/Tone.js"></script> -->
 <script src="js/tween.umd.min.js"></script>
 <script src="js/FileSaver.min.js"></script>
 <script src="js/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
@@ -191,6 +191,8 @@ js/css3drenderer@1.1.1-index.min.js
             e: { pressed: false, acceleration: 0 },
           };
 
+          const listener = new THREE.AudioListener();
+
 
         // TODO: I think this doesn't work becauese scene hasn't rendered :(
 
@@ -235,13 +237,32 @@ js/css3drenderer@1.1.1-index.min.js
                     // selectedCube.xPos;
 
                     outline.material.color.set("blue");
-                    const synth = new Tone.Synth().toDestination();
-                    Tone.start();
+                    // const synth = new Tone.Synth().toDestination();
+
+
+
+                    // Tone.start();
+
                     if (cubeId == 172)
                        enterMinkowskiSound();
                     else 
-                      synth.triggerAttackRelease(cube.userData.frequency, "8n");
+                    {
 
+                          sound = new THREE.Audio(listener);
+                          camera.add(listener);
+
+                          const audioLoader = new THREE.AudioLoader();
+                          const hp = cubeId % 8 + 1;
+                          audioLoader.load('/snd/handpan/hp-0' + hp + '.wav', function(buffer) {
+                            sound.setBuffer(buffer);
+                            sound.setLoop(false);
+                            sound.setVolume(0.5);
+                            sound.play();
+                      
+                    });
+
+
+                    }
 
             }
           }
@@ -250,6 +271,9 @@ js/css3drenderer@1.1.1-index.min.js
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        camera.add( listener );
+
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
@@ -1072,7 +1096,7 @@ playAudioBuffer();
 
 
 
-    const synth = new Tone.Synth().toDestination();
+    // const synth = new Tone.Synth().toDestination();
 
     // Create a journey through the cubes
     var journeyOrder = [0, 2, 1, 3, 6, 55, 4, 3, 100, 2, 3, 300, 2, 3, 4, 70];
@@ -1105,7 +1129,7 @@ playAudioBuffer();
 
       const timeBetweenNotes = '8n';
         
-          Tone.start();
+          // Tone.start();
           let movementProgress = 0;
           var movementDuration = 1 / (bpm/60);
 
@@ -1148,7 +1172,6 @@ playAudioBuffer();
                   // if(sound == undefined){
 
       
-                    const listener = new THREE.AudioListener();
                     sound = new THREE.Audio(listener);
                     camera.add(listener);
 
@@ -1418,7 +1441,7 @@ function render() {
 
 <!-- image processing -->
 
-function deepClone(object) {
+function deepClone(object) {s
   const clonedObject = object.clone();
   if (object.children) {
     for (const child of object.children) {
@@ -2618,7 +2641,7 @@ document.addEventListener("keyup", (event) => {
 
 
 function moveCamera(keysState) {
-  const baseSpeed = 0.01;
+  const baseSpeed = 0.002 ;
   const accelerationFactor = .1;
   const maxAcceleration = 50;
 
@@ -3847,7 +3870,6 @@ function playMelody(melody) {
 
 function playMusic(filename) {
 
-  const listener = new THREE.AudioListener();
   sound = new THREE.Audio(listener);
   camera.add(listener);
 

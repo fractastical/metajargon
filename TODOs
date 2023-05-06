@@ -2,15 +2,12 @@
 TOP
 
 zoom 
+
 jargon live loading and parsing 
-    - auto populatoing
+    - auto populating (requires extension) 
     - auto testing
     - text prompt in terminal
     
-add other types of music and auto transpose (like the japanese flute library)
- - mabye to midi 
-
-
 
 
 USABILITY BUGS
@@ -83,6 +80,10 @@ improper idea of coordinates
 
 
 DONE
+
+add other types of music and auto transpose (like the japanese flute library)
+ - mabye to midi 
+
 
 network state simulation visualizations 
 

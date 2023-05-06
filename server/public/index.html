@@ -223,6 +223,29 @@ js/css3drenderer@1.1.1-index.min.js
      });
 
 
+     const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        camera.add( listener );
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        const cubeSize = 10;
+        const cubeDistance = 60;
+
+        const scaleFactor = 100;
+        const rootCube = createNestedCubes(levels, scaleFactor);
+        let zoomLevel = 0;
+        const zoomSpeed = 0.05 / 5;
+        const maxZoomLevelIn = 1.5 * levels;
+        const maxZoomLevelOut = maxZoomLevelIn * 2;
+        let zoomDirection = 1;
+
+
+        const textureLoader = new THREE.TextureLoader();
+
 
         socket.on("cubeVisited", (cubeId) => {
 
@@ -268,29 +291,6 @@ js/css3drenderer@1.1.1-index.min.js
           }
         });
 
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-        camera.add( listener );
-
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        const cubeSize = 10;
-        const cubeDistance = 60;
-
-        const scaleFactor = 100;
-        const rootCube = createNestedCubes(levels, scaleFactor);
-        let zoomLevel = 0;
-        const zoomSpeed = 0.05 / 5;
-        const maxZoomLevelIn = 1.5 * levels;
-        const maxZoomLevelOut = maxZoomLevelIn * 2;
-        let zoomDirection = 1;
-
-
-        const textureLoader = new THREE.TextureLoader();
         // const imageTexture = textureLoader.load('img/jd.jpeg');
 
         // const cssRenderer = new THREE.CSS3DRenderer();
@@ -390,6 +390,7 @@ js/css3drenderer@1.1.1-index.min.js
 
             const smallCube = new THREE.LineSegments(smallEdgesGeometry, lineMaterial);
 
+            // TODO: still no satisfactory way to zoom in
             smallCube.position.set(x+3, y+3, z+3);
             scene.add(smallCube);
 
@@ -409,7 +410,7 @@ js/css3drenderer@1.1.1-index.min.js
             cube.position.set(x, y, z);
             scene.add(cube);
 
-// CSS3DObject not loading 
+            // CSS3DObject not loading 
             // var div = document.createElement( 'div' );
             // div.className = 'label';
             // div.textContent = '1';
@@ -502,9 +503,9 @@ function createUniqueObject(x, y, z, type) {
     }
 
     const object = new THREE.Mesh(geometry, material);
-    // object.scale.set(.3, .3, .3);
-    // object.position.set(x, y, z);
-    // scene.add(object);
+    object.scale.set(.3, .3, .3);
+    object.position.set(x, y, z);
+    scene.add(object);
     return object;
 }
 
@@ -535,8 +536,21 @@ function loadModel(url, parentObject) {
     });
 }
 
+//TODO: I want this to rotate around as though you were looking into a circle 
+function r() {
+
+  const circleRadius = 5;
+
+  const rotationInRadians = THREE.Math.degToRad(5);
+  // camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), rotationInRadians);
+  camera.position.set(
+    circleRadius * Math.cos(rotationInRadians),
+    0,
+    circleRadius * Math.sin(rotationInRadians)
+  );
 
 
+}
 
 function createGridOfCubes() {
     const geometryTypes = [
@@ -4133,6 +4147,9 @@ animate();
 // }
 
 // animate();
+
+
+
 
     </script>
 

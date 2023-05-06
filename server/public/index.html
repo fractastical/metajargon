@@ -1144,15 +1144,27 @@ playAudioBuffer();
                   // const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0,0,35));
                   const targetPosition = allCubes[cubeIndex].position.clone().add(new THREE.Vector3(0,0,35));
 
-randomRainbowHue
+
                   const outline = allCubes[journeyOrder[journeyIndex]].getObjectByProperty("type", "LineSegments");
                     if (outline) {
                         // console.log("red-ing " + cubeId);
 
                       outline.material.color.set(randomRainbowHue());
                     }
+                    const outline2 = allCubes[journeyOrder[journeyIndex]+5].getObjectByProperty("type", "LineSegments");
+                    if (outline2) {
+                        // console.log("red-ing " + cubeId);
 
-                  // TODO: come back and replays on your local machine
+                        outline2.material.color.set(randomRainbowHue());
+                    }
+                    const outline3 = allCubes[journeyOrder[journeyIndex]-5].getObjectByProperty("type", "LineSegments");
+                    if (outline3) {
+                        // console.log("red-ing " + cubeId);
+
+                        outline3.material.color.set(randomRainbowHue());
+                    }
+
+                  //   TODO: come back and replays on your local machine
                   // socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
                   camera.position.lerp(targetPosition, 0.01);
 

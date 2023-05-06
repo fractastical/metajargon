@@ -179,6 +179,8 @@ js/css3drenderer@1.1.1-index.min.js
         var credits = 10;
         var selectedCubeIndex = 172;
 
+        var sound; 
+
         // TODO: I think this doesn't work becauese scene hasn't rendered :(
 
         socket.on('visitedCubes', visitedCubes => {
@@ -1080,7 +1082,7 @@ playAudioBuffer();
     async function playJourney(path, color) {
 
       // stop all other journeys
-      stop();
+      // stop();
 
       const clock = new THREE.Clock();
 
@@ -3502,6 +3504,11 @@ let animationLoopActive = true;
 
 function stop()
 {
+  if (sound != undefined) {
+    console.log (sound);
+    sound.stop();
+
+  }
   TWEEN.removeAll();
   disableAnimationLoop();
 }
@@ -3707,11 +3714,13 @@ async function music(filename) {
 }
 music.helpText = "list available music or play a specific music file";
 
+
 function playMusic(filename) {
+
   const listener = new THREE.AudioListener();
+  sound = new THREE.Audio(listener);
   camera.add(listener);
 
-  const sound = new THREE.Audio(listener);
   const audioLoader = new THREE.AudioLoader();
 
   audioLoader.load(`/snd/${filename}`, function(buffer) {
@@ -3719,7 +3728,9 @@ function playMusic(filename) {
     sound.setLoop(true);
     sound.setVolume(0.5);
     sound.play();
+    
   });
+  
   const cubeIndexes = Array.from({ length: 50 }, () => Math.floor(Math.random() * allCubes.length));
   playJourney(cubeIndexes);
   

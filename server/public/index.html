@@ -1107,7 +1107,8 @@ playAudioBuffer();
         //     camera.position.y += (targetCube.position.y - camera.position.y) * 0.05;
         //     camera.lookAt(targetCube.position);
         // };
-        // journeyData = path;
+        // journeyData = pa
+        
 
         journeyOrder = path;
 
@@ -1126,6 +1127,24 @@ playAudioBuffer();
               if (movementProgress >= movementDuration) {
                   // Move to the next cube in the journeyOrder array
                   journeyIndex = (journeyIndex + 1) % journeyOrder.length;
+
+                  // if(sound == undefined){
+
+      
+                    const listener = new THREE.AudioListener();
+                    sound = new THREE.Audio(listener);
+                    camera.add(listener);
+
+                    const audioLoader = new THREE.AudioLoader();
+                    const hp = journeyIndex % 8 + 1;
+                    audioLoader.load('/snd/handpan/hp-0' + hp + '.wav', function(buffer) {
+                      sound.setBuffer(buffer);
+                      sound.setLoop(false);
+                      sound.setVolume(0.5);
+                      sound.play();
+                      
+                    });
+                  // }
 
                   // Reset movement progress
                   movementProgress = 0;
@@ -1153,18 +1172,18 @@ playAudioBuffer();
 
                       outline.material.color.set(randomRainbowHue());
                     }
-                    const outline2 = allCubes[journeyOrder[journeyIndex]+5].getObjectByProperty("type", "LineSegments");
-                    if (outline2) {
-                        // console.log("red-ing " + cubeId);
+                    // const outline2 = allCubes[journeyOrder[journeyIndex]+5].getObjectByProperty("type", "LineSegments");
+                    // if (outline2) {
+                    //     // console.log("red-ing " + cubeId);
 
-                        outline2.material.color.set(randomRainbowHue());
-                    }
-                    const outline3 = allCubes[journeyOrder[journeyIndex]-5].getObjectByProperty("type", "LineSegments");
-                    if (outline3) {
-                        // console.log("red-ing " + cubeId);
+                    //     outline2.material.color.set(randomRainbowHue());
+                    // }
+                    // const outline3 = allCubes[journeyOrder[journeyIndex]-5].getObjectByProperty("type", "LineSegments");
+                    // if (outline3) {
+                    //     // console.log("red-ing " + cubeId);
 
-                        outline3.material.color.set(randomRainbowHue());
-                    }
+                    //     outline3.material.color.set(randomRainbowHue());
+                    // }
 
                   //   TODO: come back and replays on your local machine
                   // socket.emit("cubeVisited", allCubes[journeyOrder[journeyIndex]].uuid);
@@ -1459,64 +1478,6 @@ function noteToMidi(note) {
 }
 
 
-function playMelody(melody) {
-
-    console.log(melody);
-    
-
-    if(melody==null || melody.length < 2)
-          melody = [
-            { note: 'E4', duration: '4n' },
-            { note: 'B4', duration: '4n' },
-            { note: 'D5', duration: '4n' },
-            { note: 'C5', duration: '4n' },
-            { note: 'B4', duration: '4n' },
-            { note: 'A4', duration: '4n' },
-            { note: 'G4', duration: '4n' },
-            { note: 'F#4', duration: '4n' },
-          ];
-
-    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-
-    // Define the notes and durations for the first few measures of Chopin's Prelude in E minor
-
-    const bass = [
-      { note: 'E2', duration: '1m' },
-      { note: 'G2', duration: '1m' },
-    ];
-
-    journeyOrder = [];
-
-    // Schedule the notes to be played
-    let time = 0;
-    melody.forEach(({ note, duration }) => {
-      // console.log(self);
-      // if(self instanceof String) {
-        
-      //   note = self;
-      //   duration = '4n';
-      // }
-
-      // if (!duration || duration.length < 2)
-      //   duration = '4n';
-
-      journeyOrder.push(noteToMidi(note));
-      synth.triggerAttackRelease(note, duration, time);
-      time += Tone.Time(duration).toSeconds();
-    });
-
-   console.log(journeyOrder);    
-
-    bass.forEach(({ note, duration }, index) => {
-      synth.triggerAttackRelease(note, duration, Tone.Time(duration).toSeconds() * index);
-    });
-
-    // Start playing the music
-    Tone.Transport.start();
-    playJourney(journeyOrder);
-
-
-}
 <!-- SECTION: CREDITS --> 
 
 
@@ -3209,7 +3170,20 @@ terminal.onData((data) => {
           console.error(`Error while executing function ${functionName}:`, error);
           terminal.write(`An error occurred while executing ${functionName}: ${error.message}`);
         }
-      } else {
+      } else if(command.includes(',')) {
+            var ids = [];
+            
+            command.split(',').forEach((id) => {
+                  
+                  id = id.trim();
+                  ids.push(id);
+                  console.log(id);
+            
+            });
+            console.log(ids);
+            playJourney(ids);
+      }
+      else {
         terminal.write(`Unknown command: ${functionName}`);
       }
     
@@ -3713,6 +3687,99 @@ async function music(filename) {
   }
 }
 music.helpText = "list available music or play a specific music file";
+
+
+function playMelody(melody) {
+
+    console.log(melody);
+    
+
+    if(melody==null || melody.length < 2)
+          melody = [
+            { note: 'E4', duration: '4n' },
+            { note: 'B4', duration: '4n' },
+            { note: 'D5', duration: '4n' },
+            { note: 'C5', duration: '4n' },
+            { note: 'B4', duration: '4n' },
+            { note: 'A4', duration: '4n' },
+            { note: 'G4', duration: '4n' },
+            { note: 'F#4', duration: '4n' },
+          ];
+
+    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+
+    // Define the notes and durations for the first few measures of Chopin's Prelude in E minor
+
+    const bass = [
+      { note: 'E2', duration: '1m' },
+      { note: 'G2', duration: '1m' },
+    ];
+
+    journeyOrder = [];
+
+    // Schedule the notes to be played
+    let time = 0;
+    melody.forEach(({ note, duration }) => {
+      // console.log(self);
+      // if(self instanceof String) {
+        
+      //   note = self;
+      //   duration = '4n';
+      // }
+
+      // if (!duration || duration.length < 2)
+      //   duration = '4n';
+
+      journeyOrder.push(noteToMidi(note));
+      synth.triggerAttackRelease(note, duration, time);
+      time += Tone.Time(duration).toSeconds();
+    });
+
+   console.log(journeyOrder);    
+
+    bass.forEach(({ note, duration }, index) => {
+      synth.triggerAttackRelease(note, duration, Tone.Time(duration).toSeconds() * index);
+    });
+
+    // Start playing the music
+    Tone.Transport.start();
+    playJourney(journeyOrder);
+
+
+}
+
+// function playHangpan(order) {
+
+// const listener = new THREE.AudioListener();
+//   sound = new THREE.Audio(listener);
+//   camera.add(listener);
+
+//   const audioLoader = new THREE.AudioLoader();
+//   melody.forEach(({ note, duration }) => {
+// audioLoader.load(`/snd/${filename}`, function(buffer) {
+//   sound.setBuffer(buffer);
+//   sound.setLoop(true);
+//   sound.setVolume(0.5);
+//   sound.play();
+  
+// });
+
+// const cubeIndexes = Array.from({ length: 50 }, () => Math.floor(Math.random() * allCubes.length));
+// playJourney(cubeIndexes);
+
+// const analyzer = new THREE.AudioAnalyser(sound, 32);
+// return analyzer;
+// }
+//       //   duration = '4n';
+
+//       journeyOrder.push(noteToMidi(note));
+//       synth.triggerAttackRelease(note, duration, time);
+//       time += Tone.Time(duration).toSeconds();
+//     });
+
+
+// });
+
 
 
 function playMusic(filename) {

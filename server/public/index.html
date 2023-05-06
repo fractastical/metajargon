@@ -1079,6 +1079,9 @@ playAudioBuffer();
     // Play the notes associated with the cubes in the journey
     async function playJourney(path, color) {
 
+      // stop all other journeys
+      stop();
+
       const clock = new THREE.Clock();
 
       const timeBetweenNotes = '8n';
@@ -1108,7 +1111,8 @@ playAudioBuffer();
 
         // journeyData = journeyOrder.toString(); 
         // document.getElementById('terminal').value = journeyData;
-
+        enableAnimationLoop();
+        
         const animate = function () {
           if (animationLoopActive) {
 

@@ -1952,10 +1952,10 @@ function createMars() {
       const marsSettlement2 = createMarker(-23.7, 133.88, marsRadius, 0x00ff00);
 
       // Create an arc between settlements
-      const marsArc = createArc(marsSettlement1.position, marsSettlement2.position, 0xffff00);
+      // const marsArc = createArc(marsSettlement1.position, marsSettlement2.position, 0xffff00);
 
       // Animate a sphere moving along the arc
-      const marsMovingSphere = createMovingSphere(marsArc, 0.005, 0.02, 0x0000ff);
+      // const marsMovingSphere = createMovingSphere(marsArc, 0.005, 0.02, 0x0000ff);
 
       // Set camera position
       // camera.position.z = 5;
@@ -3914,7 +3914,7 @@ function createNestedCubes(levels, scale) {
   if (levels === 0) return null;
 
   const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, wireframe: true });
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 
@@ -3937,35 +3937,35 @@ function getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor) {
 }
 
 
-camera.position.copy(getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor));
+// camera.position.copy(getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor));
 
 
-function animate() {
-  requestAnimationFrame(animate);
+// function animate() {
+//   requestAnimationFrame(animate);
 
-  rootCube.rotation.x += 0.01;
-  rootCube.rotation.y += 0.01;
+//   rootCube.rotation.x += 0.01;
+//   rootCube.rotation.y += 0.01;
 
-  if (zoomDirection === 1) {
-    if (zoomLevel < maxZoomLevelIn) {
-      zoomLevel += zoomSpeed;
-    } else {
-      zoomDirection = -1;
-    }
-  } else if (zoomDirection === -1) {
-    if (zoomLevel > 0 && zoomLevel < maxZoomLevelOut) {
-      zoomLevel -= zoomSpeed;
-    } else {
-      zoomDirection = 1;
-    }
-  }
+//   if (zoomDirection === 1) {
+//     if (zoomLevel < maxZoomLevelIn) {
+//       zoomLevel += zoomSpeed;
+//     } else {
+//       zoomDirection = -1;
+//     }
+//   } else if (zoomDirection === -1) {
+//     if (zoomLevel > 0 && zoomLevel < maxZoomLevelOut) {
+//       zoomLevel -= zoomSpeed;
+//     } else {
+//       zoomDirection = 1;
+//     }
+//   }
 
-  camera.position.copy(getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor));
-  camera.lookAt(scene.position);
-  renderer.render(scene, camera);
-}
+//   camera.position.copy(getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor));
+//   camera.lookAt(scene.position);
+//   renderer.render(scene, camera);
+// }
 
-animate();
+// animate();
 
 // FRAME DEMO
 

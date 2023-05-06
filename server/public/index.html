@@ -182,6 +182,16 @@ js/css3drenderer@1.1.1-index.min.js
 
         var sound; 
 
+        const keysState = {
+            a: { pressed: false, acceleration: 0 },
+            d: { pressed: false, acceleration: 0 },
+            w: { pressed: false, acceleration: 0 },
+            s: { pressed: false, acceleration: 0 },
+            q: { pressed: false, acceleration: 0 },
+            e: { pressed: false, acceleration: 0 },
+          };
+
+
         // TODO: I think this doesn't work becauese scene hasn't rendered :(
 
         socket.on('visitedCubes', visitedCubes => {
@@ -2584,7 +2594,51 @@ function garbageCollector(scene, percentage = 0.1) {
 //   garbageCollector(scene);
 // }, 10000); // Run garbage collector every 10 seconds
 
-<!-- SECTION: advanced navigation -->
+<!-- SECTION: more advanced navigation -->
+
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "a") keysState.a.pressed = true;
+  if (event.key === "d") keysState.d.pressed = true;
+  if (event.key === "w") keysState.w.pressed = true;
+  if (event.key === "s") keysState.s.pressed = true;
+  if (event.key === "q") keysState.q.pressed = true;
+  if (event.key === "e") keysState.e.pressed = true;
+});
+
+document.addEventListener("keyup", (event) => {
+  if (event.key === "a") keysState.a.pressed = false;
+  if (event.key === "d") keysState.d.pressed = false;
+  if (event.key === "w") keysState.w.pressed = false;
+  if (event.key === "s") keysState.s.pressed = false;
+  if (event.key === "q") keysState.q.pressed = false;
+  if (event.key === "e") keysState.e.pressed = false;
+});
+
+
+
+function moveCamera(keysState) {
+  const baseSpeed = 0.01;
+  const accelerationFactor = .1;
+  const maxAcceleration = 50;
+
+  Object.keys(keysState).forEach((key) => {
+    if (keysState[key].pressed) {
+      keysState[key].acceleration = Math.min(keysState[key].acceleration + accelerationFactor, maxAcceleration);
+    } else {
+      keysState[key].acceleration = 0;
+    }
+  });
+
+  const moveLeftDistance = -(keysState.a.acceleration * baseSpeed) + (keysState.d.acceleration * baseSpeed);
+  const moveUpDownDistance = (keysState.q.acceleration * baseSpeed) - (keysState.e.acceleration * baseSpeed);
+  const moveForwardDistance = -(keysState.w.acceleration * baseSpeed) + (keysState.s.acceleration * baseSpeed);
+
+  camera.translateX(moveLeftDistance);
+  camera.translateY(moveUpDownDistance);
+  camera.translateZ(moveForwardDistance);
+}
+
 
 
 function moveBackward(distance) {
@@ -2599,6 +2653,7 @@ function back(){
   moveBackward(8);
 }
 back.helpText = "move backwards 10px on the z access"
+
 
 function moveForward(distance) {
   const direction = new THREE.Vector3();
@@ -3936,6 +3991,65 @@ function getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor) {
   return new THREE.Vector3(0, 0, positionZ + 2);
 }
 
+
+function addChildCube(parentCube, scaleFactor) {
+  const geometry = new THREE.BoxGeometry(0.01, 0.01, 0.01);
+  const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, wireframe: true });
+  const childCube = new THREE.Mesh(geometry, material);
+
+  childCube.scale.multiplyScalar(1 / scaleFactor);
+  childCube.position.set(0.5, 0.5, 0.5);
+  parentCube.add(childCube);
+
+  return childCube;
+}
+
+
+function zoom() {
+
+  const childCube = addChildCube(allCubes[selectedCubeIndex],100);
+  const zoomDuration = 1000; // Zoom duration in milliseconds
+  const startTime = performance.now();
+  let elapsedTime = 0;
+
+  function animate() {
+  requestAnimationFrame(animate);
+
+  rootCube.rotation.x += 0.01;
+  rootCube.rotation.y += 0.01;
+
+  elapsedTime = performance.now() - startTime;
+  if (elapsedTime < zoomDuration) {
+    const zoomProgress = elapsedTime / zoomDuration;
+    camera.position.lerpVectors(
+      getCameraPositionAtZoom(0, maxZoomLevelIn, scaleFactor),
+      childCube.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0, -0.5)),
+      zoomProgress
+    );
+  }
+
+  camera.lookAt(scene.position);
+  renderer.render(scene, camera);
+}
+
+animate();
+
+
+
+
+}
+
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  // ... the rest of the animation loop
+
+  moveCamera(keysState);
+  renderer.render(scene, camera);
+}
+
+animate();
 
 // camera.position.copy(getCameraPositionAtZoom(zoomLevel, maxZoomLevelIn, scaleFactor));
 

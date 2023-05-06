@@ -1,7 +1,9 @@
 
 TOP
 
-zoom 
+can't find the source of that annoying sound when you click on a cube!
+
+zoom  -- all zoom functions so far look meh or confusing
 
 jargon live loading and parsing 
     - auto populating (requires extension) 
@@ -60,26 +62,30 @@ group[molecules][33 bpm] - group all molecules nad give them a 33 bpm movement r
 IDEAS
 
 
+tag
+
+hide and seek
+
 conways game of life in cubes, syncronized to music
    -https://github.com/fractastical/game-of-life-threejs
    -GPT4 also wrote code
 
-add beethoven bust - maybe voxelized version
-
-link to other spaces -- c.f. SPace 
+add beethoven bust - maybe voxelized version (generated a veew versions) 
 
 upon visit pay owner of cube
 
-do a zoom at multiple depths  <-- have GPT code
-
-improper idea of coordinates
-    - cube numbers and location need to be persistant (i.e should be numbered from center out) 
-
+do a zoom at multiple depths  <-- have GPT code (and more code ut still doesn't work)
 
 "discoverable items"
 
 
 DONE
+
+improper idea of coordinates
+    - cube numbers and location need to be persistant (i.e should be numbered from center out) 
+
+link to other spaces -- c.f. SPace 
+
 
 add other types of music and auto transpose (like the japanese flute library)
  - mabye to midi 

@@ -183,13 +183,14 @@ js/css3drenderer@1.1.1-index.min.js
         var sound; 
 
         const keysState = {
-            a: { pressed: false, acceleration: 0 },
-            d: { pressed: false, acceleration: 0 },
-            w: { pressed: false, acceleration: 0 },
-            s: { pressed: false, acceleration: 0 },
-            q: { pressed: false, acceleration: 0 },
-            e: { pressed: false, acceleration: 0 },
-          };
+              a: { pressed: false, acceleration: 0 },
+              d: { pressed: false, acceleration: 0 },
+              w: { pressed: false, acceleration: 0 },
+              s: { pressed: false, acceleration: 0 },
+              q: { pressed: false, acceleration: 0 },
+              e: { pressed: false, acceleration: 0 },
+              shift: { pressed: false },
+            };
 
           const listener = new THREE.AudioListener();
 
@@ -1134,7 +1135,7 @@ playAudioBuffer();
 
     
     // Play the notes associated with the cubes in the journey
-    async function playJourney(path, color) {
+    async function playJourney(path, playSounds=true) {
 
       // stop all other journeys
       // stop();
@@ -1183,7 +1184,7 @@ playAudioBuffer();
                   // Move to the next cube in the journeyOrder array
                   journeyIndex = (journeyIndex + 1) % journeyOrder.length;
 
-                  // if(sound == undefined){
+                  if(playSounds){
 
       
                     sound = new THREE.Audio(listener);
@@ -1198,7 +1199,7 @@ playAudioBuffer();
                       sound.play();
                       
                     });
-                  // }
+                  }
 
                   // Reset movement progress
                   movementProgress = 0;
@@ -1214,7 +1215,7 @@ playAudioBuffer();
 
                   // Calculate interpolation factor
                   const lerpFactor = movementProgress / movementDuration;
-                  const cubeIndex = parseInt(journeyOrder[journeyIndex])
+                  const cubeIndex = parseInt(journeyOrder[journeyIndex]);
                   // Move the camera to the current cube's position with an offset
                   // const targetPosition = allCubes[journeyOrder[journeyIndex]].position.clone().add(new THREE.Vector3(0,0,35));
                   const targetPosition = allCubes[cubeIndex].position.clone().add(new THREE.Vector3(0,0,35));
@@ -2641,6 +2642,8 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "s") keysState.s.pressed = true;
   if (event.key === "q") keysState.q.pressed = true;
   if (event.key === "e") keysState.e.pressed = true;
+  if (event.key === "Shift") keysState.shift.pressed = true;
+
 });
 
 document.addEventListener("keyup", (event) => {
@@ -2650,16 +2653,19 @@ document.addEventListener("keyup", (event) => {
   if (event.key === "s") keysState.s.pressed = false;
   if (event.key === "q") keysState.q.pressed = false;
   if (event.key === "e") keysState.e.pressed = false;
+  if (event.key === "Shift") keysState.shift.pressed = false;
 });
 
 
 
 function moveCamera(keysState) {
-  const baseSpeed = 0.002 ;
-  const accelerationFactor = .1;
-  const maxAcceleration = 50;
+  const baseSpeed = 0.01;
+  const accelerationFactor = keysState.shift.pressed ? 0.005 : 0.001;
+  const maxAcceleration = 0.02;
 
   Object.keys(keysState).forEach((key) => {
+    if (key === 'shift') return; // Skip the shift key
+
     if (keysState[key].pressed) {
       keysState[key].acceleration = Math.min(keysState[key].acceleration + accelerationFactor, maxAcceleration);
     } else {
@@ -3894,11 +3900,12 @@ function playMusic(filename) {
     sound.setLoop(true);
     sound.setVolume(0.5);
     sound.play();
-    
+    const cubeIndexes = Array.from({ length: 50 }, () => Math.floor(Math.random() * allCubes.length));
+
+    playJourney(cubeIndexes, false);
+
   });
   
-  const cubeIndexes = Array.from({ length: 50 }, () => Math.floor(Math.random() * allCubes.length));
-  playJourney(cubeIndexes);
   
   const analyzer = new THREE.AudioAnalyser(sound, 32);
   return analyzer;

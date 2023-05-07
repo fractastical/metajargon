@@ -17,7 +17,7 @@ const winningConditions = [
   for (let i = 0; i < winningConditions.length; i++) {
     terminal.writeln(`${i + 1}: ${winningConditions[i].goal}`);
   }
-  
+
   return new Promise((resolve) => {
     onTerminalData = (data) => {
       const choice = parseInt(data.trim(), 10);
@@ -29,7 +29,7 @@ const winningConditions = [
       }
     };
   });
-}
+
 
 
 

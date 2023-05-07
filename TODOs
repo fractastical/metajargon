@@ -10,7 +10,6 @@ jargon live loading and parsing
     - auto testing
     - text prompt in terminal
     
-click on image, poem comes out
 
 USABILITY BUGS
 
@@ -39,6 +38,28 @@ BIG issues
     - database logic collision for user
 
 
+
+IDEAS
+
+tag
+
+hide and seek
+
+click on image, poem comes out
+
+
+conways game of life in cubes, syncronized to music
+   -https://github.com/fractastical/game-of-life-threejs
+   -GPT4 also wrote code
+
+add beethoven bust - maybe voxelized version (generated a veew versions) 
+
+upon visit pay owner of cube
+
+do a zoom at multiple depths  <-- have GPT code (and more code ut still doesn't work)
+
+"discoverable items"
+
 SYNTAX WISHlIsT
 
 g /3.2.3//1.3.3-3s/ 
@@ -58,25 +79,6 @@ WL["  "] import wolfram intepreter object, unique gemoetryes
 C["object name"] create ojbect
 clean 20 -- cleaing up oldest 20% of objects
 group[molecules][33 bpm] - group all molecules nad give them a 33 bpm movement rate
-
-IDEAS
-
-
-tag
-
-hide and seek
-
-conways game of life in cubes, syncronized to music
-   -https://github.com/fractastical/game-of-life-threejs
-   -GPT4 also wrote code
-
-add beethoven bust - maybe voxelized version (generated a veew versions) 
-
-upon visit pay owner of cube
-
-do a zoom at multiple depths  <-- have GPT code (and more code ut still doesn't work)
-
-"discoverable items"
 
 
 DONE

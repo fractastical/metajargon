@@ -1,0 +1,19 @@
++++ metagame("Life: The Text-Based Adventure")
+
+Create a text-based adventure game that simulates life with the following rules and mechanics:
+Player starts with zero memory.
+Time moves forward, never backward.
+Artifacts (memories, items) can be collected, but may disappear at any time.
+Core artifacts (name, location) are semi-permanent.
+Player can perform actions at each step, consuming time.
+Player has a body requiring energy replenishment through food and sleep.
+Player chooses their own winning condition, which may or may not be verifiable.
+Media types (talking, reading, watching, etc.) can be used to load past game states into memory.
+Standard and rare media types exist to explore.
+Various conditions can end the player's life (starvation, disease, people, animals).
+Rules and world mechanics must be discovered.
+If the winning condition is not achieved upon death, the game resets to zero.
+++
+
+
+

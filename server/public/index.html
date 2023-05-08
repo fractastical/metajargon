@@ -2511,14 +2511,16 @@ const mazeHeight = 21;
 const maze = createMaze(mazeWidth, mazeHeight);
 
 // const scene = new THREE.Scene();
-const blockSize = 30;
-const spotlight = addLight(camera);
+const blockSize = 120;
+  var startx = -10;
+  var starty = -10;
+  var startz = -20;
 
   // Create top plane
   const topPlaneGeometry = new THREE.PlaneGeometry(mazeWidth * blockSize, mazeHeight * blockSize);
   const topPlaneMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const topPlane = new THREE.Mesh(topPlaneGeometry, topPlaneMaterial);
-  topPlane.position.set(parent.xPos + (mazeWidth - 1) * blockSize / 2, parent.yPos + blockSize * 3 / 2, parent.zPos + (mazeHeight - 1) * blockSize / 2);
+  topPlane.position.set(startx + (mazeWidth - 1) * blockSize / 2, starty + blockSize * 3 / 2, startz + (mazeHeight - 1) * blockSize / 2);
   topPlane.rotation.x = -Math.PI / 2;
   scene.add(topPlane);
 
@@ -2526,7 +2528,7 @@ const spotlight = addLight(camera);
   const bottomPlaneGeometry = new THREE.PlaneGeometry(mazeWidth * blockSize, mazeHeight * blockSize);
   const bottomPlaneMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const bottomPlane = new THREE.Mesh(bottomPlaneGeometry, bottomPlaneMaterial);
-  bottomPlane.position.set(parent.xPos + (mazeWidth - 1) * blockSize / 2, parent.yPos - blockSize / 2, parent.zPos + (mazeHeight - 1) * blockSize / 2);
+  bottomPlane.position.set(startx + (mazeWidth - 1) * blockSize / 2, starty - blockSize / 2, startz + (mazeHeight - 1) * blockSize / 2);
   bottomPlane.rotation.x = Math.PI / 2;
   scene.add(bottomPlane);
 
@@ -2536,7 +2538,8 @@ for (let y = 0; y < mazeHeight; y++) {
       const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
       const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
       const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-      cube.position.set(x * blockSize, blockSize / 2, y * blockSize);
+      cube.position.set(startx + x * blockSize, starty + blockSize / 2, startz + y * blockSize);
+      // cube.position.set(x * blockSize, blockSize / 2, y * blockSize);
       scene.add(cube);
     }
   }
@@ -2563,19 +2566,24 @@ for (let y = 0; y < mazeHeight; y++) {
   // }
 
   // Find the entrance position
-  const entranceX = 0 + blockSize * (mazeHeight/2 + 0.5);
-  const entranceY = 0 + blockSize / 2;
-  const entranceZ = 0 + blockSize * (mazeWidth/2 + 0.5);
+  const entranceX = startx + blockSize * (mazeHeight/2 + 0.5);
+  const entranceY = starty + blockSize / 2;
+  const entranceZ = startz + blockSize * (mazeWidth/2 + 0.5);
   const entrance = new THREE.Vector3(entranceX, entranceY, entranceZ);
+
+  // const entrancePosition = new THREE.Vector3(startx + blockSize / 2, starty + blockSize, startz);
+  // const entranceDirection = new THREE.Vector3(0, 0, -1);
+  // moveCameraTo(entrancePosition, entranceDirection);
 
   // Position the camera at the entrance
   camera.position.set(entrance.x, entrance.y + 10, entrance.z - 15);
   camera.lookAt(entrance);
+  const spotlight = addLight(camera);
 
   // Add a slight rotation to primarily see the entrance
   camera.rotation.y = 0.3;
     function animate() {
-            spotlight.position.copy(camera.position);
+      spotlight.position.copy(camera.position);
       spotlight.target.position.copy(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(10));
       spotlight.target.position.add(camera.position);
 
@@ -2586,6 +2594,23 @@ for (let y = 0; y < mazeHeight; y++) {
 
 
 
+document.addEventListener('keydown', (event) => {
+  const keyCode = event.keyCode;
+  switch (keyCode) {
+    // left arrow key
+    case 37:
+      // rotate camera left
+      camera.rotation.y += 0.1;
+      break;
+    // right arrow key
+    case 39:
+      // rotate camera right
+      camera.rotation.y -= 0.1;
+      break;
+    default:
+      break;
+  }
+});
 
 
 class ExtendedOrbitControls extends THREE.OrbitControls {

@@ -6,6 +6,9 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
 const fs = require('fs');
+const openai = require('openai');
+// const cors = require('cors');
+const bodyParser = require('body-parser');
 
 // const mongoose = require('mongoose');
 
@@ -109,6 +112,29 @@ const getUserBalance = (username, callback) => {
 };
 
 // app.use('/static', express.static(path.join(__dirname, 'public')))
+
+openai.apiKey = process.env.OPENAI_API_KEY;
+
+app.use(bodyParser.json()); // Add this line to use the body-parser middleware
+
+app.post('/generateJoke', async (req, res) => {
+  const keyword = req.body.keyword;
+  const prompt = `Tell me a joke about ${keyword}`;
+
+  const response = await openai.Completion.create({ // Update this line
+    engine: 'davinci-codex',
+    prompt: prompt,
+    max_tokens: 50,
+    n: 1,
+    stop: null,
+    temperature: 0.7,
+  });
+
+  const joke = response.choices[0].text.trim();
+  res.json({ joke: joke });
+});
+
+
 
 app.use(express.static(__dirname + "/public"));
 

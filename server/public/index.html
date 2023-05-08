@@ -2501,6 +2501,19 @@ function maze()
 
 }
 // maze.helpText = "make a maze inside the currently selected cube"
+function makeMeSmall(scaleFactor = 10) {
+
+  scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+  
+}
+
+function makeMeLarge  (scaleFactor = 10) {
+
+scene.scale.set(1/scaleFactor, 1/scaleFactor, 1/scaleFactor);
+
+}
+
+
 
 function makeMeAMaze(parent) {
   console.log('maze');
@@ -2864,6 +2877,8 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
+
+
 window.addEventListener('keydown', (event) => {
 
   switch (event.key.toLowerCase()) {
@@ -2968,6 +2983,48 @@ function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
   }
 
   animate();
+}
+
+function joke()
+{
+  terminal.write('\r\nPlaying joke game. Enter a keyword or topic for a joke: ');
+  context = "joke";
+  // terminal.onKey(async ({ key }) => {
+  //   if (key === '\r') { // Enter key
+  //     const keyword = terminal.getSelection();
+  //     terminal.write('\n');
+  //     console.log(keyword);
+  //     if (keyword) {
+  //       const response = await fetch('http://localhost:3000/generateJoke', {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ keyword: keyword })
+  //       });
+  //       const result = await response.json();
+  //       terminal.writeln(`Joke: ${result.joke}`);
+  //     } else {
+  //       terminal.writeln('No keyword entered. Please try again.');
+  //     }
+  //     terminal.write('Enter a keyword or topic for a joke: ');
+  //   } else if (key === '\u007F' || key === '\b') { // Backspace or Delete key
+  //     terminal.write('\b \b'); // Delete the last character
+  //   } else {
+  //     // terminal.write(key);
+  //   }
+  // });
+}
+
+async function callJoke(keyword)
+{
+
+  const response = await fetch('http://localhost:3000/generateJoke', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keyword: keyword })
+              });
+              const result = await response.json();
+              terminal.writeln(`Joke: ${result.joke}`);
+      
 }
 
 function rotatex() {
@@ -3358,6 +3415,7 @@ let inputBuffer = '';
 let lastCommand = '';
 
 var player; 
+var context;
 
 terminal.onData((data) => {
   // If the user pressed Enter, process the command
@@ -3365,7 +3423,9 @@ terminal.onData((data) => {
     const command = inputBuffer.trim();
     inputBuffer = '';
     console.log("User typed command:", command);
-
+    if(context == "joke") {
+        callJoke(command);
+    }
     // Split the command by semicolons
     const commands = command.split(';');
     

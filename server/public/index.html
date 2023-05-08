@@ -2479,6 +2479,21 @@ function createMaze(width, height) {
   return maze;
 }
 
+function addLight(camera) {
+  const light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 2, 1, 2);
+  light.position.set(0, 0, 0);
+  light.target.position.set(0, 0, -1);
+  camera.add(light);
+
+  const targetObject = new THREE.Object3D();
+  targetObject.position.set(0, 0, -1);
+  camera.add(targetObject);
+
+  light.target = targetObject;
+
+  return light;
+}
+
 //TODO: latest GPT version crashes 
 function maze()
 {
@@ -2496,7 +2511,24 @@ const mazeHeight = 21;
 const maze = createMaze(mazeWidth, mazeHeight);
 
 // const scene = new THREE.Scene();
-const blockSize = 10;
+const blockSize = 30;
+const spotlight = addLight(camera);
+
+  // Create top plane
+  const topPlaneGeometry = new THREE.PlaneGeometry(mazeWidth * blockSize, mazeHeight * blockSize);
+  const topPlaneMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const topPlane = new THREE.Mesh(topPlaneGeometry, topPlaneMaterial);
+  topPlane.position.set(parent.xPos + (mazeWidth - 1) * blockSize / 2, parent.yPos + blockSize * 3 / 2, parent.zPos + (mazeHeight - 1) * blockSize / 2);
+  topPlane.rotation.x = -Math.PI / 2;
+  scene.add(topPlane);
+
+  // Create bottom plane
+  const bottomPlaneGeometry = new THREE.PlaneGeometry(mazeWidth * blockSize, mazeHeight * blockSize);
+  const bottomPlaneMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const bottomPlane = new THREE.Mesh(bottomPlaneGeometry, bottomPlaneMaterial);
+  bottomPlane.position.set(parent.xPos + (mazeWidth - 1) * blockSize / 2, parent.yPos - blockSize / 2, parent.zPos + (mazeHeight - 1) * blockSize / 2);
+  bottomPlane.rotation.x = Math.PI / 2;
+  scene.add(bottomPlane);
 
 for (let y = 0; y < mazeHeight; y++) {
   for (let x = 0; x < mazeWidth; x++) {
@@ -2542,6 +2574,14 @@ for (let y = 0; y < mazeHeight; y++) {
 
   // Add a slight rotation to primarily see the entrance
   camera.rotation.y = 0.3;
+    function animate() {
+            spotlight.position.copy(camera.position);
+      spotlight.target.position.copy(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(10));
+      spotlight.target.position.add(camera.position);
+
+    }
+    animate();
+
 }
 
 

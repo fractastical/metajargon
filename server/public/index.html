@@ -2492,27 +2492,48 @@ function makeMeAMaze(parent) {
   console.log(parent);
 
   const mazeWidth = 21;
-  const mazeHeight = 21;
-  const maze = createMaze(mazeWidth, mazeHeight);
+const mazeHeight = 21;
+const maze = createMaze(mazeWidth, mazeHeight);
 
-  const blockSize = 1;
+// const scene = new THREE.Scene();
+const blockSize = 10;
 
-  for (let y = 0; y < mazeHeight; y++) {
-    for (let x = 0; x < mazeWidth; x++) {
-      if (!maze[y][x]) {
-        const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
-        const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
-        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.position.set(parent.xPos + x * blockSize, parent.yPos + blockSize / 2, parent.zPos + y * blockSize);
-        scene.add(cube);
-      }
+for (let y = 0; y < mazeHeight; y++) {
+  for (let x = 0; x < mazeWidth; x++) {
+    if (!maze[y][x]) {
+      const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
+      const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
+      const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      cube.position.set(x * blockSize, blockSize / 2, y * blockSize);
+      scene.add(cube);
     }
   }
+}
+
+  // const mazeWidth = 21;
+  // const mazeHeight = 21;
+  // const maze = createMaze(mazeWidth, mazeHeight);
+
+  // const blockSize = 1;
+
+  // for (let y = 0; y < mazeHeight; y++) {
+  //   for (let x = 0; x < mazeWidth; x++) {
+  //     if (!maze[y][x]) {
+  //       const cubeGeometry = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
+  //       const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
+  //       const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  //       cube.position.set(x * blockSize, blockSize / 2, y * blockSize);
+
+  //       // cube.position.set(parent.xPos + x * blockSize, parent.yPos + blockSize / 2, parent.zPos + y * blockSize);
+  //       scene.add(cube);
+  //     }
+  //   }
+  // }
 
   // Find the entrance position
-  const entranceX = parent.xPos + blockSize * (maze.start.x + 0.5);
-  const entranceY = parent.yPos + blockSize / 2;
-  const entranceZ = parent.zPos + blockSize * (maze.start.y + 0.5);
+  const entranceX = 0 + blockSize * (mazeHeight/2 + 0.5);
+  const entranceY = 0 + blockSize / 2;
+  const entranceZ = 0 + blockSize * (mazeWidth/2 + 0.5);
   const entrance = new THREE.Vector3(entranceX, entranceY, entranceZ);
 
   // Position the camera at the entrance

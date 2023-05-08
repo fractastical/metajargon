@@ -2512,8 +2512,8 @@ const maze = createMaze(mazeWidth, mazeHeight);
 
 // const scene = new THREE.Scene();
 const blockSize = 120;
-  var startx = -10;
-  var starty = -10;
+  var startx = 30;
+  var starty = 30;
   var startz = -20;
 
   // Create top plane
@@ -2570,6 +2570,18 @@ for (let y = 0; y < mazeHeight; y++) {
   const entranceY = starty + blockSize / 2;
   const entranceZ = startz + blockSize * (mazeWidth/2 + 0.5);
   const entrance = new THREE.Vector3(entranceX, entranceY, entranceZ);
+
+  const ambientLight = new THREE.AmbientLight(0x404040);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(1, 1, 1);
+scene.add(directionalLight);
+
+
+const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight2.position.set(startx+5, starty+5, startz+1);
+scene.add(directionalLight2);
 
   // const entrancePosition = new THREE.Vector3(startx + blockSize / 2, starty + blockSize, startz);
   // const entranceDirection = new THREE.Vector3(0, 0, -1);
@@ -2851,6 +2863,19 @@ window.addEventListener('keydown', (event) => {
 
   }
 });
+
+window.addEventListener('keydown', (event) => {
+
+  switch (event.key.toLowerCase()) {
+    case 89: // y
+      camera.rotation.y -= 0.1;
+      break;
+    case 67: // c
+      camera.rotation.y += 0.1;
+      break;
+  }
+});
+
 
 // TODO: don't love this
 function go(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {

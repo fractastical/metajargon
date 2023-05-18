@@ -92,6 +92,8 @@ js/css3drenderer@1.1.1-index.min.js
 
 </head>
 <body>
+  <video id="video" crossorigin="anonymous" preload="auto" loop muted playsinline ></video>
+
 
 <!-- 
     <div class="login-section">
@@ -160,6 +162,7 @@ js/css3drenderer@1.1.1-index.min.js
 
 
     </div>-->
+
     <div id="terminal">
 
 
@@ -171,6 +174,7 @@ js/css3drenderer@1.1.1-index.min.js
 
     <div id="hypercube"></div>
 
+
     <script>
 
         var allVisitedCubes = {};
@@ -181,6 +185,13 @@ js/css3drenderer@1.1.1-index.min.js
         const levels = 7;
 
         var sound; 
+
+        const video = document.getElementById('video');
+        video.src = '/videos/castle.mp4'; // Set this to the local path of your video
+        video.style.display = "none";
+
+        const videoTexture = new THREE.VideoTexture(video);
+
 
         const keysState = {
               a: { pressed: false, acceleration: 0 },
@@ -360,6 +371,14 @@ js/css3drenderer@1.1.1-index.min.js
             sphere.position.set(x, y, z);
             scene.add(sphere);
             return sphere;
+        }
+
+
+        function makeVideo() {
+          console.log("myvid");
+            allCubes[selectedCubeIndex].material = new THREE.MeshBasicMaterial({ map: videoTexture });
+
+
         }
 
     function getRandomTexture() {

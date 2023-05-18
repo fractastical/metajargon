@@ -1,23 +1,31 @@
 
+
 TOP
+
+
+jargon live loading and parsing 
+    - error on API call
+    - re-request GPT-4 API 
+    - auto populating (requires extension) / test API calls 
+    - auto testing
+    - text prompt in terminal
+
 
 can't find the source of that annoying sound when you click on a cube!
 
-zoom  -- all zoom functions so far look meh or confusing
+zoom  -- all zoom functions so far look meh or confusing 
+    - tiny bit of improvement with MakeMesmall but still lacking
 
-jargon live loading and parsing 
-    - auto populating (requires extension) 
-    - auto testing
-    - text prompt in terminal
-    
 
 USABILITY BUGS
 
-all journeys play on their own loop
-
+all journeys play on their own loop (concatenate?)
 
 BUGS
 
+play video on video on side of cube 
+
+"wires" to trace cubes
 
 Cube also not moving highlight system properly
 

@@ -224,7 +224,7 @@ js/css3drenderer@1.1.1-index.min.js
      });
 
 
-     const scene = new THREE.Scene();
+        const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
         camera.add( listener );
@@ -234,7 +234,8 @@ js/css3drenderer@1.1.1-index.min.js
         document.body.appendChild(renderer.domElement);
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         const cubeSize = 10;
-        const cubeDistance = 60;
+        const cubeDistance = 100;
+        const cubeSpacing = 60;
 
         const scaleFactor = 100;
         const rootCube = createNestedCubes(levels, scaleFactor);
@@ -464,7 +465,7 @@ function createUniqueObject(x, y, z, type) {
 
     // Calculate the maximum possible distance
     const gridSize = 9;
-    const cubeDistance = cubeSize + 60;
+    // const cubeDistance = cubeSize + 60;
     const maxDistance = Math.sqrt(Math.pow((gridSize * cubeDistance) / 2, 2) * 3);
 
     // Generate a shade of purple based on the distance to the center
@@ -570,9 +571,8 @@ function createGridOfCubes() {
 
     
         const gridSize = 7;
-        const cubeDistance = cubeSize + 60;
+        // const cubeDistance = cubeSize + 60;
         var cubeNumber = 1;
-        const cubeSpacing = 60;
 
 
         for (let x = -Math.floor(gridSize / 2); x <= Math.floor(gridSize / 2); x++) {
@@ -2512,6 +2512,17 @@ function makeMeLarge  (scaleFactor = 10) {
 scene.scale.set(1/scaleFactor, 1/scaleFactor, 1/scaleFactor);
 
 }
+
+// function scaleFade(ScaleSpeed = 0.001) {
+
+//   function animate() {
+
+    
+//   }
+
+
+
+// }
 
 
 

@@ -376,8 +376,21 @@ js/css3drenderer@1.1.1-index.min.js
 
         function makeVideo() {
           console.log("myvid");
-            allCubes[selectedCubeIndex].material = new THREE.MeshBasicMaterial({ map: videoTexture });
+          // /allCubes[selectedCubeIndex].wireframe = false;
+          // allCubes[selectedCubeIndex].material = new THREE.MeshBasicMaterial({ color: "white", map: videoTexture });
 
+
+              const cubeGeometry = new THREE.BoxGeometry(8, 8, 8);
+              const cubeMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
+              const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+              const newX = allCubes[selectedCubeIndex].position.x ; 
+              const newY = allCubes[selectedCubeIndex].position.y ;
+              const newZ = allCubes[selectedCubeIndex].position.z ;
+              console.log (newX + "," + newY + "," + newZ)
+              cube.position.set(newX, newY, newZ);
+              // console.log(allCubes[selectedCubeIndex].position);
+              // cube.position.set(allCubes[selectedCubeIndex].position);
+              scene.add(cube);
 
         }
 
@@ -411,7 +424,7 @@ js/css3drenderer@1.1.1-index.min.js
 
             const smallCube = new THREE.LineSegments(smallEdgesGeometry, lineMaterial);
 
-            // TODO: still no satisfactory way to zoom in
+            // TODO: still still no satisfactory way to zoom in
             smallCube.position.set(x+3, y+3, z+3);
             scene.add(smallCube);
 

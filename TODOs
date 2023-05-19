@@ -2,6 +2,13 @@
 
 TOP
 
+loading video on sides of cubes 
+
+major refactoring needed, lots of code duplication and commented out code
+
+zoom  -- all zoom functions so far look meh or confusing 
+    - tiny bit of improvement with MakeMesmall but still lacking
+
 
 jargon live loading and parsing 
     - error on API call
@@ -13,8 +20,6 @@ jargon live loading and parsing
 
 can't find the source of that annoying sound when you click on a cube!
 
-zoom  -- all zoom functions so far look meh or confusing 
-    - tiny bit of improvement with MakeMesmall but still lacking
 
 
 USABILITY BUGS

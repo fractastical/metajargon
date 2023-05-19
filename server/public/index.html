@@ -182,12 +182,14 @@ js/css3drenderer@1.1.1-index.min.js
         const socket = io();
         var credits = 10;
         var selectedCubeIndex = 172;
-        const levels = 7;
+        const levels = 7; // fractal depth TODO: still not quite working  
 
         var sound; 
 
         const video = document.getElementById('video');
-        video.src = '/videos/castle.mp4'; // Set this to the local path of your video
+        // video.src = '/videos/castle.mp4'; // Set this to the local path of your video
+        video.src = '/videos/przma.mov'; // Set this to the local path of your video
+
         video.style.display = "none";
 
         const videoTexture = new THREE.VideoTexture(video);
@@ -374,7 +376,7 @@ js/css3drenderer@1.1.1-index.min.js
         }
 
 
-        function makeVideo() {
+        function v() {
           console.log("myvid");
           // /allCubes[selectedCubeIndex].wireframe = false;
           // allCubes[selectedCubeIndex].material = new THREE.MeshBasicMaterial({ color: "white", map: videoTexture });
@@ -383,14 +385,18 @@ js/css3drenderer@1.1.1-index.min.js
               const cubeGeometry = new THREE.BoxGeometry(8, 8, 8);
               const cubeMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
               const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-              const newX = allCubes[selectedCubeIndex].position.x ; 
-              const newY = allCubes[selectedCubeIndex].position.y ;
-              const newZ = allCubes[selectedCubeIndex].position.z ;
-              console.log (newX + "," + newY + "," + newZ)
+              // const selectedCube = scene.getObjectByProperty("uuid", cubeId);
+              const newX = allCubes[selectedCubeIndex-1].position.x ; 
+              const newY = allCubes[selectedCubeIndex-1].position.y ;
+              const newZ = allCubes[selectedCubeIndex-1].position.z ;
+              console.log (newX + "," + newY + "," + newZ);
+              console.log(selectedCubeIndex);
               cube.position.set(newX, newY, newZ);
               // console.log(allCubes[selectedCubeIndex].position);
               // cube.position.set(allCubes[selectedCubeIndex].position);
               scene.add(cube);
+              video.play();
+
 
         }
 
@@ -2938,13 +2944,16 @@ window.addEventListener('keydown', (event) => {
 // TODO: don't love this
 function go(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
 
-  console.log(cubeIndex);
-
+  // console.log(cubeIndex);
+  
   // if cubeindex is a string search for approriate index in the cubeLabels map
   if(!isNumeric(cubeIndex) && (cubeLabels.get(cubeIndex) != undefined) )
          cubeIndex = cubeLabels.get(cubeIndex);
   else if (!isNumeric(cubeIndex))
       cubeIndex = cubeMap.get(cubeIndex).cube.uuid;
+
+  // cubeIndex = cubeIndex + 1;
+  selectedCubeIndex = cubeIndex;
 
   console.log(cubeIndex);
 

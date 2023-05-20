@@ -2,10 +2,6 @@
 
 TOP
 
-"hello bob"
-
-loading video on sides of cubes 
-
 major refactoring needed, lots of code duplication and commented out code
 
 zoom  -- all zoom functions so far look meh or confusing 
@@ -23,14 +19,12 @@ jargon live loading and parsing
 can't find the source of that annoying sound when you click on a cube!
 
 
-
 USABILITY BUGS
 
 all journeys play on their own loop (concatenate?)
 
 BUGS
 
-play video on video on side of cube 
 
 "wires" to trace cubes
 
@@ -42,26 +36,24 @@ Basically two completely non working systems
     - gpt keeps giving junk code
 
 
-user auth flow should work as follows
-    - user clicks login to metmask
-    - if not authed- gives starting balance
-    - user can claim items, this subtracts some starting balance
-    - once user claims 
-
 BIG issues
     - don't understand how require or modules work properly in Node
     - database logic collision for user
 
+QUESTIONS
+
+what's the best data structure for a procedurally genrated text adventure? 
 
 
 IDEAS
+
+user action log - write to file storage all action
 
 tag
 
 hide and seek
 
 click on image, poem comes out
-
 
 conways game of life in cubes, syncronized to music
    -https://github.com/fractastical/game-of-life-threejs
@@ -74,6 +66,18 @@ upon visit pay owner of cube
 do a zoom at multiple depths  <-- have GPT code (and more code ut still doesn't work)
 
 "discoverable items"
+
+user auth flow should work as follows
+    - user clicks login to metmask
+    - if not authed- gives starting balance
+    - user can claim items, this subtracts some starting balance
+    - once user claims 
+
+
+SYNTAX ACTUAL
+
+command arg1; command2 
+go 1.3.-4
 
 SYNTAX WISHlIsT
 
@@ -98,6 +102,12 @@ group[molecules][33 bpm] - group all molecules nad give them a 33 bpm movement r
 
 DONE
 
+
+"hello bob" 
+
+loading video on sides of cubes 
+
+
 improper idea of coordinates
     - cube numbers and location need to be persistant (i.e should be numbered from center out) 
 
@@ -111,7 +121,6 @@ add other types of music and auto transpose (like the japanese flute library)
 network state simulation visualizations 
 
 
-MAJOR Bugs 
 need to bring all JS libraries local so not hammered by low latency internet DONE 
 
 can't stop music FIXED 
@@ -124,6 +133,8 @@ music flow should work as follows
     - MP3 plyer plays at same time as midi
 [ decision may be to abandon MIDI in favor of winamp like system - partially implemented]
 
+
+DONE 
 
 - mp3 player does not allow multiople instanced of player 
 
@@ -152,3 +163,4 @@ build tone map so you can play specific music
 deploy to a server wehre people can get it at it
 
 add some other login or web association
+play video on video on side of cube 

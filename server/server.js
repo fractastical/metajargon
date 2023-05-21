@@ -226,47 +226,47 @@ io.on("connection", (socket) => {
 //   }
 // };
   
-try {
-  const response = await axios.post(API_URL,
-    {
-      prompt: 'Create a cube in three.js', // Replace with your prompt
-      max_tokens: 100,
-    },
-    {
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    }
-  );
+// try {
+//   const response = await axios.post(API_URL,
+//     {
+//       prompt: 'Create a cube in three.js', // Replace with your prompt
+//       max_tokens: 100,
+//     },
+//     {
+//       headers: {
+//         'Authorization': `Bearer ${API_KEY}`,
+//         'Content-Type': 'application/json'
+//       }
+//     }
+//   );
 
-  const code = response.data.choices[0].text.trim();
+//   const code = response.data.choices[0].text.trim();
 
-  // Archive the code by saving it to a file
-  const filePath = path.join(__dirname, 'archive.js');
-  fs.writeFileSync(filePath, code);
+//   // Archive the code by saving it to a file
+//   const filePath = path.join(__dirname, 'archive.js');
+//   fs.writeFileSync(filePath, code);
 
-  // Assuming the returned code is JavaScript, execute it using Node.js
-  exec(`node ${filePath}`, (error, stdout, stderr) => {
-    if (error) {
-      console.log(`Error: ${error.message}`);
-      return;
-    }
+//   // Assuming the returned code is JavaScript, execute it using Node.js
+//   exec(`node ${filePath}`, (error, stdout, stderr) => {
+//     if (error) {
+//       console.log(`Error: ${error.message}`);
+//       return;
+//     }
 
-    if (stderr) {
-      console.log(`stderr: ${stderr}`);
-      return;
-    }
+//     if (stderr) {
+//       console.log(`stderr: ${stderr}`);
+//       return;
+//     }
 
-    console.log(`stdout: ${stdout}`);
-  });
+//     console.log(`stdout: ${stdout}`);
+//   });
 
-  res.send('Code executed and archived');
-} catch (error) {
-  console.error(error);
-  res.status(500).send('An error occurred');
-}
-});
+//   res.send('Code executed and archived');
+// } catch (error) {
+//   console.error(error);
+//   res.status(500).send('An error occurred');
+// }
+// });
 
 
   socket.on("sceneUpdate", (data) => {

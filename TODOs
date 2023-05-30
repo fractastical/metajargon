@@ -4,6 +4,19 @@ TOP
 
 major refactoring needed, lots of code duplication and commented out code
 
+Alice storyline
+    - add ascii alice
+    - make fade effect better
+    - add branching json mindmap 'therapy' game
+
+Therapy game
+    - describe your self
+    - describe your neurosis
+    - bounty(?) for solving
+    - accept solutoins 
+
+Formalize effect library
+
 zoom  -- all zoom functions so far look meh or confusing 
     - tiny bit of improvement with MakeMesmall but still lacking
 

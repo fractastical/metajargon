@@ -3079,7 +3079,7 @@ function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
 
 function joke()
 {
-  terminal.write('\r\nPlaying joke game. Enter a keyword or topic for a joke: ');
+  terminal.write('\r\nPlaying joke game. Enter a keyword or topic for a joke:\r\n ');
   context = "joke";
   // terminal.onKey(async ({ key }) => {
   //   if (key === '\r') { // Enter key
@@ -3106,8 +3106,10 @@ function joke()
   // });
 }
 
+
 async function callJoke(keyword)
 {
+    console.log("calljoke:"+keyword);
 
   const response = await fetch('http://localhost:3000/generateJoke', {
                 method: 'POST',
@@ -3115,7 +3117,8 @@ async function callJoke(keyword)
                 body: JSON.stringify({ keyword: keyword })
               });
               const result = await response.json();
-              terminal.writeln(`Joke: ${result.joke}`);
+              console.log(result);
+              terminal.write(`Joke: ${result.joke}`);
       
 }
 

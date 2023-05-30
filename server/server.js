@@ -6,7 +6,33 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
 const fs = require('fs');
-const openai = require('openai');
+// const {Configuration, OpenAIApi} = require('openai');
+
+const {Configuration, OpenAIApi} = require('openai');
+
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+const openai = new OpenAIApi(
+  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
+);
+console.log(process.env);
+
+console.log("key" + process.env.OPENAI_API_KEY);
+
+// const configuration = new Configuration({
+//   apiKey: process.env.OPENAI_API_KEY
+//   });
+  
+// import { Configuration, OpenAIApi } from "openai";
+
+// const configuration = new Configuration({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+// const openai = new OpenAIApi(configuration);
+
 const axios = require('axios');
 
 // const cors = require('cors');
@@ -45,6 +71,7 @@ const db = require('./database');
 const initializeUser = (username) => {
   const query = 'INSERT OR IGNORE INTO users (username, balance) VALUES (?, ?)';
   const params = [username, 10];
+
 
   db.run(query, params, (err) => {
     if (err) {
@@ -115,26 +142,63 @@ const getUserBalance = (username, callback) => {
 
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 
-openai.apiKey = process.env.OPENAI_API_KEY;
+// openai.apiKey = process.env.OPENAI_API_KEY;
+
 
 app.use(bodyParser.json()); // Add this line to use the body-parser middleware
 
 app.post('/generateJoke', async (req, res) => {
+
   const keyword = req.body.keyword;
   const prompt = `Tell me a joke about ${keyword}`;
 
-  const response = await openai.Completion.create({ // Update this line
-    engine: 'davinci-codex',
-    prompt: prompt,
-    max_tokens: 50,
-    n: 1,
-    stop: null,
-    temperature: 0.7,
-  });
+  try {
 
-  const joke = response.choices[0].text.trim();
-  res.json({ joke: joke });
-});
+    // const response = await openai.createCompletion({
+    //   model: "gpt-3.5-turbo",
+    //   messages: inputs, // Use the messages parameter
+    //   max_tokens: 100,
+    //   temperature: 0.7,
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{"role": "user", "content": prompt}],
+      max_tokens: 100,
+      temperature: 0.6,
+    });
+    
+    
+    res.status(200).json({ joke: completion.data.choices[0].message.content });
+    console.log(res);
+
+    // const joke = completion.choices[0].text.trim();
+    // res.json({ joke: joke });
+  
+    // res.status(200).json({ result: completion.data.choices[0].text });
+  } catch(error) {
+    // Consider adjusting the error handling logic for your use case
+    if (error.response) {
+      console.error(error.response.status, error.response.data);
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      console.error(`Error with OpenAI API request: ${error.message}`);
+      res.status(500).json({
+        error: {
+          message: 'An error occurred during your request.',
+        }
+      });
+    }
+
+  // const response = await openai.Completion.create({ // Update this line
+  //   engine: 'davinci-codex',
+  //   prompt: prompt,
+  //   max_tokens: 50,
+  //   n: 1,
+  //   stop: null,
+  //   temperature: 0.7,
+  // });
+  
+  }});
 
 
 

@@ -6,6 +6,8 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
 const fs = require('fs');
+const MongoClient = require('mongodb').MongoClient;
+
 // const {Configuration, OpenAIApi} = require('openai');
 
 const {Configuration, OpenAIApi} = require('openai');
@@ -18,9 +20,9 @@ if (process.env.NODE_ENV !== 'production') {
 const openai = new OpenAIApi(
   new Configuration({ apiKey: process.env.OPENAI_API_KEY })
 );
-console.log(process.env);
+// console.log(process.env);
 
-console.log("key" + process.env.OPENAI_API_KEY);
+// console.log("key" + process.env.OPENAI_API_KEY);
 
 // const configuration = new Configuration({
 //   apiKey: process.env.OPENAI_API_KEY
@@ -146,6 +148,55 @@ const getUserBalance = (username, callback) => {
 
 
 app.use(bodyParser.json()); // Add this line to use the body-parser middleware
+
+async function connectToCluster(uri) {
+  let mongoClient;
+
+  try {
+      mongoClient = new MongoClient(uri);
+      console.log('Connecting to MongoDB Atlas cluster...');
+      await mongoClient.connect();
+      console.log('Successfully connected to MongoDB Atlas!');
+
+      return mongoClient;
+  } catch (error) {
+      console.error('Connection to MongoDB Atlas failed!', error);
+      process.exit();
+  }
+}
+
+
+
+app.post('/saveJoke', async (req, res) => {
+
+       const myData = req.body.jsonData;
+
+        // Connection URL
+
+        const url = process.env.MONGODB_URL;
+        const mongoClient = await connectToCluster(url);
+
+        try {
+          // Connect to the MongoDB cluster
+          // const mongoClient = await connectToCluster(url);
+          const db = mongoClient.db('jokes');
+          const collection = db.collection('jokes');
+          
+      
+          // Insert jsonData into the collection
+          const result = await collection.insertOne(myData);
+      
+          console.log(`Successfully inserted item with _id: ${result.insertedId}`);
+        } catch (err) {
+          console.error('An error occurred while inserting data: ', err);
+        } finally {
+          // Close the connection to the MongoDB cluster
+          await mongoClient.close();
+        }
+
+      });
+      
+  
 
 app.post('/generateJoke', async (req, res) => {
 

@@ -123,7 +123,6 @@ js/css3drenderer@1.1.1-index.min.js
 <script>
     var mol = "S 1 2 3^K 3^K 2";
     // var mol = "chemSKI rewrite terminSK. The node S plays two roles: as the combinator S and as a fanout. The node K behaves as combinator K but also as a termination.</a>";
-const MongoClient = require('mongodb').MongoClient;
 
 </script>
 
@@ -3140,9 +3139,14 @@ async function callJoke(keyword)
               const jokeData = JSON.parse(cleanJoke);
               const jokeText = jokeData.text;
 
-              terminal.write(`${jokeText} \r\nPlease give this joke a rating 1-10`);
+              terminal.write(`${jokeText} \r\nPlease give this joke a rating 1-10\r\n$`);
 
-      
+              await fetch('http://localhost:3000/saveJoke', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonData: jokeData })
+              });
+              
 }
 
 function rotatex() {
@@ -4489,12 +4493,11 @@ animate();
 
 
 
-
     </script>
 
 
 <script src="jarg/alice.js"></script>
-<script src="jarg/dungeon.js"></script>
+<!-- <script src="jarg/dungeon.js"></script> -->
 
 
 </body>

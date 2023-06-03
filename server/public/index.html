@@ -3121,6 +3121,8 @@ function cleanJsonString(jsonString) {
   }
 }
 
+let activeJokeData = "";
+
 async function callJoke(keyword)
 {
     console.log("calljoke:"+keyword);
@@ -3136,18 +3138,34 @@ async function callJoke(keyword)
               // const joke = JSON.parse(result.joke);
               // const jokeText = joke["text"];
               const cleanJoke = cleanJsonString(result.joke);
-              const jokeData = JSON.parse(cleanJoke);
-              const jokeText = jokeData.text;
+              activeJokeData = JSON.parse(cleanJoke);
+              const jokeText = activeJokeData.text;
 
               terminal.write(`${jokeText} \r\nPlease give this joke a rating 1-10\r\n$`);
+              context = "jokeReceived";
 
-              await fetch('http://localhost:3000/saveJoke', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ jsonData: jokeData })
-              });
               
 }
+
+async function saveJoke(rating) {
+
+
+  activeJokeData["userRating"] = rating;
+  if(activeUser)
+    activeJokeData["user"] = activeUser;
+  
+  console.log(activeJokeData);
+
+  await fetch('http://localhost:3000/saveJoke', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonData: activeJokeData })
+              });
+
+  context="";
+}
+
+
 
 function rotatex() {
 
@@ -3597,6 +3615,9 @@ terminal.onData((data) => {
     console.log("User typed command:", command);
     if(context == "joke") {
         callJoke(command);
+    } else if(context == "jokeReceived") {
+      saveJoke(command);
+      context = "";
     }
     // Split the command by semicolons
     const commands = command.split(';');

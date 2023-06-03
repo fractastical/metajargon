@@ -123,6 +123,7 @@ js/css3drenderer@1.1.1-index.min.js
 <script>
     var mol = "S 1 2 3^K 3^K 2";
     // var mol = "chemSKI rewrite terminSK. The node S plays two roles: as the combinator S and as a fanout. The node K behaves as combinator K but also as a termination.</a>";
+const MongoClient = require('mongodb').MongoClient;
 
 </script>
 
@@ -3118,7 +3119,15 @@ async function callJoke(keyword)
               });
               const result = await response.json();
               console.log(result);
-              terminal.write(`Joke: ${result.joke}`);
+              console.log(result.joke);
+
+              // const joke = JSON.parse(result.joke);
+              // const jokeText = joke["text"];
+              const jokeData = JSON.parse(result.joke);
+              const jokeText = jokeData.text;
+
+              terminal.write(`Joke: ${jokeText}`);
+
       
 }
 
@@ -3400,6 +3409,25 @@ function findCubeByLabel(label) {we
 
 <!---  SECTION: terminal -->
 
+async function onTerminalReady() {
+  terminal.clear();
+
+  const aliceText = await fetch("jarg/alice.txt").then(response => response.text());
+  const length = 101;
+  terminal.write('\n\r');
+
+  for(i=length;i<aliceText.length;i+=length)
+  {
+  terminal.write(aliceText.substring(i-length,i) + '\r');
+  }
+
+  terminal.write('Hello my name is Alice. Would you like to find your way to the heart of the maze?\r\n');
+  // terminal.write(listFunctionNames().toString());
+  terminal.write("\r\n$ ");
+
+}
+
+
 function advanced() {
   let functionsList = [];
 
@@ -3522,7 +3550,7 @@ function shrinkTerminal() {
 }
 
 
-onTerminalReady();
+// onTerminalReady();
 
 // Fit the terminal to its container
 fitAddon.fit();
@@ -3976,14 +4004,6 @@ slower.helpText = "play musical journey slower";
 
 
 
-function onTerminalReady() {
-  terminal.clear();
-  // terminal.write('Type "help" for a list of available functions or view the initial list below:\r\n');
-  terminal.write('Hello my name is Alice. Would you like to find your way to the heart of the maze?\r\n');
-  // terminal.write(listFunctionNames().toString());
-  terminal.write("\r\n$ ");
-
-}
 
 function listFunctionNames() {
 
@@ -4460,6 +4480,7 @@ animate();
 
 
 <script src="jarg/alice.js"></script>
+<script src="jarg/dungeon.js"></script>
 
 
 </body>

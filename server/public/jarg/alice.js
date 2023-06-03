@@ -1,5 +1,7 @@
 
 
+
+
 function yes() {
   // terminal.write("\r\nwhere are you?\r\n");
 
@@ -10,13 +12,21 @@ function yes() {
   
 async function no() {
 
-      const aliceText = await fetch("jarg/alice.txt").then(response => response.text());
+      // const aliceText = await fetch("jarg/alice.txt").then(response => response.text());
+      // const length = 101;
+      // terminal.write('\n\r');
 
-      terminal.write(aliceText);
+      // for(i=length;i<aliceText.length;i+=length)
+      // {
+      // terminal.write(aliceText.substring(i-length,i) + '\r');
+      // }
+
+      // terminal.write(aliceText);
 
   }
 
-  // var aliceImage = "                                             ....:                                                  
+  // var aliceImage = "
+  //                                             ....:                                                  
   //                                          ::::^^:   :^::::7~:..     .^:::                          
   //                       .:.             :^^:::.      ...::^?7:^^^^.   .^..^.     :^..               
   //            ~^:..     .^..:::   ^:::. .^:.:::^~!!!~~.       ..         ^:.^:     .^^^:.            

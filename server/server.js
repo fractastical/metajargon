@@ -150,7 +150,7 @@ app.use(bodyParser.json()); // Add this line to use the body-parser middleware
 app.post('/generateJoke', async (req, res) => {
 
   const keyword = req.body.keyword;
-  const prompt = `Tell me a joke about ${keyword}`;
+  const prompt = 'Generate a joke about math and rate its funniness and usefulness for learning on a scale from 1 to 10. For result only return json format with the following keys "text", "funniness_rating", "learning_rating"';
 
   try {
 
@@ -163,7 +163,7 @@ app.post('/generateJoke', async (req, res) => {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{"role": "user", "content": prompt}],
-      max_tokens: 100,
+      max_tokens: 50,
       temperature: 0.6,
     });
     

@@ -150,7 +150,7 @@ app.use(bodyParser.json()); // Add this line to use the body-parser middleware
 app.post('/generateJoke', async (req, res) => {
 
   const keyword = req.body.keyword;
-  const prompt = 'Generate a joke about math and rate its funniness and usefulness for learning on a scale from 1 to 10. For result only return json format with the following keys "text", "funniness_rating", "learning_rating"';
+  const prompt = 'Generate a joke about ' + keyword + ' and rate its funniness and usefulness for learning on a scale from 1 to 10. For result only return json format with the following keys "text", "funniness_rating", "learning_rating"';
 
   try {
 

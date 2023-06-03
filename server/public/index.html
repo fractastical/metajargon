@@ -3119,14 +3119,13 @@ async function callJoke(keyword)
               });
               const result = await response.json();
               console.log(result);
-              console.log(result.joke);
 
               // const joke = JSON.parse(result.joke);
               // const jokeText = joke["text"];
               const jokeData = JSON.parse(result.joke);
               const jokeText = jokeData.text;
 
-              terminal.write(`Joke: ${jokeText}`);
+              terminal.write(`${jokeText} \r\nPlease give this joke a rating 1-10`);
 
       
 }

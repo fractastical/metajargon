@@ -3107,6 +3107,20 @@ function joke()
   // });
 }
 
+function cleanJsonString(jsonString) {
+  let firstCurly = jsonString.indexOf('{');
+  let lastCurly = jsonString.lastIndexOf('}');
+  let firstBracket = jsonString.indexOf('[');
+  let lastBracket = jsonString.lastIndexOf(']');
+  
+  if (firstCurly !== -1 && lastCurly !== -1) {
+    return jsonString.slice(firstCurly, lastCurly + 1);
+  } else if (firstBracket !== -1 && lastBracket !== -1) {
+    return jsonString.slice(firstBracket, lastBracket + 1);
+  } else {
+    throw new Error("Invalid JSON string");
+  }
+}
 
 async function callJoke(keyword)
 {
@@ -3122,7 +3136,8 @@ async function callJoke(keyword)
 
               // const joke = JSON.parse(result.joke);
               // const jokeText = joke["text"];
-              const jokeData = JSON.parse(result.joke);
+              const cleanJoke = cleanJsonString(result.joke);
+              const jokeData = JSON.parse(cleanJoke);
               const jokeText = jokeData.text;
 
               terminal.write(`${jokeText} \r\nPlease give this joke a rating 1-10`);

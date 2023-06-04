@@ -3044,8 +3044,10 @@ async function createDungeonRoom(newRoomName, roomEnteringFrom, reversedDirectio
               const result = await response.json();
               console.log(result);
 
-              const cleanRoom = cleanJsonString(result.room);
-              activeRoomData = JSON.parse(cleanRoom);
+              // const cleanRoom = cleanJsonString(result.room);
+              // activeRoomData = JSON.parse(cleanRoom);
+              activeRoomData = result.room;
+
               const description = activeRoomData.description;
 
               terminal.write(`${description} \r\nWhat will you do?\r\n$`);

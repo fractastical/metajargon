@@ -3,22 +3,28 @@
 TOP
 
 get dungeon working
-    - load all rooms into active memory
-    - show ASCII art 
-    - navigation
+    - load all rooms into active memory DONE
+    - show ASCII art  DONE
+    - navigation DONE
+    - generate new room at edges (json parsing errors galore)
     - "3d-ify" 
 
 major refactoring needed, lots of code duplication and commented out code
 
-can't find the source of that annoying sound when you click on a cube!
-
 
 USABILITY BUGS
+
+can't find the source of that annoying sound when you click on a cube!
 
 all journeys play on their own loop (concatenate?)
 
 BUGS
 
+
+
+
+
+IDEAS
 
 "wires" to trace cubes
 
@@ -33,13 +39,6 @@ Basically two completely non working systems
 BIG issues
     - don't understand how require or modules work properly in Node
     - database logic collision for user
-
-QUESTIONS
-
-what's the best data structure for a procedurally genrated text adventure? 
-
-
-IDEAS
 
 Alice storyline
     - add ascii alice
@@ -185,3 +184,5 @@ deploy to a server wehre people can get it at it
 
 add some other login or web association
 play video on video on side of cube 
+
+what's the best data structure for a procedurally genrated text adventure? 

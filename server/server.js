@@ -237,32 +237,49 @@ app.post('/generateDungeonRoom', async (req, res) => {
       // Insert jsonData into the collection
 
       let newRoom = completion.data.choices[0].message.content;
+
+      console.log(newRoom.length);
       console.log(newRoom);
+      console.log("parsing");
+
+
+      console.log("jsonified");
 
       newRoom["name"] = name;
-      newRoom["exits"][direction] = entrance;
-      
       console.log(newRoom);
+      if(! newRoom["exits"])
+          newRoom["exits"] = {};
+
+    console.log(newRoom);
+
+    let newRoomJson = JSON.parse(newRoom);
+
+          // newRoom["exits"].
+      // newRoom["exits"][direction] = entrance;
+      
+      // console.log(newRoomJson);
       res.status(200).json({ room: newRoom });
-      console.log(res);
-  
-      const result = await collection.insertOne(newRoom);
-  
+      // console.log(res);
+
+      const result = await collection.insertOne(newRoomJson);
+
       console.log(`Successfully inserted room with _id: ${result.insertedId}`);
     } catch (err) {
       if (err.response) {
         console.error(err.response.status, err.response.data);
         res.status(err.response.status).json(err.response.data);
       } else {
-        console.error(`Error with OpenAI API request: ${err.message}`);
-        res.status(500).json({
-          error: {
-            message: 'An error occurred during your request.',
-          }
-        });
+        console.error(`Error with OpenAI /MongDB request: ${err.message}`);
+        // res.status(500).json({
+        //   error: {
+        //     message: 'An error occurred during your request.',
+        //   }
+        // });
       }
       } finally {
       // Close the connection to the MongoDB cluster
+
+
       await mongoClient.close();
     }
 
@@ -270,6 +287,21 @@ app.post('/generateDungeonRoom', async (req, res) => {
 
   
 
+function cleanJsonString(jsonString) {
+    let firstCurly = jsonString.indexOf('{');
+    let lastCurly = jsonString.lastIndexOf('}');
+    let firstBracket = jsonString.indexOf('[');
+    let lastBracket = jsonString.lastIndexOf(']');
+    
+    if (firstCurly !== -1 && lastCurly !== -1) {
+      return jsonString.slice(firstCurly, lastCurly + 1);
+    } else if (firstBracket !== -1 && lastBracket !== -1) {
+      return jsonString.slice(firstBracket, lastBracket + 1);
+    } else {
+      throw new Error("Invalid JSON string");
+    }
+  }
+  
     
 
 app.post('/saveJoke', async (req, res) => {

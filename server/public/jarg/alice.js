@@ -9,8 +9,24 @@ function yes() {
 
   }
 
+
+  async function loadAlice() {
+
+    console.log("loadalice");
+    const aliceText = await fetch("jarg/alice.txt").then(response => response.text());
+    const length = 101;
+    terminal.write('\n\r');
   
-async function no() {
+    for(i=length;i<aliceText.length;i+=length)
+    {
+    terminal.write(aliceText.substring(i-length,i) + '\r');
+    }
+  
+    terminal.write('Hello my name is Alice. Would you like to find your way to the heart of the maze?\r\n');
+  
+}
+
+ async function no() {
 
       // const aliceText = await fetch("jarg/alice.txt").then(response => response.text());
       // const length = 101;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metacube</title>
+    <title>Infinite Dungeon</title>
     <style>
         body { margin: 0; }
         canvas { display: block; }
@@ -61,7 +61,7 @@
           /* height: 200px; */
 
           .expanded {
-            height: 90%;
+            height: 100%;
           }
 
           .fixed-height {
@@ -941,7 +941,9 @@ document.getElementById("loginWithMetamask").addEventListener("click", loginWith
 
 // Replace 'YOUR_API_KEY' with your actual Steam Web API key
 const API_KEY = '';
-
+function login(){
+  loginWithMetaMask();
+}
 // Initiate Steam login and handle the response
 function steamLogin() {
   playJourney();
@@ -3076,16 +3078,72 @@ function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
 
   animate();
 }
+
+allDungeons = "";
+
 function dungeon()
 {
-
-  terminal.write('\r\nPlaying dungeon game. Enter a keyword or topic for a room:\r\n ');
-  context = "dungeon";
+  loadDungeons();
+  // terminal.write('\r\nPlaying dungeon game. Enter a keyword or topic for a room:\r\n ');
+  // context = "dungeon";
 
 
 }
 
 let activeRoomData = "";
+
+
+function north() {
+
+  terminal.write(`\r\You go north\r\n$ `);
+
+ }
+
+function south() {
+
+terminal.write(`\r\You go south\r\n$ `);
+
+}
+
+function west() {
+
+terminal.write(`\r\You go west\r\n$ `);
+
+}
+
+function east() {
+
+terminal.write(`\r\You go east\r\n$ `);
+
+}
+
+
+let activeRoom = "";
+
+
+async function loadDungeons()
+{
+
+  const response = await fetch('http://localhost:3000/allRooms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+              });
+
+              const allDungeons = await response.json();
+              console.log(allDungeons);
+              // const cleanRooms = cleanJsonString(result.room);
+              // allDungeons = JSON.parse(result);
+              activeRoom = allDungeons[0];
+
+              const asciiart = allDungeons[0].asciiArt + "\r\n\r\n";
+              console.log(asciiart);
+              const description = allDungeons[0].description; 
+              terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
+
+              context = "inDungeon";
+
+}
 
 async function createDungeonRoom(keyword)
 {
@@ -3456,18 +3514,8 @@ function findCubeByLabel(label) {we
 
 async function onTerminalReady() {
   terminal.clear();
-
-  const aliceText = await fetch("jarg/alice.txt").then(response => response.text());
-  const length = 101;
-  terminal.write('\n\r');
-
-  for(i=length;i<aliceText.length;i+=length)
-  {
-  terminal.write(aliceText.substring(i-length,i) + '\r');
-  }
-
-  terminal.write('Hello my name is Alice. Would you like to find your way to the heart of the maze?\r\n');
   // terminal.write(listFunctionNames().toString());
+  loadDungeons();
   terminal.write("\r\n$ ");
 
 }

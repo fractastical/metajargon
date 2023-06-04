@@ -177,13 +177,11 @@ app.post('/allRooms', async (req, res) => {
 
       // Connect to the MongoDB cluster
       // const mongoClient = await connectToCluster(url);
-      const db = mongoClient.db('dungeons');
+      const db = mongoClient.db('dungeon');
       const collection = db.collection('dungeons');
-      const allDungeons = collection.find();
+      const allDungeons = await collection.find().toArray();
 
-      // Insert jsonData into the collection
-      const result = await collection.insertOne(completion.data.choices[0].message.content);
-  
+      console.log(allDungeons);
       console.log(`Successfully returned ${allDungeons.length} rooms`);
       res.status(200).json(allDungeons);
 
@@ -192,7 +190,7 @@ app.post('/allRooms', async (req, res) => {
         console.error(err.response.status, err.response.data);
         res.status(err.response.status).json(err.response.data);
       } else {
-        console.error(`Error with OpenAI API request: ${err.message}`);
+        console.error(`Error with loading dungeons from MongoDB: ${err.message}`);
         res.status(500).json({
           error: {
             message: 'An error occurred during your request.',

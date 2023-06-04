@@ -864,7 +864,7 @@ async function loginWithMetaMask() {
 <!--  Does not work out of box from GPT-4 seems to require a generic openID oauth libary --> 
 
 // Add a click event listener to the MetaMask login button
-document.getElementById("loginWithMetamask").addEventListener("click", loginWithMetaMask);
+// document.getElementById("loginWithMetamask").addEventListener("click", loginWithMetaMask);
 
 // Replace 'YOUR_API_KEY' with your actual Steam Web API key
 const API_KEY = '';
@@ -1500,40 +1500,6 @@ function noteToMidi(note) {
   return noteIndex + 12 * (octave + 1);
 }
 
-
-<!-- SECTION: CREDITS --> 
-
-
-
-
-// async function getUserBalance(activeUser, (err, balance) => {
-//   if (err) {
-//     console.error('Error fetching balance:', err);
-//   } else if (balance !== null) {
-//     console.log('Balance fetched:', balance);
-//   } else {
-//     console.log('User not found.');
-//   }
-// });
-
-
-
-// getUserBalance(userId) {
-//   const response = await fetch(`/api/users/${userId}/balance`);
-//   const data = await response.json();
-
-//   return data.balance;
-// }
-
-function updateBalanceDisplay(balance) {
-  const balanceElement = document.getElementById("balance");
-  balanceElement.textContent = `Space Money: ${balance}`;
-}
-
-async function onUserLogin(userId) {
-  const balance = await getUserBalance(userId);
-  updateBalanceDisplay(balance);
-}
 
 <!-- SECTION: 3DCONWAY --> 
 
@@ -2872,7 +2838,7 @@ window.addEventListener('keydown', (event) => {
 
 
 // TODO: don't love this
-function go(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
+function goTo(cubeIndex, approachDistance = 8, sideAngle = Math.PI / 4) {
 
   // console.log(cubeIndex);
   
@@ -2981,36 +2947,47 @@ function dungeon()
 let activeRoomData = "";
 
 
-function north() {
+function go(direction) {
 
-  terminal.write(`\r\You go north\r\n$ `);
+  console.log("go:" +direction);
+  console.log(allDungeons);
 
- }
+  if (activeRoomData["exits"] && activeRoomData["exits"][direction]) {
+    
+    const newRoomKey = activeRoomData["exits"][direction];
+    console.log(newRoomKey);
+    
+    if(newRoomKey == "xxx")
+    {
+      // need to think about this
+      createDungeonRoom(newRoomKey);
+    } 
+    //TODO: failing on this line with error
 
-function south() {
+    activeRoomData =  JSON.parse(allDungeons).filter(
+      function(data){return data.name == newRoomKey}
+    );
+    const asciiart = activeRoomData.asciiArt + "\r\n\r\n";
+    onsole.log(asciiart);
+    const description = activeRoomData.description; 
+    terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
+    
 
-terminal.write(`\r\You go south\r\n$ `);
+
+  } else {
+    terminal.write(`There is no exit in that direction\r\n$ `);
+
+  }
+    
 
 }
 
-function west() {
 
-terminal.write(`\r\You go west\r\n$ `);
-
-}
-
-function east() {
-
-terminal.write(`\r\You go east\r\n$ `);
-
-}
-
-
-let activeRoom = "";
 
 
 async function loadDungeons()
 {
+
 
   const response = await fetch('http://localhost:3000/allRooms', {
                 method: 'POST',
@@ -3018,16 +2995,19 @@ async function loadDungeons()
                 body: JSON.stringify({})
               });
 
-              const allDungeons = await response.json();
-              console.log(allDungeons);
-              // const cleanRooms = cleanJsonString(result.room);
-              // allDungeons = JSON.parse(result);
-              activeRoom = allDungeons[0];
+              const uncleanDungeons = await response.json();
+              console.log(uncleanDungeons);
+
+              // const cleanRooms = cleanJsonString(uncleanDungeons);
+              // TODO: fails with "Unexpected non-whitespace character after JSON at position 1245" error
+              allDungeons = JSON.parse(uncleanDungeons);
+              // allDungeons = cleanRooms;
+              activeRoomData = allDungeons[0];
 
               const asciiart = allDungeons[0].asciiArt + "\r\n\r\n";
               console.log(asciiart);
               const description = allDungeons[0].description; 
-              terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
+              terminal.write(`${asciiart} ${description} \r\nWhat will you do?`);
 
               context = "inDungeon";
 
@@ -3437,7 +3417,7 @@ function complete() {
   }
 
   if (functionsList.length === 0) {
-    terminal.write('No functions  found.');
+    terminal.write('No functions found.');
   } else {
     const formattedList = functionsList.join('\r\n');
     terminal.write(`\r\nAvailable functions:\r\n${formattedList}\r\n$`);
@@ -3490,7 +3470,7 @@ function isNumeric(str) {
 }
 
 // Create a new terminal instance
-const terminal = new Terminal();
+const terminal = new Terminal({convertEol: true});
 var lastAction = "";
 // Create and load the addons
 const fitAddon = new FitAddon.FitAddon();
@@ -3540,7 +3520,7 @@ fitAddon.fit();
 // terminal.write('Welcome to Jarca! Jarca is a fusion of GPT-Jargon and Arca. \r\n');
 // const basicHelpString = 'Commands: "library" "play" "stop" "faster" "slower" "earth" "mars" "advanced" "help"   \r\n';
 // terminal.write(basicHelpString);
-terminal.write('\r\n$ ');
+// terminal.write('\r\n$ ');
 
 // const player = new Tone.Player('chopin_nocturne_20.mp3').toDestination();
 // await Tone.start();

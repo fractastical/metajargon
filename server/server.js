@@ -183,7 +183,7 @@ app.post('/allRooms', async (req, res) => {
 
       console.log(allDungeons);
       console.log(`Successfully returned ${allDungeons.length} rooms`);
-      res.status(200).json(allDungeons);
+      res.status(200).json(JSON.stringify(allDungeons));
 
     } catch (err) {
       if (err.response) {

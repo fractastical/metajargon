@@ -166,6 +166,100 @@ async function connectToCluster(uri) {
 }
 
 
+app.post('/allRooms', async (req, res) => {
+
+  const keyword = req.body.keyword;
+  const url = process.env.MONGODB_URL;
+  const mongoClient = await connectToCluster(url);
+
+  try {
+    
+
+      // Connect to the MongoDB cluster
+      // const mongoClient = await connectToCluster(url);
+      const db = mongoClient.db('dungeons');
+      const collection = db.collection('dungeons');
+      const allDungeons = collection.find();
+
+      // Insert jsonData into the collection
+      const result = await collection.insertOne(completion.data.choices[0].message.content);
+  
+      console.log(`Successfully returned ${allDungeons.length} rooms`);
+      res.status(200).json(allDungeons);
+
+    } catch (err) {
+      if (err.response) {
+        console.error(err.response.status, err.response.data);
+        res.status(err.response.status).json(err.response.data);
+      } else {
+        console.error(`Error with OpenAI API request: ${err.message}`);
+        res.status(500).json({
+          error: {
+            message: 'An error occurred during your request.',
+          }
+        });
+      }
+      } finally {
+      // Close the connection to the MongoDB cluster
+      await mongoClient.close();
+    }
+
+  });
+
+
+
+
+app.post('/generateDungeonRoom', async (req, res) => {
+
+  const keyword = req.body.keyword;
+  const prompt = 'Describe a room in a dungeon crawling game with ' + keyword + '. For result only return json format with the following keys "name", "description", "exits," "asciiart"';
+  const url = process.env.MONGODB_URL;
+  const mongoClient = await connectToCluster(url);
+
+  try {
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{"role": "user", "content": prompt}],
+      max_tokens: 50,
+      temperature: 0.6,
+    });
+    
+    
+    res.status(200).json({ room: completion.data.choices[0].message.content });
+    console.log(res);
+
+      // Connect to the MongoDB cluster
+      // const mongoClient = await connectToCluster(url);
+      const db = mongoClient.db('dungeons');
+      const collection = db.collection('dungeons');
+
+      // Insert jsonData into the collection
+      const result = await collection.insertOne(completion.data.choices[0].message.content);
+  
+      console.log(`Successfully inserted room with _id: ${result.insertedId}`);
+    } catch (err) {
+      if (err.response) {
+        console.error(err.response.status, err.response.data);
+        res.status(err.response.status).json(err.response.data);
+      } else {
+        console.error(`Error with OpenAI API request: ${err.message}`);
+        res.status(500).json({
+          error: {
+            message: 'An error occurred during your request.',
+          }
+        });
+      }
+      } finally {
+      // Close the connection to the MongoDB cluster
+      await mongoClient.close();
+    }
+
+  });
+
+  
+
+    
 
 app.post('/saveJoke', async (req, res) => {
 
@@ -197,7 +291,7 @@ app.post('/saveJoke', async (req, res) => {
       });
       
   
-
+  
 app.post('/generateJoke', async (req, res) => {
 
   const keyword = req.body.keyword;

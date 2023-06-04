@@ -3076,34 +3076,43 @@ function goToCubeByCoordinates(coordinates, cubeSize, gridSpacing, duration) {
 
   animate();
 }
+function dungeon()
+{
+
+  terminal.write('\r\nPlaying dungeon game. Enter a keyword or topic for a room:\r\n ');
+  context = "dungeon";
+
+
+}
+
+let activeRoomData = "";
+
+async function createDungeonRoom(keyword)
+{
+    console.log("createDungeonRoom:"+keyword);
+
+   const response = await fetch('http://localhost:3000/generateDungeonRoom', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keyword: keyword })
+              });
+              const result = await response.json();
+              console.log(result);
+
+              const cleanRoom = cleanJsonString(result.room);
+              activeRoomData = JSON.parse(cleanRoom);
+              const description = activeRoomData.description;
+
+              terminal.write(`${description} \r\nWhat will you do?\r\n$`);
+              context = "inDungeon";
+
+              
+}
 
 function joke()
 {
   terminal.write('\r\nPlaying joke game. Enter a keyword or topic for a joke:\r\n ');
   context = "joke";
-  // terminal.onKey(async ({ key }) => {
-  //   if (key === '\r') { // Enter key
-  //     const keyword = terminal.getSelection();
-  //     terminal.write('\n');
-  //     console.log(keyword);
-  //     if (keyword) {
-  //       const response = await fetch('http://localhost:3000/generateJoke', {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify({ keyword: keyword })
-  //       });
-  //       const result = await response.json();
-  //       terminal.writeln(`Joke: ${result.joke}`);
-  //     } else {
-  //       terminal.writeln('No keyword entered. Please try again.');
-  //     }
-  //     terminal.write('Enter a keyword or topic for a joke: ');
-  //   } else if (key === '\u007F' || key === '\b') { // Backspace or Delete key
-  //     terminal.write('\b \b'); // Delete the last character
-  //   } else {
-  //     // terminal.write(key);
-  //   }
-  // });
 }
 
 function cleanJsonString(jsonString) {
@@ -3613,7 +3622,9 @@ terminal.onData((data) => {
     const command = inputBuffer.trim();
     inputBuffer = '';
     console.log("User typed command:", command);
-    if(context == "joke") {
+    if(context == "dungeon"){
+      createDungeonRoom(command);
+    } else if(context == "joke") {
         callJoke(command);
     } else if(context == "jokeReceived") {
       saveJoke(command);

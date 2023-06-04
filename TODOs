@@ -2,36 +2,13 @@
 
 TOP
 
-setup mongo db
 get dungeon working
-
+    - load all rooms into active memory
+    - show ASCII art 
+    - navigation
+    - "3d-ify" 
 
 major refactoring needed, lots of code duplication and commented out code
-
-Alice storyline
-    - add ascii alice
-    - make fade effect better
-    - add branching json mindmap 'therapy' game
-
-Therapy game
-    - describe your self
-    - describe your neurosis
-    - bounty(?) for solving
-    - accept solutoins 
-
-Formalize effect library
-
-zoom  -- all zoom functions so far look meh or confusing 
-    - tiny bit of improvement with MakeMesmall but still lacking
-
-
-jargon live loading and parsing 
-    - error on API call
-    - re-request GPT-4 API 
-    - auto populating (requires extension) / test API calls 
-    - auto testing
-    - text prompt in terminal
-
 
 can't find the source of that annoying sound when you click on a cube!
 
@@ -63,6 +40,31 @@ what's the best data structure for a procedurally genrated text adventure?
 
 
 IDEAS
+
+Alice storyline
+    - add ascii alice
+    - make fade effect better
+    - add branching json mindmap 'therapy' game
+
+Therapy game
+    - describe your self
+    - describe your neurosis
+    - bounty(?) for solving
+    - accept solutoins 
+
+Formalize effect library
+
+zoom  -- all zoom functions so far look meh or confusing 
+    - tiny bit of improvement with MakeMesmall but still lacking
+
+
+jargon live loading and parsing 
+    - error on API call
+    - re-request GPT-4 API 
+    - auto populating (requires extension) / test API calls 
+    - auto testing
+    - text prompt in terminal
+
 
 user action log - write to file storage all action
 
@@ -118,6 +120,8 @@ group[molecules][33 bpm] - group all molecules nad give them a 33 bpm movement r
 
 
 DONE
+
+setup mongo db DONE 
 
 
 "hello bob" 

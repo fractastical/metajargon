@@ -6,7 +6,7 @@ get dungeon working
     - load all rooms into active memory DONE
     - show ASCII art  DONE
     - navigation DONE
-    - generate new room at edges (json parsing errors galore)
+    - generate new room at edges (json parsing errors galore) 
     - "3d-ify" 
 
 major refactoring needed, lots of code duplication and commented out code
@@ -20,6 +20,8 @@ all journeys play on their own loop (concatenate?)
 
 BUGS
 
+
+probably should have labeled which day was my sprint day
 
 
 

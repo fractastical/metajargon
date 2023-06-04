@@ -469,7 +469,7 @@ function createUniqueObject(x, y, z, type) {
     const distanceToCenter = currentPosition.distanceTo(center);
 
     // Calculate the maximum possible distance
-    const gridSize = 9;
+    // const gridSize = 9;
     // const cubeDistance = cubeSize + 60;
     const maxDistance = Math.sqrt(Math.pow((gridSize * cubeDistance) / 2, 2) * 3);
 
@@ -575,7 +575,7 @@ function createGridOfCubes() {
     ];
 
     
-        const gridSize = 7;
+        // const gridSize = 7;
         // const cubeDistance = cubeSize + 60;
         var cubeNumber = 1;
 
@@ -647,7 +647,10 @@ function createGridOfCubes() {
             return grid;
         }
 
-        const gridOfCubesWithSpheres = createGridOfCubes(9);
+
+        const gridSize = 2;
+
+        const gridOfCubesWithSpheres = createGridOfCubes(gridSize);
 
         camera.position.z = 300;
 
@@ -656,6 +659,14 @@ function createGridOfCubes() {
 
         const mouse = new THREE.Vector2();
         let clickedObject = null;
+
+                // Example usage:
+          const cubeGrid = new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0)));
+          const initialProbability = 0.3; // Adjust the probability of a cell being alive (0 to 1)
+          // seedGameOfLife(cubeGr  id, initialProbability);
+          const globeRadius = 15;
+          // animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
+          createEarth();
 
         // function animate() {
         //     requestAnimationFrame(animate);
@@ -1653,14 +1664,6 @@ function seedGameOfLife(cubeGrid, probability) {
   }
 }
 
-// Example usage:
-const gridSize = 9;
-const cubeGrid = new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0).map(() => new Array(gridSize).fill(0)));
-const initialProbability = 0.3; // Adjust the probability of a cell being alive (0 to 1)
-// seedGameOfLife(cubeGr  id, initialProbability);
-const globeRadius = 15;
-// animate3DGameOfLife(allCubes[1], createInitial3DGrid(8));
-createEarth();
 
 <!-- SECTION: NETWORKSTATE --> 
 
@@ -1691,7 +1694,8 @@ function createEarth() {
     const earthTexture = new THREE.TextureLoader().load('/img/world.topo.bathy.200412.3x5400x2700.jpg');
     const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    allCubes[123].add(earth);
+    if(allCubes[123])
+      allCubes[123].add(earth);
     // Add a prospera marker off the coast of Honduras
     const prosperaLat = 16.5;
     const prosperaLon = -86.5;
@@ -1927,7 +1931,8 @@ function createMars() {
       const marsTexture = new THREE.TextureLoader().load('img/2k_mars.jpeg'); // Use an appropriate Mars texture
       const marsMaterial = new THREE.MeshBasicMaterial({ map: marsTexture });
       const mars = new THREE.Mesh(marsGeometry, marsMaterial);
-      allCubes[124].add(mars);
+      if(allCubes[124])
+        allCubes[124].add(mars);
 
       // Add markers for Mars settlements
       const marsSettlement1 = createMarker(12.74, 77.59, marsRadius, 0xff0000);
@@ -1989,7 +1994,7 @@ function tradeRoute() {
 
 }
 createMars();
-tradeRoute();
+// tradeRoute();
 
 <!-- SECTION: ASCIIART --> 
 

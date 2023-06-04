@@ -6,6 +6,8 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
+
 const MongoClient = require('mongodb').MongoClient;
 
 // const {Configuration, OpenAIApi} = require('openai');
@@ -228,37 +230,77 @@ app.post('/generateDungeonRoom', async (req, res) => {
     });
     
     
+    
 
       // Connect to the MongoDB cluster
       // const mongoClient = await connectToCluster(url);
-      const db = mongoClient.db('dungeons');
+      const db = mongoClient.db('dungeon');
       const collection = db.collection('dungeons');
 
       // Insert jsonData into the collection
 
-      let newRoom = completion.data.choices[0].message.content;
+      let newRoom = completion.data.choices[0].message.content.trim();
+      console.log(util.inspect(newRoom, { showHidden: false, depth: null }));
 
-      console.log(newRoom.length);
+      console.log(newRoom["name"]);
+
       console.log(newRoom);
-      console.log("parsing");
+
+      let name;
+      let description;
+      let asciiart;
+      let exits;
+
+      const newRoomJson = {
+        name: name,
+        description: "cool room",
+        exits: {},
+        asciiart: "" // Set the appropriate value for the asciiart property
+      };
 
 
-      console.log("jsonified");
+      try {
 
-      newRoom["name"] = name;
+        newRoomJson.description = newroom["description"];
+
+      } catch (error) {
+
+      } 
+      console.log(newRoom["name"]);
+
+      const jsonData = JSON.parse(newRoom);
+
       console.log(newRoom);
-      if(! newRoom["exits"])
-          newRoom["exits"] = {};
 
-    console.log(newRoom);
+        // Create a new JSON object with the name property
 
-    let newRoomJson = JSON.parse(newRoom);
+      try {
+
+        
+        // newRoomJson = JSON.parse(newRoom);
+        // newRoomJson["name"] = name;
+
+
+      } catch (error) {
+        console.error("Error parsing newRoom content as JSON:", error);
+        return;
+      }
+      
+
+      // console.log(newRoom.length);
+      // console.log(newRoom);
+      // console.log("parsing");
+
+      // console.log("jsonified");
 
           // newRoom["exits"].
       // newRoom["exits"][direction] = entrance;
-      
+  //     if(! newRoom["exits"]) {}
+  //     newRoom["exits"] = {};
+  // newRoom["exits"][direction] = entrance;
+
       // console.log(newRoomJson);
-      res.status(200).json({ room: newRoom });
+      res.status(200).json({ room: newRoomJson });
       // console.log(res);
 
       const result = await collection.insertOne(newRoomJson);

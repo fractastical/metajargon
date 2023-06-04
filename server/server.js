@@ -225,7 +225,7 @@ app.post('/generateDungeonRoom', async (req, res) => {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{"role": "user", "content": prompt}],
-      max_tokens: 260,
+      max_tokens: 120,
       temperature: 0.6,
     });
     
@@ -243,8 +243,14 @@ app.post('/generateDungeonRoom', async (req, res) => {
       console.log(util.inspect(newRoom, { showHidden: false, depth: null }));
       console.log("util finished");
 
+      console.log(newRoom["name"]);
 
+      console.log(newRoom);
 
+      let name;
+      let description;
+      let asciiart;
+      let exits;
     
       const newRoomJson = {
         name: name,
@@ -273,13 +279,22 @@ app.post('/generateDungeonRoom', async (req, res) => {
         const errordb = mongoClient.db('dungeon');
         const errorcollection = db.collection('errors');
         const errorJson = {
+        "type": "error",
+        "error": error,
         data: newRoom
       };
-      const result = await collection.insertOne(errorJson);
+      const result = await errorcollection.insertOne(errorJson);
 
     
         console.log(error);
       } 
+      console.log(newRoom["name"]);
+
+      // const jsonData = JSON.parse(newRoom);
+
+      console.log(newRoom);
+
+        // Create a new JSON object with the name property
 
       try {
 
@@ -296,10 +311,22 @@ app.post('/generateDungeonRoom', async (req, res) => {
       }
       
 
+      // console.log(newRoom.length);
+      // console.log(newRoom);
+      // console.log("parsing");
+
+      // console.log("jsonified");
+
+          // newRoom["exits"].
+      // newRoom["exits"][direction] = entrance;
+  //     if(! newRoom["exits"]) {}
+  //     newRoom["exits"] = {};
+  // newRoom["exits"][direction] = entrance;
+
       // console.log(newRoomJson);
       res.status(200).json({ room: jsonData });
       // console.log(res);
-jsonData
+
       const result = await collection.insertOne(jsonData);
 
       console.log(`Successfully inserted room with _id: ${result.insertedId}`);

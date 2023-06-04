@@ -3005,6 +3005,7 @@ function go(direction) {
     
 
 }
+go.helpText = "When in doubt consider going somewhere. Possibly a direction like north, south, etc."
 
 
 
@@ -3027,7 +3028,9 @@ async function loadDungeons()
               allDungeons = JSON.parse(uncleanDungeons);
               // allDungeons = cleanRooms;
               activeRoomData = allDungeons[0];
-
+              console.log("ard");
+              console.log(activeRoomData);
+              
               const asciiart = "\r\n" + allDungeons[0].asciiArt + "\r\n\r\n";
               console.log(asciiart);
               const description = allDungeons[0].description; 
@@ -3053,10 +3056,15 @@ async function createDungeonRoom(newRoomName, roomEnteringFrom, reversedDirectio
               // activeRoomData = JSON.parse(cleanRoom);
               activeRoomData = result.room;
 
-              const description = activeRoomData.description;
+              console.log(activeRoomData);
+              if(activeRoomData && activeRoomData.description) {
+                  const description = activeRoomData.description;
 
-              terminal.write(`${description} \r\nWhat will you do?\r\n$`);
+                  terminal.write(`${description} \r\nWhat will you do?\r\n$`);
+
+              }
               context = "inDungeon";
+                            console.log(activeRoomData);
 
               
 }

@@ -2951,27 +2951,46 @@ function go(direction) {
 
   console.log("go:" +direction);
   console.log(allDungeons);
-
+  console.log("ard");
+  console.log(activeRoomData);
+  const oldRoomName = activeRoomData.name;
   if (activeRoomData["exits"] && activeRoomData["exits"][direction]) {
     
     const newRoomKey = activeRoomData["exits"][direction];
     console.log(newRoomKey);
     
-    if(newRoomKey == "xxx")
-    {
-      // need to think about this
-      createDungeonRoom(newRoomKey);
-    } 
-    //TODO: failing on this line with error
-
-    activeRoomData =  JSON.parse(allDungeons).filter(
+    activeRoomData =  allDungeons.filter(
       function(data){return data.name == newRoomKey}
     );
-    const asciiart = activeRoomData.asciiArt + "\r\n\r\n";
-    onsole.log(asciiart);
-    const description = activeRoomData.description; 
-    terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
-    
+
+    console.log(activeRoomData);
+
+    if(activeRoomData && activeRoomData != undefined  &&  activeRoomData.length > 0) {
+
+      activeRoomData = activeRoomData[0];
+      const asciiart = activeRoomData.asciiArt + "\r\n\r\n";
+      console.log(asciiart);
+      const description = activeRoomData.description; 
+      terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
+
+    }
+    else 
+    {
+      console.log("creating new room");
+      // need to think about this
+      let reversedDirection = "";
+      if (direction == "north")
+        reversedDirection = "south";
+      else if (direction == "south")
+        reversedDirection = "north";
+      else if (direction == "west")
+        reversedDirection = "east";
+        else if (direction == "east")
+        reversedDirection = "west";
+
+      createDungeonRoom(newRoomKey, oldRoomName, reversedDirection);
+    } 
+    //TODO: failing on this line with error
 
 
   } else {
@@ -3004,23 +3023,23 @@ async function loadDungeons()
               // allDungeons = cleanRooms;
               activeRoomData = allDungeons[0];
 
-              const asciiart = allDungeons[0].asciiArt + "\r\n\r\n";
+              const asciiart = "\r\n" + allDungeons[0].asciiArt + "\r\n\r\n";
               console.log(asciiart);
               const description = allDungeons[0].description; 
-              terminal.write(`${asciiart} ${description} \r\nWhat will you do?`);
+              terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$`);
 
               context = "inDungeon";
 
 }
 
-async function createDungeonRoom(keyword)
+async function createDungeonRoom(newRoomName, roomEnteringFrom, reversedDirection)
 {
-    console.log("createDungeonRoom:"+keyword);
+    console.log("createDungeonRoom:"+newRoomName);
 
    const response = await fetch('http://localhost:3000/generateDungeonRoom', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ keyword: keyword })
+                body: JSON.stringify({ name: newRoomName, entrance: roomEnteringFrom, direction: reversedDirection})
               });
               const result = await response.json();
               console.log(result);

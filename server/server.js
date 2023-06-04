@@ -209,8 +209,12 @@ app.post('/allRooms', async (req, res) => {
 
 app.post('/generateDungeonRoom', async (req, res) => {
 
-  const keyword = req.body.keyword;
-  const prompt = 'Describe a room in a dungeon crawling game with ' + keyword + '. For result only return json format with the following keys "name", "description", "exits," "asciiart"';
+  const name = req.body.name;
+  const direction = req.body.direction;
+  const entrance = req.body.entrance;
+
+  const prompt = 'Describe a room in a dungeon crawling game with the name "' + name + '". Include one unique object in that room. For result only return json format and make sure you include the following keys "name", "description", "exits," "asciiart"';
+
   const url = process.env.MONGODB_URL;
   const mongoClient = await connectToCluster(url);
 
@@ -224,8 +228,6 @@ app.post('/generateDungeonRoom', async (req, res) => {
     });
     
     
-    res.status(200).json({ room: completion.data.choices[0].message.content });
-    console.log(res);
 
       // Connect to the MongoDB cluster
       // const mongoClient = await connectToCluster(url);
@@ -233,7 +235,18 @@ app.post('/generateDungeonRoom', async (req, res) => {
       const collection = db.collection('dungeons');
 
       // Insert jsonData into the collection
-      const result = await collection.insertOne(completion.data.choices[0].message.content);
+
+      let newRoom = completion.data.choices[0].message.content;
+      console.log(newRoom);
+
+      newRoom["name"] = name;
+      newRoom["exits"][direction] = entrance;
+      
+      console.log(newRoom);
+      res.status(200).json({ room: newRoom });
+      console.log(res);
+  
+      const result = await collection.insertOne(newRoom);
   
       console.log(`Successfully inserted room with _id: ${result.insertedId}`);
     } catch (err) {

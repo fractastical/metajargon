@@ -2970,34 +2970,45 @@ function east(){
 function go(direction) {
 
   console.log("go:" +direction);
-  console.log(allDungeons);
+  // console.log(allDungeons);
   console.log("ard");
   console.log(activeRoomData);
+  let matchfound = false;
+
   let oldRoomName = "";
   if(activeRoomData && activeRoomData.name)
       oldRoomName = activeRoomData.name;
 
   if (activeRoomData["exits"] && activeRoomData["exits"][direction]) {
-    
+
+    oldRoomName = activeRoomData.name;
     const newRoomKey = activeRoomData["exits"][direction];
     console.log(newRoomKey);
-    
-    activeRoomData =  allDungeons.filter(
-      function(data){return data.name == newRoomKey}
-    );
+    for (var i=0; i < allDungeons.length ; i++)
+      {
+          console.log(allDungeons[i]);
 
+          if (allDungeons[i]["name"].toLowerCase() === newRoomKey.toLowerCase()) {
+            console.log(allDungeons[i]["name"]);
+
+            console.log(newRoomKey);
+            console.log("match!");
+              matchfound = true;
+              activeRoomData = allDungeons[i];
+              const asciiart = activeRoomData.asciiArt + "\r\n\r\n";
+              console.log(asciiart);
+              const description = activeRoomData.description; 
+              terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
+              break;
+    
+          }
+      }
+
+
+    console.log("ard");
     console.log(activeRoomData);
 
-    if(activeRoomData && activeRoomData != undefined  &&  activeRoomData.length > 0) {
-
-      activeRoomData = activeRoomData[0];
-      const asciiart = activeRoomData.asciiArt + "\r\n\r\n";
-      console.log(asciiart);
-      const description = activeRoomData.description; 
-      terminal.write(`${asciiart} ${description} \r\nWhat will you do?\r\n$ `);
-
-    }
-    else 
+    if (!matchfound) 
     {
       console.log("creating new room");
       // need to think about this
@@ -3077,8 +3088,9 @@ async function createDungeonRoom(newRoomName, roomEnteringFrom, reversedDirectio
               console.log(activeRoomData);
               if(activeRoomData && activeRoomData.description) {
                   const description = activeRoomData.description;
+                  const asciiArt = activeRoomData.asciiArt + '\r\n\r\n';
 
-                  terminal.write(`${description} \r\nWhat will you do?\r\n$`);
+                  terminal.write(`${asciiArt} ${description} \r\nWhat will you do?\r\n$`);
 
               }
               context = "inDungeon";

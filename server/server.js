@@ -422,11 +422,6 @@ app.post('/generateJoke', async (req, res) => {
 
   try {
 
-    // const response = await openai.createCompletion({
-    //   model: "gpt-3.5-turbo",
-    //   messages: inputs, // Use the messages parameter
-    //   max_tokens: 100,
-    //   temperature: 0.7,
 
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -434,15 +429,11 @@ app.post('/generateJoke', async (req, res) => {
       max_tokens: 250,
       temperature: 0.6,
     });
-    
+  
     
     res.status(200).json({ joke: completion.data.choices[0].message.content });
     console.log(res);
 
-    // const joke = completion.choices[0].text.trim();
-    // res.json({ joke: joke });
-  
-    // res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
@@ -457,18 +448,11 @@ app.post('/generateJoke', async (req, res) => {
       });
     }
 
-  // const response = await openai.Completion.create({ // Update this line
-  //   engine: 'davinci-codex',
-  //   prompt: prompt,
-  //   max_tokens: 50,
-  //   n: 1,
-  //   stop: null,
-  //   temperature: 0.7,
-  // });
   
   }});
 
 
+  
 
 app.use(express.static(__dirname + "/public"));
 

@@ -3603,12 +3603,15 @@ terminal.onData((data) => {
     inputBuffer = '';
     console.log("User typed command:", command);
   
-    if(context == "joke") {
+    if(context === "joke") {
         callJoke(command);
-    } else if(context == "jokeReceived") {
+    } else if(context === "jokeReceived") {
       saveJoke(command);
       context = "";
+    } else if (context === "create") {
+      createGame(command);
     }
+
     // Split the command by semicolons
     const commands = command.split(';');
     
@@ -4508,6 +4511,7 @@ animate();
 
 
 <script src="jarg/alice.js"></script>
+<script src="jarg/metagame.js"></script>
 <!-- <script src="jarg/dungeon.js"></script> -->
 
 

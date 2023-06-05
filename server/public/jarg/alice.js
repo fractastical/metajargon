@@ -10,6 +10,13 @@ function yes() {
   }
 
 
+  function expand() {
+    // terminal.write("\r\nwhere are you?\r\n");
+  
+      shrinkTerminal();
+  
+    }
+  
   async function loadAlice() {
 
     console.log("loadalice");

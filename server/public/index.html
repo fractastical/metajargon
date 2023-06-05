@@ -2951,6 +2951,21 @@ function dungeon()
 
 let activeRoomData = "";
 
+function north(){
+  go("north");
+}
+
+function south(){
+  go("south");
+}
+
+function west(){
+  go("west");
+}
+
+function east(){
+  go("east");
+}
 
 function go(direction) {
 
@@ -2958,7 +2973,10 @@ function go(direction) {
   console.log(allDungeons);
   console.log("ard");
   console.log(activeRoomData);
-  const oldRoomName = activeRoomData.name;
+  let oldRoomName = "";
+  if(activeRoomData && activeRoomData.name)
+      oldRoomName = activeRoomData.name;
+
   if (activeRoomData["exits"] && activeRoomData["exits"][direction]) {
     
     const newRoomKey = activeRoomData["exits"][direction];
@@ -3572,9 +3590,8 @@ terminal.onData((data) => {
     const command = inputBuffer.trim();
     inputBuffer = '';
     console.log("User typed command:", command);
-    if(context == "dungeon"){
-      createDungeonRoom(command);
-    } else if(context == "joke") {
+  
+    if(context == "joke") {
         callJoke(command);
     } else if(context == "jokeReceived") {
       saveJoke(command);

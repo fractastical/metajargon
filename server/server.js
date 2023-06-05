@@ -207,7 +207,36 @@ app.post('/allRooms', async (req, res) => {
   });
 
 
+//TODO: this array forcing JSON parser actually returns a JSON format that MongoDB does not accept. If you want to learn about it Google "bson field" for a few hours. Probably could fix by popping out of Array.
+  function parseRoomToJson(str) {
+    let json;
+    try {
+        // Attempt to parse string to JSON
+        json = JSON.parse(str);
+    } catch (e) {
+        console.log("Parsing error: ", e);
+        return null;
+    }
 
+    // Check if the JSON object follows the right format
+    if (Array.isArray(json)) {
+        for (const item of json) {
+            if (!('name' in item && typeof item.name === 'string') ||
+                !('description' in item && typeof item.description === 'string') ||
+                !('asciiArt' in item && typeof item.asciiArt === 'string') ||
+                !('exits' in item && typeof item.exits === 'object')) {
+                console.log("Invalid format: JSON does not match the required structure");
+                return null;
+            }
+        }
+    } else {
+        console.log("Invalid format: Expected an array");
+        return null;
+    }
+
+    return json;
+}
+  
 
 app.post('/generateDungeonRoom', async (req, res) => {
 
@@ -215,7 +244,7 @@ app.post('/generateDungeonRoom', async (req, res) => {
   const direction = req.body.direction;
   const entrance = req.body.entrance;
 
-  const prompt = 'Describe a room in a dungeon crawling game with the name "' + name + '". Include one unique object in that room. For result only return json format such as this:        The resulting JSON object should be in this format: [{"name":"string","description":"string"},"asciiArt":"string","unique_object":"string","exits":{ "north":"string"}, "south":"string", "east":"string", "west":"string"} ].';
+  const prompt = 'Describe a room in a dungeon crawling game with the name "' + name + '".  The resulting JSON object should be in this format: {"name":"string","description":"string"},"asciiArt":"string","exits":{ "north":"room name (if exists)"}, "south":"room name (if exists)", "east":"room name (if exists)", "west":"room name (if exists)"} }';
 
   const url = process.env.MONGODB_URL;
   const mongoClient = await connectToCluster(url);
@@ -225,7 +254,7 @@ app.post('/generateDungeonRoom', async (req, res) => {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{"role": "user", "content": prompt}],
-      max_tokens: 120,
+      max_tokens: 360,
       temperature: 0.6,
     });
     
@@ -243,23 +272,8 @@ app.post('/generateDungeonRoom', async (req, res) => {
       console.log(util.inspect(newRoom, { showHidden: false, depth: null }));
       console.log("util finished");
 
-      console.log(newRoom["name"]);
-
-      console.log(newRoom);
-
-      let name;
-      let description;
-      let asciiart;
-      let exits;
-    
-      const newRoomJson = {
-        name: name,
-        description: "cool room",
-        exits: {},
-        asciiart: "" // Set the appropriate value for the asciiart property
-      };
-
       let jsonData;
+
 
       try {
 
@@ -280,19 +294,18 @@ app.post('/generateDungeonRoom', async (req, res) => {
         const errorcollection = db.collection('errors');
         const errorJson = {
         "type": "error",
-        "error": error,
+        "error": error.message,
         data: newRoom
-      };
-      const result = await errorcollection.insertOne(errorJson);
 
-    
+      };
+
+        const result = await errorcollection.insertOne(errorJson);
+
         console.log(error);
       } 
-      console.log(newRoom["name"]);
 
-      // const jsonData = JSON.parse(newRoom);
 
-      console.log(newRoom);
+      console.log(jsonData);
 
         // Create a new JSON object with the name property
 
@@ -417,7 +430,7 @@ app.post('/generateJoke', async (req, res) => {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{"role": "user", "content": prompt}],
-      max_tokens: 50,
+      max_tokens: 250,
       temperature: 0.6,
     });
     

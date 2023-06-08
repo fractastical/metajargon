@@ -3447,7 +3447,7 @@ function findCubeByLabel(label) {we
 async function onTerminalReady() {
   terminal.clear();
   // terminal.write(listFunctionNames().toString());
-  loadDungeons();
+  // loadDungeons();
   terminal.write("\r\n$ ");
 
 }
@@ -3599,9 +3599,11 @@ var context;
 terminal.onData((data) => {
   // If the user pressed Enter, process the command
   if (data === '\r') {
-    const command = inputBuffer.trim();
+    
+    let command = inputBuffer.trim();
     inputBuffer = '';
     console.log("User typed command:", command);
+    // terminal.write("")
   
     if(context === "joke") {
         callJoke(command);
@@ -3610,7 +3612,11 @@ terminal.onData((data) => {
       context = "";
     } else if (context === "create") {
       createGame(command);
+    } else if (context === "Bot") {
+       command += context;
     }
+
+
 
     // Split the command by semicolons
     const commands = command.split(';');
@@ -3653,8 +3659,8 @@ terminal.onData((data) => {
     });
 
     // Clear the line and print a new prompt
-    terminal.write('\x1B[2K\x1B[G');
-    terminal.write('$ ');
+    // terminal.write('\x1B[2K\x1B[G');
+    terminal.write('\n$ ');
 
 
   } else if (data === '\x7F') {
@@ -4511,6 +4517,7 @@ animate();
 
 
 <script src="jarg/alice.js"></script>
+<script src="js/bots/autobot.js"></script>
 <script src="jarg/metagame.js"></script>
 <!-- <script src="jarg/dungeon.js"></script> -->
 

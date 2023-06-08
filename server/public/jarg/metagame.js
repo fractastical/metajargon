@@ -10,6 +10,7 @@ create.helpText = "Create a game"
 
 async function createGame(command)  {
 
+    terminal.write("\n\rGame created. Type 'play' to play the game\r\n");
 
     const response = await fetch('http://localhost:3000/metagame', {
         method: 'POST',
@@ -25,9 +26,10 @@ async function createGame(command)  {
     //   activeJokeData = JSON.parse(cleanJoke);
     //   const jokeText = activeJokeData.text;
 
+    // terminal.write("\n\This game requires a physics engine, what type would you like ot use?\r\n");
 
-    terminal.write("\r\nGame created. Type 'play' to play the game\r\n");
 
     
 
 }
+

@@ -2,6 +2,14 @@
 
 TOP
 
+Agents
+    - User can create agent
+    - agent lives somewhere (i.e. in a metaverse)
+    - agent can be set to different modes
+        "battling"
+        "harvesting"
+    - API returns status of agent
+
 get dungeon working
     - load all rooms into active memory DONE
     - show ASCII art  DONE
@@ -10,13 +18,12 @@ get dungeon working
         - (thinking outloud) when i put in prompts looks fine DONE 
         - console seems to be partial DONE 
         - often breaks on what appears to be a quotation mark DONE
-    - "3d-ify" 
+    - "3d-ify"  (API is working now)
     - toggle pro pts
     - "game logic" 
     
 major refactoring needed, lots of code duplication and commented out code
 
-crashes whenever htere is a mongo db connectio nerror
 
 USABILITY BUGS
 
@@ -163,6 +170,9 @@ music flow should work as follows
 
 
 DONE 
+
+crashes whenever there is a mongo db connection error
+
 
 - mp3 player does not allow multiople instanced of player 
 

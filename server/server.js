@@ -422,7 +422,6 @@ app.post('/generateJoke', async (req, res) => {
 
   try {
 
-
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{"role": "user", "content": prompt}],
@@ -447,10 +446,45 @@ app.post('/generateJoke', async (req, res) => {
         }
       });
     }
-
   
   }});
 
+
+
+    
+app.post('/metagame', async (req, res) => {
+
+  const keyword = req.body.keyword;
+  const prompt = '"' + keyword + '" is the name of a game.  If it can be returned in less than 50 lines of Javascript return this Javascript. Otherwise return "ERROR, game size too large" ';
+
+  try {
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{"role": "user", "content": prompt}],
+      max_tokens: 250,
+      temperature: 0.6,
+    });
+  
+    
+    res.status(200).json({ game: completion.data.choices[0].message.content });
+    console.log(res);
+
+  } catch(error) {
+    // Consider adjusting the error handling logic for your use case
+    if (error.response) {
+      console.error(error.response.status, error.response.data);
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      console.error(`Error with OpenAI API request: ${error.message}`);
+      res.status(500).json({
+        error: {
+          message: 'An error occurred during your request.',
+        }
+      });
+    }
+  
+  }});
 
   
 

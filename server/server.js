@@ -102,7 +102,7 @@ app.get('/', (req, res) => {
  app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
   res.redirect('/')
  });
- 
+
  //TODO: Doesn't work with generic error
  app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
   console.log("author returned");
@@ -291,6 +291,7 @@ app.post('/generateDungeonRoom', async (req, res) => {
   const name = req.body.name;
   const direction = req.body.direction;
   const entrance = req.body.entrance;
+  const floor = req.body.floor;
 
   // const prompt = 'Describe a room in a dungeon crawling game with the name "' + name + '".  The resulting JSON object should be in this format: {"name":"string","description":"string"},"asciiArt":"string","exits":{ "north":"room name (if exists)"}, "south":"room name (if exists)", "east":"room name (if exists)", "west":"room name (if exists)"} }  The ascii art should represent a map of the room as seen from above.';
   const promptWithUniqueObject = 'Describe a room in a dungeon crawling game with the name "' + name + '".  The room should have a unique object. The resulting JSON object should be in this format: {"name":"string","description":"string"},"asciiArt":"string","unique_object":"string","exits":{ "north":"room name (if exists)"}, "south":"room name (if exists)", "east":"room name (if exists)", "west":"room name (if exists)"} }  The ascii art should represent a map of the room as seen from above and show where the unique object is in the room.';
@@ -327,7 +328,8 @@ app.post('/generateDungeonRoom', async (req, res) => {
       try {
 
         jsonData = JSON.parse(newRoom);
-
+        jsonData["floor"] = floor;
+        
         // newRoomJson.description = newroom["description"];
 
       } catch (error) {

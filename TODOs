@@ -2,12 +2,17 @@
 
 TOP
 
+Dungeon 
+    - stairway (to higher floor)
+    - unique objects
+    - door (i.e. open with key)
+
 Resetup Metamask/steam login
     - allow login
     - https://medium.com/geekculture/sign-in-through-steam-using-nodejs-e3202d4719
     - failes iwth error 
 
-Agents
+Agents (pseudocode))
     - User can create agent
     - agent creates the type of language for the bot
     - agent lives somewhere (i.e. in a metaverse)
@@ -16,18 +21,6 @@ Agents
         "harvesting"
     - API returns status of agent
 
-get dungeon working
-    - load all rooms into active memory DONE
-    - show ASCII art  DONE
-    - navigation DONE
-    - generate new room at edges (json parsing errors galore)  DONE 
-        - (thinking outloud) when i put in prompts looks fine DONE 
-        - console seems to be partial DONE 
-        - often breaks on what appears to be a quotation mark DONE
-    - "3d-ify"  (API is working now)
-    - toggle pro pts
-    - "game logic" 
-    
 major refactoring needed, lots of code duplication and commented out code
 
 
@@ -180,6 +173,20 @@ music flow should work as follows
 
 
 DONE 
+
+get dungeon working
+    - load all rooms into active memory DONE
+    - show ASCII art  DONE
+    - navigation DONE
+    - generate new room at edges (json parsing errors galore)  DONE 
+        - (thinking outloud) when i put in prompts looks fine DONE 
+        - console seems to be partial DONE 
+        - often breaks on what appears to be a quotation mark DONE
+    - "3d-ify"  (API is working now)
+    - toggle pro pts
+    - "game logic" 
+    
+
 
 crashes whenever there is a mongo db connection error
 

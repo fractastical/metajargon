@@ -16,7 +16,22 @@ function createBot() {
 
 function chooseBot() {
 
-    terminal.write("\nSet your initial bot type: defender, predator, harvester\n");
+    terminal.write("\nSet your initial bot type: explorer, defender, predator, harvester\n");
+
+}
+
+function explorerBot() {
+
+    terminal.write("\nBot created\n");
+
+    terminal.write("\nWill start exploring");
+    // if temranl.asks "what will you do next"
+    // choose a a random directoin
+    // if(!invalid_direction) 
+    // waiwt until "what will you do next" repeat
+    // track levels. 
+    // set timer function  
+    
 
 }
 

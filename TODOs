@@ -1,9 +1,12 @@
 
 
 TOP
+Resetup 
+
 
 Agents
     - User can create agent
+    - agent creates the type of language for the bot
     - agent lives somewhere (i.e. in a metaverse)
     - agent can be set to different modes
         "battling"

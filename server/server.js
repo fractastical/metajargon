@@ -7,13 +7,47 @@ const io = require("socket.io")(http);
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
+var passport = require('passport');
+var session = require('express-session');
+var passportSteam = require('passport-steam');
+var SteamStrategy = passportSteam.Strategy;
 
 const MongoClient = require('mongodb').MongoClient;
-
-// const {Configuration, OpenAIApi} = require('openai');
-
 const {Configuration, OpenAIApi} = require('openai');
 
+const port = process.env.PORT || 3000;
+
+
+// Required to get data from user for sessions
+passport.serializeUser((user, done) => {
+  done(null, user);
+ });
+ passport.deserializeUser((user, done) => {
+  done(null, user);
+ });
+ // Initiate Strategy
+ passport.use(new SteamStrategy({
+  returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
+  realm: 'http://localhost:' + port + '/',
+  apiKey: process.env.STEAMAPIKEY
+  }, function (identifier, profile, done) {
+   process.nextTick(function () {
+    profile.identifier = identifier;
+    return done(null, profile);
+   });
+  }
+ ));
+ app.use(session({
+  secret: "blahblahe432",
+  saveUninitialized: true,
+  resave: false,
+  cookie: {
+   maxAge: 3600000
+  }
+ }))
+ app.use(passport.initialize());
+ app.use(passport.session());
+ 
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -60,7 +94,19 @@ const bodyParser = require('body-parser');
 // // Call the async function to connect to MongoDB
 // connectToMongoDB();
 
+app.get('/', (req, res) => {
+  res.send(req.user);
+ });
 
+ 
+ app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
+  res.redirect('/')
+ });
+ app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
+  console.log("author returned");
+  res.redirect('/')
+ });
+ 
 // const { Schema, model } = mongoose;
 
 // const userBalanceSchema = new Schema({
@@ -640,7 +686,6 @@ io.on("connection", (socket) => {
   });
 });
 
-const port = process.env.PORT || 3000;
 http.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

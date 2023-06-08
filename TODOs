@@ -1,8 +1,11 @@
 
 
 TOP
-Resetup 
 
+Resetup Metamask/steam login
+    - allow login
+    - https://medium.com/geekculture/sign-in-through-steam-using-nodejs-e3202d4719
+    - failes iwth error 
 
 Agents
     - User can create agent
@@ -43,6 +46,10 @@ probably should have labeled which day was my sprint day
 
 
 IDEAS
+
+could extend dungeon generator to create the map of all the rooms and force it to a 100x100 grid
+
+could generate observer that plays game and then keeps "generating" the dungeon size by traversing and perofrming common actions
 
 "wires" to trace cubes
 

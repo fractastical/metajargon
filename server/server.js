@@ -102,6 +102,8 @@ app.get('/', (req, res) => {
  app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
   res.redirect('/')
  });
+ 
+ //TODO: Doesn't work with generic error
  app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
   console.log("author returned");
   res.redirect('/')

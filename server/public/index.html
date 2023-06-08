@@ -3605,6 +3605,7 @@ terminal.onData((data) => {
     console.log("User typed command:", command);
     // terminal.write("")
   
+    //TODO: should be a cleaner way to do this
     if(context === "joke") {
         callJoke(command);
     } else if(context === "jokeReceived") {

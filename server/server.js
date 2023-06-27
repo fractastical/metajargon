@@ -94,6 +94,7 @@ const bodyParser = require('body-parser');
 // // Call the async function to connect to MongoDB
 // connectToMongoDB();
 
+//TODO: this appears to be borken now
 app.get('/', (req, res) => {
   res.send(req.user);
  });

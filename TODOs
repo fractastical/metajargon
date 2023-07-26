@@ -2,24 +2,9 @@
 
 TOP
 
-Dungeon 
-    - stairway (to higher floor)
-    - unique objects
-    - door (i.e. open with key)
+fix xterm issue  -- going off screen
 
-Resetup Metamask/steam login
-    - allow login
-    - https://medium.com/geekculture/sign-in-through-steam-using-nodejs-e3202d4719
-    - failes iwth error 
 
-Agents (pseudocode))
-    - User can create agent
-    - agent creates the type of language for the bot
-    - agent lives somewhere (i.e. in a metaverse)
-    - agent can be set to different modes
-        "battling"
-        "harvesting"
-    - API returns status of agent
 
 major refactoring needed, lots of code duplication and commented out code
 
@@ -39,6 +24,28 @@ probably should have labeled which day was my sprint day
 
 
 IDEAS
+
+
+Dungeon 
+    - stairway (to higher floor)
+    - unique objects
+    - door (i.e. open with key)
+
+Resetup Metamask/steam login
+    - allow login
+    - https://medium.com/geekculture/sign-in-through-steam-using-nodejs-e3202d4719
+    - failes iwth error 
+
+Agents (pseudocode))
+    - User can create agent
+    - agent creates the type of language for the bot
+    - agent lives somewhere (i.e. in a metaverse)
+    - agent can be set to different modes
+        "battling"
+        "harvesting"
+    - API returns status of agent
+
+
 
 could extend dungeon generator to create the map of all the rooms and force it to a 100x100 grid
 

@@ -168,6 +168,8 @@ js/css3drenderer@1.1.1-index.min.js
 
         const videoTexture = new THREE.VideoTexture(video);
 
+//SECTION: SEMF
+
 
         const keysState = {
               a: { pressed: false, acceleration: 0 },
@@ -232,6 +234,62 @@ js/css3drenderer@1.1.1-index.min.js
         const maxZoomLevelOut = maxZoomLevelIn * 2;
         let zoomDirection = 1;
 
+
+        // Create a sphere with three.js
+var audioSphereGeometry = new THREE.SphereGeometry(50, 50, 50);
+var audioSphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+var sphere = new THREE.Mesh(audioSphereGeometry, audioSphereMaterial);
+scene.add(sphere);
+
+// Setup the audio context and analyser
+// var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// navigator.mediaDevices.getUserMedia({ audio: true })
+//     .then(function(stream) {
+//         // Connect the microphone stream to the analyzer and the analyzer to the destination
+//         var source = audioContext.createMediaStreamSource(stream);
+//         source.connect(analyser);
+//         // analyser.connect(audioContext.destination);
+
+//         // Start rendering the scene
+//         animate();
+//     })
+//     .catch(function(err) {
+//         console.log('The following error occured: ' + err);
+//     });
+
+// Render the scene
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Get the average frequency of the sound
+    var data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data);
+    var average = getAverageVolume(data);
+    console.log("av" + average);
+    // Scale the sphere depending on the average volume
+    sphere.scale.x = average / 50;
+    sphere.scale.y = average / 50;
+    sphere.scale.z = average / 50;
+
+    renderer.render(scene, camera);
+}
+
+// Helper function to calculate the average volume
+function getAverageVolume(array) {
+    var values = 0;
+    var average;
+
+    var length = array.length;
+
+    // Get all the frequency amplitudes
+    for (var i = 0; i < length; i++) {
+        values += array[i];
+    }
+
+    average = values / length;
+    return average;
+}
 
         const textureLoader = new THREE.TextureLoader();
 
@@ -1082,6 +1140,7 @@ psi[Math.floor(N / 2)] = 1;
 
 // Initialize audio context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var analyser = audioCtx.createAnalyser();
 
 // Create audio buffer
 const audioBuffer = audioCtx.createBuffer(1, tMax * N, audioCtx.sampleRate);
@@ -2347,6 +2406,67 @@ function createBondCylinder(color, start, end, radius) {
   cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
   return cylinder;
 }
+
+var audioContext2;
+var analyser2;
+
+function reaction() {
+    // Set up the audio context and analyser.
+    audioContext2 = new (window.AudioContext || window.webkitAudioContext)();
+    analyser2 = audioContext2.createAnalyser();
+
+    // Connect the microphone stream to the analyzer and the analyzer to the destination.
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        .then(function(stream) {
+            // Create a gain node to prevent audio feedback.
+            let gainNode = audioContext2.createGain();
+            gainNode.gain.value = 0;  // Mute the audio.
+
+            let source = audioContext2.createMediaStreamSource(stream);
+            source.connect(analyser2);
+            analyser.connect(gainNode);
+            gainNode.connect(audioContext2.destination);
+
+            // Start rendering the visualization.
+            animate();
+        })
+        .catch(function(err) {
+            console.log('The following error occured: ' + err);
+        });
+
+
+  function animate() {
+      requestAnimationFrame(animate);
+
+      // Get the average volume of the sound.
+      let data = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(data);
+      let average = getAverageVolume(data);
+
+      // Update the size of the sphere based on the average volume.
+      sphere.scale.x = sphere.scale.y = sphere.scale.z = average / 50;
+
+      // Render the scene.
+      renderer.render(scene, camera);
+  }
+
+}
+
+
+function getAverageVolume(array) {
+    let values = 0;
+    let average;
+    let length = array.length;
+
+    // Get all the frequency amplitudes.
+    for (let i = 0; i < length; i++) {
+        values += array[i];
+    }
+
+    average = values / length;
+    return average;
+}
+
 
 // Add lighting to the scene
 // const light = new THREE.PointLight(0xffffff, 1, 1000);

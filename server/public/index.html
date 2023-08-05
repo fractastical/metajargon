@@ -3760,7 +3760,7 @@ terminal.onData((data) => {
 
         } catch (error) {
           console.error(`Error while executing function ${functionName}:`, error);
-          terminal.write(`An error occurred while executing ${functionName}: ${error.message}`);
+          terminal.write(`\r\nAn error occurred while executing ${functionName}: ${error.message}`);
         }
       } else if(command.includes(',')) {
             var ids = [];

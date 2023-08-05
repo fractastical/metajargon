@@ -149,7 +149,6 @@ sharedworker_reflector.load(window, "./js/ipsme-reflector.js", function () {
 	// initialization code ...
   console.log("IPSME INIT"); 
   IPSME_MsgEnv.publish("metalive");
-  console.log("DONT WARP INIT"); 
   
 //   warp();
 

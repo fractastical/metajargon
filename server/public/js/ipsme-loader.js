@@ -1,6 +1,6 @@
 import * as sharedworker_reflector from 'https://unpkg.com/@ipsme/reflector-webbr-ws@0.4.4';
 import * as IPSME_MsgEnv from 'https://unpkg.com/@ipsme/msgenv-broadcastchannel@0.3.8';
-import { TwoPhW, JSON_MsgWarp, JSON_MsgEngage, JSON_MsgAckWarp, JSON_MsgAckEngage, l as l_2PhW } from 'https://unpkg.com/@rootintf/protocol-2phw0.6.11';
+import { TwoPhW, JSON_MsgWarp, JSON_MsgEngage, JSON_MsgAckWarp, JSON_MsgAckEngage, l as l_2PhW } from 'https://unpkg.com/@rootintf/protocol-2phw@0.6.11';
 
 function ipsme_handler_(msg) 
 {
@@ -16,7 +16,7 @@ function ipsme_handler_(msg)
 		console.log(e)
 	}
 	  
-	LOGR_.log(l_.DROPS, "ipsme_handler_: DROP! ", msg);
+	console.log("ipsme_handler_: DROP! ", msg);
 }
 IPSME_MsgEnv.subscribe(ipsme_handler_);
 
@@ -28,6 +28,7 @@ twoPhW.config.sender( callback_msgAckWarp_, callback_msgAckEngage_ );
 twoPhW.config.callback_msgOptions= callback_msgOptions_;
 
 
+
 function callback_msgAckWarp_(msg, json_msgAckWarp) 
 {
 	// console.log('callback_Ack_Warp: Ack: ', json_Ack);
@@ -35,8 +36,8 @@ function callback_msgAckWarp_(msg, json_msgAckWarp)
 	if (! json_msgAckWarp.ack.ok) {
 		console.log('callback_msgAbort_: JSON_MsgWarp : ', json_msgAckWarp.ack.expired);
 
-		setStatus('IN WORLD'); // ACKNOWLEDGE/ABORT
-		portalActivate(portal_, false);
+		// setStatus('IN WORLD'); // ACKNOWLEDGE/ABORT
+		// portalActivate(portal_, false);
 		return;
 	}
 
@@ -56,15 +57,21 @@ function callback_msgAckEngage_(msg, json_msgAckEngage)
 {
 	console.log('callback_Ack_Engage: Ack: ', json_msgAckEngage);
 
-	setUser({ id : "", authentication : "" }, "");
+	// setUser({ id : "", authentication : "" }, "");
 
 	IPSME_MsgEnv.unsubscribe( ipsme_handler_ );
 
 	// window.location.replace( str_page_blank ); // doesn't add to history
-	window.location.href= kstr_page_blank_;
+	// window.location.href= kstr_page_blank_;
 	return true;
 }
 
+function callback_msgOptions_(msg, json_msgOptions) 
+{
+	console.log('callback_msgOptions_: ', json_msgOptions);
+
+
+}
 //-------------------------------------------------------------------------------------------------
 // Receiver
 
@@ -72,8 +79,8 @@ function callback_msgWarp_(msg, json_msgWarp)
 {
 	// console.log('callback_Warp: Warp: ', json_Warp);
 
-	const json_User= json_msgWarp.warp.user;
-	const json_Hyperport= json_msgWarp.warp.hyperport;
+	const json_User= { name:"Jimbo"};
+	// const json_Hyperport= json_msgWarp.warp.hyperport;
 
 	//TODO: validate hyperport
 	// console.log('json_User', json_User);
@@ -83,17 +90,17 @@ function callback_msgWarp_(msg, json_msgWarp)
 
 	const str_destination_URN= extract_URN_(json_Hyperport.destination.URL);
 	const str_this_URN= extract_URN_(window.location.href);
-	if (str_destination_URN !== str_this_URN)
-		return false;
+	// if (str_destination_URN !== str_this_URN)
+	// 	return false;
 
 	// -----
 
-	const portals= Array.from( document.getElementsByTagName('portal') );
-	const nr_index= portals.find( el => {
-		return el.getAttribute('uuid') === json_Hyperport.portal;
-	});
-	if (nr_index === undefined)
-		return false;
+	// const portals= Array.from( document.getElementsByTagName('portal') );
+	// const nr_index= portals.find( el => {
+	// 	return el.getAttribute('uuid') === json_Hyperport.portal;
+	// });
+	// if (nr_index === undefined)
+	// 	return false;
 
 	// -----
 
@@ -103,8 +110,24 @@ function callback_msgWarp_(msg, json_msgWarp)
 	console.log('callback_Warp: publish Ack Warp: ', json_msgAckWarp); 
 	IPSME_MsgEnv.publish( JSON.stringify(json_msgAckWarp) );
 
-	setUser(json_User, 'PREPARE'); // PREPARE/ABORT
+	// setUser(json_User, 'PREPARE'); // PREPARE/ABORT
 	return true;
+}
+function ipsmeWarp(){
+
+    const knr_timeout_default_msec_ = 20000;
+    const json_Hyperport= "secondlife://Ahern/128/128"
+    const karr_referer_= [ "metamap" , "test" ]
+    const json_User= { name:"Jimbo"};
+
+    const uuid_id="arbitrarygarbageioereiowne";
+    const json_msgWarp= twoPhW.create_MsgWarp_out(uuid_id, json_User, json_Hyperport, knr_timeout_default_msec_);
+
+    json_msgWarp.referer= karr_referer_;
+
+    console.log('btn_MsgWarp: JSON: ', json_msgWarp); 
+    IPSME_MsgEnv.publish( JSON.stringify(json_msgWarp) );
+
 }
 
 function callback_msgEngage_(msg, json_msgEngage)
@@ -117,7 +140,7 @@ function callback_msgEngage_(msg, json_msgEngage)
 	console.log('callback_Engage: publish: Ack Engage: ', json_msgAckEngage);
 	IPSME_MsgEnv.publish( JSON.stringify(json_msgAckEngage) );
 
-	setStatus('IN WORLD'); // ACKNOWLEDGE/ABORT
+	// setStatus('IN WORLD'); // ACKNOWLEDGE/ABORT
 	return true;
 }
 
@@ -126,5 +149,8 @@ sharedworker_reflector.load(window, "./js/ipsme-reflector.js", function () {
 	// initialization code ...
   console.log("IPSME INIT"); 
   IPSME_MsgEnv.publish("metalive");
+  console.log("DONT WARP INIT"); 
+  
+//   warp();
 
 });

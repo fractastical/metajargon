@@ -100,6 +100,8 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/ipsme-loader.js" type="module"></script>
+
 <!-- <script src="
 https://cdn.jsdelivr.net/npm/three-css3drenderer@1.0.1/index.min.js
 "></script> -->
@@ -4636,11 +4638,16 @@ animate();
 
 // animate();
 
+function warp() {
+
+     ipsmeWarp();
+
+}
+warp.helpText = "warp to another metaverse";
 
 
     </script>
 
-<script src="js/ipsme-loader.js" type="module"></script>
 
 <script src="jarg/alice.js"></script>
 <script src="js/bots/autobot.js"></script>

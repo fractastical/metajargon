@@ -1,4 +1,4 @@
-# OMA3
+# Open metaverse portaling system 
 
 Testing for cross metaverse portaling system suported by various groups including OMA3 (https://www.oma3.org/)
 
